@@ -27,7 +27,7 @@ const Default: Component = () => {
           }
         />
         <mask id="mask-eye-white" mask-type="alpha">
-          <use href="#eye-white-fill-def" fill="black" />
+          <use href="#eye-white-fill-def" fill="white" />
         </mask>
         <g mask="url(#mask-eye-white)">
           <path

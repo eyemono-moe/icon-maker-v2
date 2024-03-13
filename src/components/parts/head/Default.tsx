@@ -36,7 +36,7 @@ const Default: Component = () => {
           }
         />
         <mask id="mask-neck-shadow">
-          <use href="#neck-fill" />
+          <use href="#neck-fill-def" fill="white" />
         </mask>
         <path
           id="neck-shadow"

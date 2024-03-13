@@ -72,7 +72,7 @@ type IconParams = WithComputedColor<{
   };
   mouth: {
     type: "default";
-    strokeColor: Color;
+    strokeColor?: Color;
     teethColor?: Color;
     insideColor?: Color;
     /** 0.0 ~ 1.0 */
@@ -109,88 +109,117 @@ export type IconParamsContextValue = [
 
 export const IconParamsContext = createContext<IconParamsContextValue>();
 
+let computedHairHighlightColor: () => Color = () => "";
+let computedHairStrokeColor: () => Color = () => "";
+
+let computedEyebrowsBaseColor: () => Color = () => "";
+
+let computedEyePupilSecondaryColor: () => Color = () => "";
+let computedEyeEyeWhiteColor: () => Color = () => "";
+let computedEyeShadowColor: () => Color = () => "";
+let computedEyeEyelashesColor: () => Color = () => "";
+
+let computedMouthStrokeColor: () => Color = () => "";
+let computedTeethColor: () => Color = () => "";
+let computedInsideColor: () => Color = () => "";
+
+let computedHeadShadowColor: () => Color = () => "";
+let computedHeadStrokeColor: () => Color = () => "";
+
+const defaultIconParams: IconParams = {
+  hair: {
+    baseColor: "#9940BB",
+    type: "short",
+    get computedHighlightColor() {
+      return computedHairHighlightColor();
+    },
+    get computedStrokeColor() {
+      return computedHairStrokeColor();
+    },
+  },
+  eyes: {
+    pupilBaseColor: "#EE2266",
+    get computedPupilSecondaryColor() {
+      return computedEyePupilSecondaryColor();
+    },
+    get computedEyeWhiteColor() {
+      return computedEyeEyeWhiteColor();
+    },
+    get computedShadowColor() {
+      return computedEyeShadowColor();
+    },
+    get computedEyelashesColor() {
+      return computedEyeEyelashesColor();
+    },
+    open: 1,
+    position: { x: 0, y: 0 },
+    type: "default",
+  },
+  accessories: [],
+  background: "#BBEE66",
+  eyebrows: {
+    get computedBaseColor() {
+      return computedEyebrowsBaseColor();
+    },
+    type: "default",
+  },
+  head: {
+    type: "default",
+    position: { x: 0, y: 0 },
+    rotation: 0,
+    baseColor: "#FFCCCC",
+    get computedShadowColor() {
+      return computedHeadShadowColor();
+    },
+    get computedStrokeColor() {
+      return computedHeadStrokeColor();
+    },
+  },
+  mouth: {
+    get computedStrokeColor() {
+      return computedMouthStrokeColor();
+    },
+    get computedTeethColor() {
+      return computedTeethColor();
+    },
+    get computedInsideColor() {
+      return computedInsideColor();
+    },
+    open: 0,
+    type: "default",
+  },
+};
+
+// need to deep clone
+export const defaultParams = JSON.parse(
+  JSON.stringify(defaultIconParams),
+) as IconParams;
+
 export const IconParamsProvider: ParentComponent = (props) => {
-  const [state, setState] = createStore({
-    hair: {
-      baseColor: "#9940BB",
-      type: "short",
-      get computedHighlightColor() {
-        return computedHairHighlightColor();
-      },
-      get computedStrokeColor() {
-        return computedHairStrokeColor();
-      },
-    },
-    eyes: {
-      pupilBaseColor: "#EE2266",
-      get computedPupilSecondaryColor() {
-        return computedEyePupilSecondaryColor();
-      },
-      get computedEyeWhiteColor() {
-        return computedEyeEyeWhiteColor();
-      },
-      get computedShadowColor() {
-        return computedEyeShadowColor();
-      },
-      get computedEyelashesColor() {
-        return computedEyeEyelashesColor();
-      },
-      open: 1,
-      position: { x: 0, y: 0 },
-      type: "default",
-    },
-    accessories: [],
-    background: "#BBEE66",
-    eyebrows: {
-      get computedBaseColor() {
-        return computedEyebrowsBaseColor();
-      },
-      type: "default",
-    },
-    head: {
-      type: "default",
-      position: { x: 0, y: 0 },
-      rotation: 0,
-      baseColor: "#FFCCCC",
-      get computedShadowColor() {
-        return computedHeadShadowColor();
-      },
-      get computedStrokeColor() {
-        return computedHeadStrokeColor();
-      },
-    },
-    mouth: {
-      strokeColor: "#661133",
-      get computedTeethColor() {
-        return computedTeethColor();
-      },
-      get computedInsideColor() {
-        return computedInsideColor();
-      },
-      open: 0,
-      type: "default",
-    },
-  } as IconParamsContextState);
+  const [state, setState] = createStore(defaultIconParams);
 
-  const computedHairHighlightColor = createMemo<Color>(() => "#DDFFFD");
-  const computedHairStrokeColor = createMemo<Color>(() => "#660066"); // todo: gen from hair base color
+  computedHairHighlightColor = createMemo<Color>(() => "#DDFFFD");
+  computedHairStrokeColor = createMemo<Color>(() => state.hair.baseColor); // todo: gen from hair base color
 
-  const computedEyebrowsBaseColor = createMemo<Color>(
+  computedEyebrowsBaseColor = createMemo<Color>(
     () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
   );
 
-  const computedEyePupilSecondaryColor = createMemo<Color>(() => "#551155"); // todo: darken
-  const computedEyeEyeWhiteColor = createMemo<Color>(() => "#FFFFFF"); // todo: gen form pupil color
-  const computedEyeShadowColor = createMemo<Color>(() => "#D5D5FF"); // todo: gen form eye white color
-  const computedEyeEyelashesColor = createMemo<Color>(
+  computedEyePupilSecondaryColor = createMemo<Color>(() => "#551155"); // todo: darken
+  computedEyeEyeWhiteColor = createMemo<Color>(() => "#FFFFFF"); // todo: gen form pupil color
+  computedEyeShadowColor = createMemo<Color>(() => "#D5D5FF"); // todo: gen form eye white color
+  computedEyeEyelashesColor = createMemo<Color>(
     () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
   );
 
-  const computedTeethColor = createMemo<Color>(() => "#ffffff");
-  const computedInsideColor = createMemo<Color>(() => "#DD4466"); // todo: gen from skin color
+  computedTeethColor = createMemo<Color>(() => "#ffffff");
+  computedInsideColor = createMemo<Color>(() => "#DD4466"); // todo: gen from skin color
 
-  const computedHeadShadowColor = createMemo<Color>(() => "#FFAA99"); // todo: gen from skin color
-  const computedHeadStrokeColor = createMemo<Color>(() => "#661133"); // todo: gen from skin color
+  computedHeadShadowColor = createMemo<Color>(() => "#FFAA99"); // todo: gen from skin color
+  computedHeadStrokeColor = createMemo<Color>(() => "#661133"); // todo: gen from skin color
+  computedMouthStrokeColor = createMemo<Color>(
+    () => state.head.strokeColor ?? state.head.computedStrokeColor,
+  ); // todo: gen
 
   return (
     <IconParamsContext.Provider value={[state, { setProps: setState }]}>

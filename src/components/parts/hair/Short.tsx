@@ -57,7 +57,7 @@ const Short: Component = () => {
         mount={document.getElementById("hair-shadow-target")!}
       >
         <mask id="mask-hair-shadow" mask-type="alpha">
-          <use href={`#${headFillDefId}`} fill="black" />
+          <use href={`#${headFillDefId}`} fill="white" />
         </mask>
         <g mask="url(#mask-hair-shadow)">
           <use
