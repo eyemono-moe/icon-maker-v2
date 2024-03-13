@@ -13,6 +13,8 @@
     "@solidjs/meta": "^0.29.2",
     "@solidjs/router": "^0.13.0",
     "@solidjs/start": "^0.7.4",
+    "@unocss/reset": "^0.58.5",
+    "color2k": "^2.0.3",
     "solid-js": "^1.8.15",
     "vinxi": "^0.3.10"
   },
@@ -20,6 +22,7 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.1"
+    "@biomejs/biome": "1.6.1",
+    "unocss": "^0.58.5"
   }
 }

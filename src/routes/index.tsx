@@ -1,10 +1,13 @@
 import { Title } from "@solidjs/meta";
+import Icon from "~/components/Icon";
 
 export default function Home() {
   return (
     <main>
       <Title>eyemono.moe icon maker</Title>
-      <h1>eyemono.moe icon maker</h1>
+      <div class="w-100vh">
+        <Icon />
+      </div>
     </main>
   );
 }
