@@ -6,7 +6,7 @@ import { Suspense } from "solid-js";
 export default function App() {
   return (
     <Router
-      root={props => (
+      root={(props) => (
         <MetaProvider>
           <Suspense>{props.children}</Suspense>
         </MetaProvider>

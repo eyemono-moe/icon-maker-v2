@@ -5,7 +5,9 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "version": "vinxi version"
+    "version": "vinxi version",
+    "check": "biome check .",
+    "check:apply": "biome check --apply ."
   },
   "dependencies": {
     "@solidjs/meta": "^0.29.2",
@@ -16,5 +18,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.6.1"
   }
 }
