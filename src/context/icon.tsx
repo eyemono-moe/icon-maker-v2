@@ -10,7 +10,9 @@ import pkg from "lz-string";
 import {
   type ParentComponent,
   createContext,
+  createEffect,
   createMemo,
+  onMount,
   useContext,
 } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
@@ -276,6 +278,9 @@ export const IconParamsProvider: ParentComponent = (props) => {
       });
     }
   };
+
+  createEffect(saveToUrl);
+  onMount(loadFromUrl);
 
   return (
     <IconParamsContext.Provider
