@@ -8,6 +8,8 @@ import { hairOptions } from "./parts/hair";
 import { headOptions } from "./parts/head";
 import { mouthOptions } from "./parts/mouth";
 
+export const iconSvgId = "icon-svg";
+
 export type SelectOptions = {
   [K in keyof IconParamsContextState as IconParamsContextState[K] extends {
     type: string;
@@ -53,6 +55,7 @@ const Icon: Component = () => {
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         class="w-full aspect-square h-auto"
+        id={iconSvgId}
       >
         <title>eyemono.moe icon</title>
         <g id="background-target" />
