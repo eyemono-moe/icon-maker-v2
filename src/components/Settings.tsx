@@ -9,7 +9,7 @@ import SkinSettings from "./settings/SkinSettings";
 const Settings: Component = () => {
   return (
     <Tabs.Root class="w-full flex flex-col gap-3 overflow-hidden">
-      <Tabs.List class="relative font-500 flex gap-2 children-[button]:(px-2 py-1 bg-transparent) hover:children-[button]:bg-zinc/20">
+      <Tabs.List class="relative font-700 flex gap-2 children-[button]:(px-2 py-1 bg-transparent) hover:children-[button]:bg-zinc/20">
         <Tabs.Trigger value="hair">hair</Tabs.Trigger>
         <Tabs.Trigger value="skin">skin</Tabs.Trigger>
         <Tabs.Trigger value="eye">eye</Tabs.Trigger>

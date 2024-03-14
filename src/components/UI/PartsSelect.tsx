@@ -23,7 +23,7 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
       onChange={(value) => props.onChange(value as T)}
       class="flex flex-col"
     >
-      <RadioGroup.Label class="font-500">{props.label}</RadioGroup.Label>
+      <RadioGroup.Label class="font-700">{props.label}</RadioGroup.Label>
       <div class="grid grid-cols-minmax-100px gap-1">
         <For each={props.options}>
           {(option) => {

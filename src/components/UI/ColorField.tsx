@@ -4,16 +4,16 @@ import Button from "./Button";
 
 type Props = (
   | {
-      setColor: (color: string) => void;
-      canEmpty?: false;
-      color: string;
-    }
+    setColor: (color: string) => void;
+    canEmpty?: false;
+    color: string;
+  }
   | {
-      setColor: (color: string | undefined) => void;
-      canEmpty: true;
-      color?: string;
-      fallbackColor: string;
-    }
+    setColor: (color: string | undefined) => void;
+    canEmpty: true;
+    color?: string;
+    fallbackColor: string;
+  }
 ) & {
   label: string;
   resetColor?: () => void;
@@ -53,7 +53,7 @@ const ColorField: Component<Props> = (props) => {
         class="parent grid  data-[disabled]:grid-rows-[max-content_0fr] grid-rows-[max-content_1fr] transition-all-100 w-full"
       >
         <div class="flex items-center gap-4">
-          <TextField.Label class="font-500">{props.label}</TextField.Label>
+          <TextField.Label class="font-700">{props.label}</TextField.Label>
           <Show when={props.canEmpty}>
             <Checkbox.Root
               checked={isAuto()}

@@ -17,7 +17,7 @@ const Button: ParentComponent<Props> = (props) => {
   return (
     <KButton.Root
       {...kobalteProps}
-      class="font-500 py-1 px-2 rounded"
+      class="font-700 py-1 px-2 rounded"
       classList={{
         "bg-purple-400 enabled:hover:bg-purple-500 text-white":
           addedProps.variant === "primary",
