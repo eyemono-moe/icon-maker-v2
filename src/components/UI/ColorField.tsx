@@ -4,16 +4,16 @@ import Button from "./Button";
 
 type Props = (
   | {
-    setColor: (color: string) => void;
-    canEmpty?: false;
-    color: string;
-  }
+      setColor: (color: string) => void;
+      canEmpty?: false;
+      color: string;
+    }
   | {
-    setColor: (color: string | undefined) => void;
-    canEmpty: true;
-    color?: string;
-    fallbackColor: string;
-  }
+      setColor: (color: string | undefined) => void;
+      canEmpty: true;
+      color?: string;
+      fallbackColor: string;
+    }
 ) & {
   label: string;
   resetColor?: () => void;
