@@ -1,4 +1,4 @@
-import { type Component, For, Match, Switch } from "solid-js";
+import { type Component, For, Match, Suspense, Switch } from "solid-js";
 import { type IconParamsContextState, useIconParams } from "~/context/icon";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
@@ -39,7 +39,9 @@ const Parts = <K extends keyof SelectOptions>(props: {
       <For each={props.options}>
         {(option) => (
           <Match when={iconParams[props.parts].type === option.value}>
-            <option.component />
+            <Suspense>
+              <option.component />
+            </Suspense>
           </Match>
         )}
       </For>
@@ -49,7 +51,7 @@ const Parts = <K extends keyof SelectOptions>(props: {
 
 const Icon: Component = () => {
   return (
-    <>
+    <Suspense fallback={<div class="w-full aspect-square h-auto bg-zinc" />}>
       <svg
         viewBox="0 0 400 400"
         xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +84,7 @@ const Icon: Component = () => {
         <Parts parts="head" defaultParts="default" options={headOptions} />
         <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
       </svg>
-    </>
+    </Suspense>
   );
 };
 

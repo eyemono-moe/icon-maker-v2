@@ -1,5 +1,5 @@
 import { RadioGroup } from "@kobalte/core";
-import { For, type JSX, createUniqueId } from "solid-js";
+import { For, type JSX, Suspense, createUniqueId } from "solid-js";
 import type { PartsComponent } from "../Icon";
 
 export type Options<T extends string = ""> = {
@@ -36,9 +36,11 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
                     <svg viewBox={props.previewViewBox} class="w-full h-auto">
                       <title>{option.label}</title>
                       <g id={id} />
-                      <option.component
-                        mount={document.getElementById(id) ?? undefined}
-                      />
+                      <Suspense>
+                        <option.component
+                          mount={document.getElementById(id) ?? undefined}
+                        />
+                      </Suspense>
                     </svg>
                   </RadioGroup.ItemLabel>
                 </RadioGroup.ItemControl>
