@@ -6,7 +6,7 @@ const SkinSettings: Component = () => {
   const [iconParams, { setProps }] = useIconParams();
 
   return (
-    <div>
+    <>
       <ColorField
         label="skin color"
         color={iconParams.head.baseColor}
@@ -35,7 +35,7 @@ const SkinSettings: Component = () => {
           setProps("head", "strokeColor", iconParams.head.computedStrokeColor);
         }}
       />
-    </div>
+    </>
   );
 };
 

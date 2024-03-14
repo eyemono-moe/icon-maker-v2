@@ -8,17 +8,16 @@ import SkinSettings from "./settings/SkinSettings";
 
 const Settings: Component = () => {
   return (
-    <div class="w-full">
-      <h2>Settings</h2>
-      <Tabs.Root>
-        <Tabs.List class="flex gap-2">
-          <Tabs.Trigger value="hair">hair</Tabs.Trigger>
-          <Tabs.Trigger value="skin">skin</Tabs.Trigger>
-          <Tabs.Trigger value="eye">eye</Tabs.Trigger>
-          <Tabs.Trigger value="mouth">mouth</Tabs.Trigger>
-          <Tabs.Trigger value="other">other</Tabs.Trigger>
-          <Tabs.Indicator />
-        </Tabs.List>
+    <Tabs.Root class="w-full flex flex-col gap-3 overflow-hidden">
+      <Tabs.List class="relative font-500 flex gap-2 children-[button]:(px-2 py-1 bg-transparent) hover:children-[button]:bg-zinc/20">
+        <Tabs.Trigger value="hair">hair</Tabs.Trigger>
+        <Tabs.Trigger value="skin">skin</Tabs.Trigger>
+        <Tabs.Trigger value="eye">eye</Tabs.Trigger>
+        <Tabs.Trigger value="mouth">mouth</Tabs.Trigger>
+        <Tabs.Trigger value="other">other</Tabs.Trigger>
+        <Tabs.Indicator class="absolute bg-purple transition-all-100 h-2px bottom-0" />
+      </Tabs.List>
+      <div class="children:(flex flex-col gap-2) overflow-y-auto h-full">
         <Tabs.Content value="hair">
           <HairSettings />
         </Tabs.Content>
@@ -34,8 +33,8 @@ const Settings: Component = () => {
         <Tabs.Content value="other">
           <OtherSettings />
         </Tabs.Content>
-      </Tabs.Root>
-    </div>
+      </div>
+    </Tabs.Root>
   );
 };
 

@@ -1,7 +1,8 @@
+import type { Component } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useIconParams } from "~/context/icon";
 
-const Background: PartsComponent = () => {
+const Background: Component = () => {
   const [iconParams] = useIconParams();
 
   return (
@@ -15,8 +16,8 @@ const Background: PartsComponent = () => {
           id="background-fill"
           x="0"
           y="0"
-          width="500"
-          height="500"
+          width="400"
+          height="400"
           fill={iconParams.background}
         />
       </Portal>

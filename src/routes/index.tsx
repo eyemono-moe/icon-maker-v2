@@ -1,36 +1,21 @@
 import { Title } from "@solidjs/meta";
+import Actions from "~/components/Actions";
 import Icon from "~/components/Icon";
 import Settings from "~/components/Settings";
-import { useIconParams } from "~/context/icon";
 
 export default function Home() {
-  const [state, { saveToUrl, loadFromUrl }] = useIconParams();
-
   return (
-    <main>
+    <>
       <Title>eyemono.moe icon maker</Title>
-      <div class="flex">
+      <main class="h-full prose md:(text-base flex-row-reverse) mx-a text-sm prose-zinc max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2">
+        <div class="w-full md:h-full flex flex-col gap-4 justify-center items-center">
+          <div class="w-full md:max-w-unset max-w-40vh">
+            <Icon />
+          </div>
+          <Actions />
+        </div>
         <Settings />
-        <div class="w-full">
-          <Icon />
-        </div>
-        <div class="fixed bottom-0 right-0 m-4 flex gap-2">
-          <button
-            class="rounded p-2 bg-purple text-white"
-            onClick={saveToUrl}
-            type="button"
-          >
-            Save
-          </button>
-          <button
-            class="rounded p-2 bg-purple text-white"
-            onClick={loadFromUrl}
-            type="button"
-          >
-            Load
-          </button>
-        </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

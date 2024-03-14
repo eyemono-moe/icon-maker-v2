@@ -9,7 +9,7 @@ const EyesSettings: Component = () => {
   const [iconParams, { setProps }] = useIconParams();
 
   return (
-    <div>
+    <>
       <PartsSelect
         options={eyebrowsOptions}
         label="eyebrow type"
@@ -102,7 +102,7 @@ const EyesSettings: Component = () => {
           setProps("eyes", "shadowColor", iconParams.eyes.computedShadowColor);
         }}
       />
-    </div>
+    </>
   );
 };
 

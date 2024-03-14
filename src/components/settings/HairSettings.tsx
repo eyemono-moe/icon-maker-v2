@@ -8,7 +8,7 @@ const HairSettings: Component = () => {
   const [iconParams, { setProps }] = useIconParams();
 
   return (
-    <div>
+    <>
       <PartsSelect
         options={hairOptions}
         label="hair type"
@@ -50,7 +50,7 @@ const HairSettings: Component = () => {
           setProps("hair", "strokeColor", iconParams.hair.computedStrokeColor);
         }}
       />
-    </div>
+    </>
   );
 };
 

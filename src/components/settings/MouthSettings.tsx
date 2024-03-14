@@ -8,7 +8,7 @@ const MouthSettings: Component = () => {
   const [iconParams, { setProps }] = useIconParams();
 
   return (
-    <div>
+    <>
       <PartsSelect
         options={mouthOptions}
         label="mouth type"
@@ -16,7 +16,7 @@ const MouthSettings: Component = () => {
         onChange={(value) => {
           setProps("mouth", "type", value);
         }}
-        previewViewBox="180 270 80 80"
+        previewViewBox="188 282 60 60"
       />
       <ColorField
         label="line color"
@@ -56,7 +56,7 @@ const MouthSettings: Component = () => {
           setProps("mouth", "teethColor", iconParams.mouth.computedTeethColor);
         }}
       />
-    </div>
+    </>
   );
 };
 

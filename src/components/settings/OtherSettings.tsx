@@ -6,7 +6,7 @@ const OtherSettings: Component = () => {
   const [iconParams, { setProps }] = useIconParams();
 
   return (
-    <div>
+    <>
       <ColorField
         label="background color"
         color={iconParams.background}
@@ -15,7 +15,7 @@ const OtherSettings: Component = () => {
           setProps("background", defaultParams.background);
         }}
       />
-    </div>
+    </>
   );
 };
 

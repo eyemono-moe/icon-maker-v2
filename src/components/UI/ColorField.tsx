@@ -1,5 +1,6 @@
-import { Button, TextField, ToggleButton } from "@kobalte/core";
+import { Checkbox, TextField } from "@kobalte/core";
 import { type Component, Show, createEffect, createSignal } from "solid-js";
+import Button from "./Button";
 
 type Props = (
   | {
@@ -33,7 +34,7 @@ const ColorField: Component<Props> = (props) => {
   });
 
   return (
-    <div class="flex">
+    <div class="flex w-full">
       <TextField.Root
         value={
           props.canEmpty ? props.color ?? props.fallbackColor : props.color
@@ -49,29 +50,40 @@ const ColorField: Component<Props> = (props) => {
           }
         }}
         disabled={isAuto()}
-        class="data-[disabled]:opacity-50"
+        class="parent grid  data-[disabled]:grid-rows-[max-content_0fr] grid-rows-[max-content_1fr] transition-all-100 w-full"
       >
-        <TextField.Label>{props.label}</TextField.Label>
-        <TextField.Input type="color" />
-        <Show when={props.resetColor}>
-          <Button.Root
-            onClick={props.resetColor}
-            type="button"
-            disabled={isAuto()}
-          >
-            Reset
-          </Button.Root>
-        </Show>
+        <div class="flex items-center gap-4">
+          <TextField.Label class="font-500">{props.label}</TextField.Label>
+          <Show when={props.canEmpty}>
+            <Checkbox.Root
+              checked={isAuto()}
+              onChange={setIsAuto}
+              class="flex items-center"
+            >
+              <Checkbox.Input />
+              <Checkbox.Control>
+                <Checkbox.Indicator class="parent" forceMount>
+                  <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple) w-6! h-6!" />
+                </Checkbox.Indicator>
+              </Checkbox.Control>
+              <Checkbox.Label>Set automatically</Checkbox.Label>
+            </Checkbox.Root>
+          </Show>
+        </div>
+        <div class="flex items-center gap-2 overflow-hidden">
+          <TextField.Input type="color" class="w-full h-8 rounded" />
+          <Show when={props.resetColor}>
+            <Button
+              variant="secondary"
+              onClick={props.resetColor}
+              type="button"
+              disabled={isAuto()}
+            >
+              Reset
+            </Button>
+          </Show>
+        </div>
       </TextField.Root>
-      <Show when={props.canEmpty}>
-        <ToggleButton.Root pressed={isAuto()} onChange={setIsAuto}>
-          {(state) => (
-            <Show when={state.pressed()} fallback={"manual"}>
-              auto
-            </Show>
-          )}
-        </ToggleButton.Root>
-      </Show>
     </div>
   );
 };

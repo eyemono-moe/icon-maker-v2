@@ -21,8 +21,9 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
     <RadioGroup.Root
       value={props.value}
       onChange={(value) => props.onChange(value as T)}
+      class="flex flex-col"
     >
-      <RadioGroup.Label>{props.label}</RadioGroup.Label>
+      <RadioGroup.Label class="font-500">{props.label}</RadioGroup.Label>
       <div class="grid grid-cols-minmax-100px gap-1">
         <For each={props.options}>
           {(option) => {
@@ -30,12 +31,8 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
             return (
               <RadioGroup.Item value={option.value}>
                 <RadioGroup.ItemInput class="peer" />
-                <RadioGroup.ItemControl class="relative b-2 rounded data-[checked]:b-purple peer-focus-visible:(outline outline-offset-1 outline-purple)">
-                  <RadioGroup.ItemIndicator
-                    forceMount
-                    class="absolute top-1 left-1 w-8 h-8 not-[data-checked]:(i-material-symbols:radio-button-unchecked color-gray) data-[checked]:(i-material-symbols:radio-button-checked-outline color-purple)"
-                  />
-                  <RadioGroup.ItemLabel>
+                <RadioGroup.ItemControl class="b-2 rounded data-[checked]:b-purple peer-focus-visible:(outline outline-offset-1)">
+                  <RadioGroup.ItemLabel class="cursor-pointer">
                     <svg viewBox={props.previewViewBox} class="w-full h-auto">
                       <title>{option.label}</title>
                       <g id={id} />
