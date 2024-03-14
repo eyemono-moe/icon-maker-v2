@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 
-const Default: PartsComponent = (props) => {
+const Small: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
@@ -35,7 +35,7 @@ const Default: PartsComponent = (props) => {
         <g mask={`url(#${maskId})`}>
           <path
             id="eye-pupil-fill-0"
-            d="M271.132 212.58C276.528 226.613 273.711 238.991 263.598 242.106C253.486 245.221 244.193 236.573 240.757 221.936C237.321 207.299 239.903 194.994 248.291 192.41C256.679 189.826 265.737 198.546 271.132 212.58Z"
+            d="M264.066 218.44C266.764 225.457 265.356 231.645 260.299 233.203C255.243 234.76 250.596 230.437 248.879 223.118C247.161 215.799 248.452 209.647 252.646 208.355C256.839 207.063 261.368 211.423 264.066 218.44Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
               iconParams.eyes.computedPupilSecondaryColor
@@ -43,12 +43,12 @@ const Default: PartsComponent = (props) => {
           />
           <path
             id="eye-pupil-fill-1"
-            d="M270.209 212.611C273.989 224.884 271.813 235.39 262.421 238.283C253.029 241.176 245.319 233.716 241.538 221.443C237.074 206.95 241.959 196.453 248.88 194.321C255.8 192.19 265.745 198.118 270.209 212.611Z"
+            d="M263.604 218.456C265.495 224.592 264.407 229.845 259.71 231.292C255.014 232.738 251.159 229.008 249.269 222.871C247.037 215.625 249.48 210.377 252.94 209.311C256.4 208.245 261.372 211.209 263.604 218.456Z"
             fill={iconParams.eyes.pupilBaseColor}
           />
           <path
             id="eye-pupil-fill-2"
-            d="M266.092 209.947C269.984 219.099 268.245 228.118 261.977 230.049C255.71 231.98 249.197 225.501 247.266 215.746C245.313 205.884 248.795 199.579 252.263 198.511C255.731 197.443 262.157 200.695 266.092 209.947Z"
+            d="M261.546 217.124C263.492 221.699 262.623 226.209 259.489 227.174C256.355 228.14 253.099 224.901 252.133 220.023C251.156 215.092 252.898 211.94 254.632 211.406C256.365 210.871 259.579 212.498 261.546 217.124Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
               iconParams.eyes.computedPupilSecondaryColor
@@ -56,7 +56,7 @@ const Default: PartsComponent = (props) => {
           />
           <path
             id="eye-pupil-fill-3"
-            d="M265.369 210.693C268.08 217.706 267.065 224.296 260.8 226.226C254.535 228.156 249.987 223.278 248.282 215.956C246.577 208.633 248.329 201.816 252.852 200.422C257.375 199.029 262.659 203.68 265.369 210.693Z"
+            d="M261.185 217.496C262.54 221.003 262.033 224.298 258.9 225.263C255.767 226.228 253.494 223.789 252.641 220.128C251.788 216.467 252.664 213.058 254.926 212.361C257.187 211.665 259.83 213.99 261.185 217.496Z"
             fill={iconParams.eyes.pupilBaseColor}
           />
           <g style="mix-blend-mode:multiply">
@@ -105,4 +105,4 @@ const Default: PartsComponent = (props) => {
   );
 };
 
-export default Default;
+export default Small;

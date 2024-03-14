@@ -51,7 +51,15 @@ type IconParams = WithComputedColor<{
     highlightColor?: Color;
   };
   eyes: {
-    type: "default";
+    type:
+      | "batsu"
+      | "close"
+      | "default"
+      | "funky"
+      | "guru"
+      | "hau"
+      | "jito"
+      | "small";
     pupilBaseColor: Color;
     pupilSecondaryColor?: Color;
     eyeWhiteColor?: Color;
@@ -67,11 +75,21 @@ type IconParams = WithComputedColor<{
     open: number;
   };
   eyebrows: {
-    type: "default";
+    type: "default" | "komari" | "angry";
     baseColor?: Color;
   };
   mouth: {
-    type: "default";
+    type:
+      | "default"
+      | "a"
+      | "e"
+      | "i"
+      | "o"
+      | "u"
+      | "uwa"
+      | "gunya"
+      | "atsui"
+      | "smile";
     strokeColor?: Color;
     teethColor?: Color;
     insideColor?: Color;

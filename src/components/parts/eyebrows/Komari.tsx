@@ -2,7 +2,7 @@ import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 
-const Default: PartsComponent = (props) => {
+const Komari: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
@@ -14,7 +14,7 @@ const Default: PartsComponent = (props) => {
       >
         <path
           id="eyebrow-fill"
-          d="M218 167.5C204 175.1 201 183.5 196 191.5C204.5 187 219.5 182 223.5 179.5C226.156 177.84 246 164 277 157C260.5 157 235.5 158 218 167.5Z"
+          d="M221.5 171C213.045 173.182 201 181.5 193 184C201 186.5 220.621 185.098 224.5 184C227.387 183.183 252 178 279 165C263 169 237 167 221.5 171Z"
           fill={
             iconParams.eyebrows.baseColor ??
             iconParams.eyebrows.computedBaseColor
@@ -25,4 +25,4 @@ const Default: PartsComponent = (props) => {
   );
 };
 
-export default Default;
+export default Komari;

@@ -1,7 +1,6 @@
-import type { Component } from "solid-js";
 import { useIconParams } from "~/context/icon";
 
-const Accessories: Component = () => {
+const Accessories: PartsComponent = () => {
   const [iconParams] = useIconParams();
   return <></>;
 };

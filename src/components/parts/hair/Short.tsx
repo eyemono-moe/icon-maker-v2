@@ -1,9 +1,9 @@
-import type { Component } from "solid-js";
 import { Portal } from "solid-js/web";
+import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 import { headFillDefId } from "../head";
 
-const Short: Component = () => {
+const Short: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
@@ -17,7 +17,39 @@ const Short: Component = () => {
       <Portal
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("hair-front-target")!}
+        mount={props.mount ?? document.getElementById("hair-back-target")!}
+      >
+        <path
+          id="hair-back-fill"
+          d="M233 360C236 356 237 352 238 345C241 352 247 357 252 360C252 354 253 347 256 339C257 344 260 348 262 350C262 342 264 336 266 332C267 336 268 339 270 342C271 335 274 330 278 324C278 327 278 331 279 333C280 328 284 315 288 310C287 314 285 322 285 330C287 319 342 237 342 197C342 137 302 37 202 37C82 37 42 137 42 193C42 324 162 330 197 359C197 352 196 347 194 343C204 348 208.202 351 217.222 358C216.22 352.5 215.503 349.5 214 346C221 349 230 353 233 360Z"
+          fill={
+            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+          }
+        />
+      </Portal>
+      <Portal
+        isSVG={true}
+        // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
+        mount={document.getElementById("hair-shadow-target")!}
+      >
+        <mask id="mask-hair-shadow" mask-type="alpha">
+          <use href={`#${headFillDefId}`} fill="white" />
+        </mask>
+        <g mask="url(#mask-hair-shadow)">
+          <use
+            id="hair-shadow-fill"
+            href="#hair-front-stroke-def"
+            transform="translate(3 12)"
+            fill={
+              iconParams.head.shadowColor ?? iconParams.head.computedShadowColor
+            }
+          />
+        </g>
+      </Portal>
+      <Portal
+        isSVG={true}
+        // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
+        mount={props.mount ?? document.getElementById("hair-front-target")!}
       >
         <use
           id="hair-front-stroke"
@@ -48,38 +80,6 @@ const Short: Component = () => {
           fill={
             iconParams.hair.highlightColor ??
             iconParams.hair.computedHighlightColor
-          }
-        />
-      </Portal>
-      <Portal
-        isSVG={true}
-        // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("hair-shadow-target")!}
-      >
-        <mask id="mask-hair-shadow" mask-type="alpha">
-          <use href={`#${headFillDefId}`} fill="white" />
-        </mask>
-        <g mask="url(#mask-hair-shadow)">
-          <use
-            id="hair-shadow-fill"
-            href="#hair-front-stroke-def"
-            transform="translate(3 12)"
-            fill={
-              iconParams.head.shadowColor ?? iconParams.head.computedShadowColor
-            }
-          />
-        </g>
-      </Portal>
-      <Portal
-        isSVG={true}
-        // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("hair-back-target")!}
-      >
-        <path
-          id="hair-back-fill"
-          d="M233 360C236 356 237 352 238 345C241 352 247 357 252 360C252 354 253 347 256 339C257 344 260 348 262 350C262 342 264 336 266 332C267 336 268 339 270 342C271 335 274 330 278 324C278 327 278 331 279 333C280 328 284 315 288 310C287 314 285 322 285 330C287 319 342 237 342 197C342 137 302 37 202 37C82 37 42 137 42 193C42 324 162 330 197 359C197 352 196 347 194 343C204 348 208.202 351 217.222 358C216.22 352.5 215.503 349.5 214 346C221 349 230 353 233 360Z"
-          fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
           }
         />
       </Portal>

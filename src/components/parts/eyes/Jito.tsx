@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 
-const Default: PartsComponent = (props) => {
+const Jito: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
@@ -13,7 +13,7 @@ const Default: PartsComponent = (props) => {
       <defs>
         <path
           id={whiteFillId}
-          d="M280 232C279 242.5 275.313 250.59 264 256C241 267 216 245.5 216 228C216 223.5 227.148 213.055 247.5 206C285 193 281.612 215.077 280 232Z"
+          d="M279 229.5C277.5 236.5 270.5 245.217 260.5 250C242.5 258.609 217.594 248.5 216.5 231C216.344 228.5 228.148 222.055 248.5 215C286 202 282.562 212.877 279 229.5Z"
         />
       </defs>
       <Portal
@@ -71,7 +71,7 @@ const Default: PartsComponent = (props) => {
           </g>
           <path
             id="eye-lower-eyelid-fill"
-            d="M277 245C271.5 253 255 262 239 257C239 265 277 263.5 277 245Z"
+            d="M274.5 239C269.5 246 250.5 254 236.5 252C236.5 260 274.5 257.5 274.5 239Z"
             fill={
               iconParams.eyes.eyelashesColor ??
               iconParams.eyes.computedEyelashesColor
@@ -86,7 +86,7 @@ const Default: PartsComponent = (props) => {
       >
         <path
           id="eyelash-fill"
-          d="M207 236C212 222 228.5 210.315 244.5 203.5C260.935 196.5 277 197.5 286.5 200C284 206 286 214 280 232C280.5 225 279 210 276 207.5C272.741 204.784 252.899 210.218 248 212C237 216 218 225.5 207 236Z"
+          d="M208.5 238.5C215.5 226.5 231 217 247 211.5C263.893 205.693 277.5 203 287 205.5C284.5 211.5 285 211.5 279 229.5C279.5 222.5 279.5 212.75 278 211.5C277 210.667 254.399 218.218 249.5 220C238.5 224 219.5 232 208.5 238.5Z"
           fill={
             iconParams.eyes.eyelashesColor ??
             iconParams.eyes.computedEyelashesColor
@@ -94,7 +94,7 @@ const Default: PartsComponent = (props) => {
         />
         <path
           id="eyelid-fill"
-          d="M211 225C217.5 218 225 212 234 207C224 210 215 216 211 225Z"
+          d="M211.5 226.5C218 221 227 215 236 210C226 213 216.5 218.5 211.5 226.5Z"
           fill={
             iconParams.eyes.eyelashesColor ??
             iconParams.eyes.computedEyelashesColor
@@ -105,4 +105,4 @@ const Default: PartsComponent = (props) => {
   );
 };
 
-export default Default;
+export default Jito;

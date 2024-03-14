@@ -1,9 +1,9 @@
-import type { Component } from "solid-js";
 import { Portal } from "solid-js/web";
+import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 import { headFillDefId } from ".";
 
-const Default: Component = () => {
+const Default: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
@@ -21,7 +21,7 @@ const Default: Component = () => {
       <Portal
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("neck-target")!}
+        mount={props.mount ?? document.getElementById("neck-target")!}
       >
         <use
           id="neck-fill"
@@ -50,7 +50,7 @@ const Default: Component = () => {
       <Portal
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("head-target")!}
+        mount={props.mount ?? document.getElementById("head-target")!}
       >
         <use
           id="head-fill"

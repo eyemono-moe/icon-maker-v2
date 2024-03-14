@@ -1,10 +1,49 @@
-import type { Component } from "solid-js";
+import { type Component, For, Match, Switch } from "solid-js";
+import { type IconParamsContextState, useIconParams } from "~/context/icon";
+import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
-import Eyebrows from "./parts/eyebrows";
-import Eyes from "./parts/eyes";
-import Hair from "./parts/hair";
-import Head from "./parts/head";
-import Mouth from "./parts/mouth";
+import { eyebrowsOptions } from "./parts/eyebrows";
+import { eyesOptions } from "./parts/eyes";
+import { hairOptions } from "./parts/hair";
+import { headOptions } from "./parts/head";
+import { mouthOptions } from "./parts/mouth";
+
+export type SelectOptions = {
+  [K in keyof IconParamsContextState as IconParamsContextState[K] extends {
+    type: string;
+  }
+    ? K
+    : never]: IconParamsContextState[K] extends {
+    type: string;
+  }
+    ? IconParamsContextState[K]["type"]
+    : never;
+};
+
+export type PartsComponent = Component<{ mount?: Node }>;
+
+const Parts = <K extends keyof SelectOptions>(props: {
+  parts: K;
+  options: Options<K>;
+  defaultParts: SelectOptions[K];
+}) => {
+  const [iconParams] = useIconParams();
+  const Fallback =
+    props.options.find((o) => o.value === props.defaultParts)?.component ??
+    (() => <></>);
+
+  return (
+    <Switch fallback={<Fallback />}>
+      <For each={props.options}>
+        {(option) => (
+          <Match when={iconParams[props.parts].type === option.value}>
+            <option.component />
+          </Match>
+        )}
+      </For>
+    </Switch>
+  );
+};
 
 const Icon: Component = () => {
   return (
@@ -30,11 +69,15 @@ const Icon: Component = () => {
         <g id="eyebrow-target" />
         <g id="accessory-top-target" />
         <Background />
-        <Eyebrows />
-        <Eyes />
-        <Hair />
-        <Head />
-        <Mouth />
+        <Parts
+          parts="eyebrows"
+          defaultParts="default"
+          options={eyebrowsOptions}
+        />
+        <Parts parts="eyes" defaultParts="default" options={eyesOptions} />
+        <Parts parts="hair" defaultParts="short" options={hairOptions} />
+        <Parts parts="head" defaultParts="default" options={headOptions} />
+        <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
       </svg>
     </>
   );

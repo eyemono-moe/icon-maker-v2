@@ -5,25 +5,29 @@ type Props = (
   | {
       setColor: (color: string) => void;
       canEmpty?: false;
+      color: string;
     }
   | {
       setColor: (color: string | undefined) => void;
       canEmpty: true;
+      color?: string;
+      fallbackColor: string;
     }
 ) & {
-  color: string;
   label: string;
   resetColor?: () => void;
 };
 
 const ColorField: Component<Props> = (props) => {
-  const [isAuto, setIsManual] = createSignal(props.canEmpty ?? false);
-  const [selectedColor, setSelectedColor] = createSignal(props.color);
+  const [isAuto, setIsAuto] = createSignal(props.color === undefined);
+  const [selectedColor, setSelectedColor] = createSignal(
+    !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
+  );
 
   createEffect(() => {
     if (props.canEmpty && isAuto()) {
       props.setColor(undefined);
-    } else {
+    } else if (props.canEmpty && !isAuto()) {
       props.setColor(selectedColor());
     }
   });
@@ -31,7 +35,9 @@ const ColorField: Component<Props> = (props) => {
   return (
     <div class="flex">
       <TextField.Root
-        value={props.color}
+        value={
+          props.canEmpty ? props.color ?? props.fallbackColor : props.color
+        }
         onChange={(v) => {
           if (props.canEmpty && isAuto()) {
             // computed color
@@ -58,7 +64,7 @@ const ColorField: Component<Props> = (props) => {
         </Show>
       </TextField.Root>
       <Show when={props.canEmpty}>
-        <ToggleButton.Root pressed={isAuto()} onChange={setIsManual}>
+        <ToggleButton.Root pressed={isAuto()} onChange={setIsAuto}>
           {(state) => (
             <Show when={state.pressed()} fallback={"manual"}>
               auto

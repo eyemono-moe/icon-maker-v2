@@ -1,17 +1,24 @@
-import { type Component, Match, Switch, lazy } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { lazy } from "solid-js";
+import type { Options } from "~/components/UI/PartsSelect";
 
 const Default = lazy(() => import("./Default"));
+const Komari = lazy(() => import("./Komari"));
+const Angry = lazy(() => import("./Angry"));
 
-const Eyebrows: Component = () => {
-  const [iconParams] = useIconParams();
-  return (
-    <Switch>
-      <Match when={iconParams.eyebrows.type === "default"}>
-        <Default />
-      </Match>
-    </Switch>
-  );
-};
-
-export default Eyebrows;
+export const eyebrowsOptions: Options<"eyebrows"> = [
+  {
+    label: "Default",
+    value: "default",
+    component: Default,
+  },
+  {
+    label: "困り",
+    value: "komari",
+    component: Komari,
+  },
+  {
+    label: "怒り",
+    value: "angry",
+    component: Angry,
+  },
+];

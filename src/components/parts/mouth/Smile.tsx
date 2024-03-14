@@ -2,7 +2,7 @@ import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
 
-const Default: PartsComponent = (props) => {
+const Smile: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
@@ -10,14 +10,12 @@ const Default: PartsComponent = (props) => {
       <Portal
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={props.mount ?? document.getElementById("eyebrow-target")!}
+        mount={props.mount ?? document.getElementById("mouth-target")!}
       >
         <path
-          id="eyebrow-fill"
-          d="M218 167.5C204 175.1 201 183.5 196 191.5C204.5 187 219.5 182 223.5 179.5C226.156 177.84 246 164 277 157C260.5 157 235.5 158 218 167.5Z"
+          d="M216.5 315C209.5 316.909 205 314 204.5 316C204.063 317.749 211.79 317.389 217 316C224.5 314 231.5 308 230 307C228.336 305.891 223.5 313.091 216.5 315Z"
           fill={
-            iconParams.eyebrows.baseColor ??
-            iconParams.eyebrows.computedBaseColor
+            iconParams.mouth.strokeColor ?? iconParams.mouth.computedStrokeColor
           }
         />
       </Portal>
@@ -25,4 +23,4 @@ const Default: PartsComponent = (props) => {
   );
 };
 
-export default Default;
+export default Smile;
