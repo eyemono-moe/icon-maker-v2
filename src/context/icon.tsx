@@ -246,11 +246,15 @@ export const IconParamsProvider: ParentComponent = (props) => {
     () => state.head.strokeColor ?? state.head.computedStrokeColor,
   );
 
+  const saveReplacer = (key: string, value: unknown) => {
+    if (key.startsWith("computed")) return undefined;
+    return value;
+  };
   const saveToUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.set(
       "p",
-      compressToEncodedURIComponent(JSON.stringify(state, null)),
+      compressToEncodedURIComponent(JSON.stringify(state, saveReplacer)),
     );
     window.history.replaceState(null, "", url.toString());
   };
@@ -258,8 +262,18 @@ export const IconParamsProvider: ParentComponent = (props) => {
     const url = new URL(window.location.href);
     const p = url.searchParams.get("p");
     if (p) {
-      // TODO: computedな色は対応するcomputedでない色が存在しないときのみ、computedでない色に上書きする
-      setState(JSON.parse(decompressFromEncodedURIComponent(p)));
+      const data = JSON.parse(
+        decompressFromEncodedURIComponent(p),
+      ) as IconParams;
+      // objectをそのまま代入するとcomputedが消えるので(浅くマージされる)、entriesで代入する
+      type Entries<T> = (keyof T extends infer U
+        ? U extends keyof T
+          ? [U, T[U]]
+          : never
+        : never)[];
+      (Object.entries(data) as Entries<IconParams>).map(([k, v]) => {
+        setState(k, v);
+      });
     }
   };
 
