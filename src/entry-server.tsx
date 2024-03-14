@@ -33,8 +33,7 @@ export default createHandler(() => (
           <meta
             property="og:image"
             content="https://icon.eyemono.moe/OGP.webp"
-          />{" "}
-          /
+          />
           <meta name="twitter:card" content="summary_large_image" />
           <meta property="twitter:domain" content="icon.eyemono.moe" />
           <meta property="twitter:url" content="https://icon.eyemono.moe" />
