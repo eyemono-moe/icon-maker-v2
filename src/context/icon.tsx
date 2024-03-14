@@ -279,8 +279,8 @@ export const IconParamsProvider: ParentComponent = (props) => {
     }
   };
 
-  createEffect(saveToUrl);
   onMount(loadFromUrl);
+  createEffect(saveToUrl);
 
   return (
     <IconParamsContext.Provider
