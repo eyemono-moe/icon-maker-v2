@@ -6,6 +6,7 @@ import {
   saturate,
   toHex,
 } from "color2k";
+import pkg from "lz-string";
 import {
   type ParentComponent,
   createContext,
@@ -16,6 +17,8 @@ import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { eyesOptions } from "~/components/parts/eyes";
 import type { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
+const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
+  pkg;
 
 type Accessory =
   | {
@@ -110,6 +113,8 @@ export type IconParamsContextState = IconParams;
 
 export type IconParamsContextActions = {
   setProps: SetStoreFunction<IconParamsContextState>;
+  saveToUrl: () => void;
+  loadFromUrl: () => void;
 };
 
 export type IconParamsContextValue = [
@@ -241,8 +246,27 @@ export const IconParamsProvider: ParentComponent = (props) => {
     () => state.head.strokeColor ?? state.head.computedStrokeColor,
   );
 
+  const saveToUrl = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(
+      "p",
+      compressToEncodedURIComponent(JSON.stringify(state, null)),
+    );
+    window.history.replaceState(null, "", url.toString());
+  };
+  const loadFromUrl = () => {
+    const url = new URL(window.location.href);
+    const p = url.searchParams.get("p");
+    if (p) {
+      // TODO: computedな色は対応するcomputedでない色が存在しないときのみ、computedでない色に上書きする
+      setState(JSON.parse(decompressFromEncodedURIComponent(p)));
+    }
+  };
+
   return (
-    <IconParamsContext.Provider value={[state, { setProps: setState }]}>
+    <IconParamsContext.Provider
+      value={[state, { setProps: setState, saveToUrl, loadFromUrl }]}
+    >
       {props.children}
     </IconParamsContext.Provider>
   );

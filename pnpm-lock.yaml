@@ -23,6 +23,9 @@ dependencies:
   color2k:
     specifier: ^2.0.3
     version: 2.0.3
+  lz-string:
+    specifier: ^1.5.0
+    version: 1.5.0
   solid-js:
     specifier: ^1.8.15
     version: 1.8.15
@@ -3625,6 +3628,11 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: false
+
+  /lz-string@1.5.0:
+    resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
+    hasBin: true
     dev: false
 
   /magic-string@0.30.8:
