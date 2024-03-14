@@ -5,10 +5,10 @@ const Default = lazy(() => import("./Default"));
 
 export const headFillDefId = "head-fill-def";
 
-export const headOptions: Options<"head"> = [
+export const headOptions = [
   {
     label: "Default",
     value: "default",
     component: Default,
   },
-];
+] as const satisfies Options<string>;

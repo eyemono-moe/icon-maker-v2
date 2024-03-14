@@ -10,7 +10,7 @@ const Hau = lazy(() => import("./Hau"));
 const Jito = lazy(() => import("./Jito"));
 const Small = lazy(() => import("./Small"));
 
-export const eyesOptions: Options<"eyes"> = [
+export const eyesOptions = [
   { label: "Default", value: "default", component: Default },
   { label: "Jito", value: "jito", component: Jito },
   { label: "Close", value: "close", component: Close },
@@ -19,4 +19,4 @@ export const eyesOptions: Options<"eyes"> = [
   { label: "Batsu", value: "batsu", component: Batsu },
   { label: "Guru", value: "guru", component: Guru },
   { label: "Hau", value: "hau", component: Hau },
-];
+] as const satisfies Options<string>;

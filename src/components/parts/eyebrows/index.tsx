@@ -5,7 +5,7 @@ const Default = lazy(() => import("./Default"));
 const Komari = lazy(() => import("./Komari"));
 const Angry = lazy(() => import("./Angry"));
 
-export const eyebrowsOptions: Options<"eyebrows"> = [
+export const eyebrowsOptions = [
   {
     label: "Default",
     value: "default",
@@ -21,4 +21,4 @@ export const eyebrowsOptions: Options<"eyebrows"> = [
     value: "angry",
     component: Angry,
   },
-];
+] as const satisfies Options<string>;

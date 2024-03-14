@@ -1,28 +1,26 @@
 import { RadioGroup } from "@kobalte/core";
 import { For, type JSX, createUniqueId } from "solid-js";
-import type { PartsComponent, SelectOptions } from "../Icon";
+import type { PartsComponent } from "../Icon";
 
-export type Options<K extends keyof SelectOptions> = {
+export type Options<T extends string = ""> = {
   label: string;
-  value: SelectOptions[K];
+  value: T;
   component: PartsComponent;
 }[];
 
-type Props<K extends keyof SelectOptions> = {
+type Props<T extends string> = {
   label: string;
-  options: Options<keyof SelectOptions>;
+  options: Options<T>;
   value: string;
-  onChange: (value: SelectOptions[K]) => void;
+  onChange: (value: T) => void;
   previewViewBox?: string;
 };
 
-const PartsSelect = <K extends keyof SelectOptions>(
-  props: Props<K>,
-): JSX.Element => {
+const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
   return (
     <RadioGroup.Root
       value={props.value}
-      onChange={(value) => props.onChange(value as SelectOptions[K])}
+      onChange={(value) => props.onChange(value as T)}
     >
       <RadioGroup.Label>{props.label}</RadioGroup.Label>
       <div class="grid grid-cols-minmax-100px gap-1">

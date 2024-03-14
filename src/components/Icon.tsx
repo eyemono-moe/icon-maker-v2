@@ -24,7 +24,7 @@ export type PartsComponent = Component<{ mount?: Node }>;
 
 const Parts = <K extends keyof SelectOptions>(props: {
   parts: K;
-  options: Options<K>;
+  options: Options<SelectOptions[K]>;
   defaultParts: SelectOptions[K];
 }) => {
   const [iconParams] = useIconParams();

@@ -12,7 +12,7 @@ const Gunya = lazy(() => import("./Gunya"));
 const Uwa = lazy(() => import("./Uwa"));
 const Atsui = lazy(() => import("./Atsui"));
 
-export const mouthOptions: Options<"mouth"> = [
+export const mouthOptions = [
   {
     label: "Default",
     value: "default",
@@ -63,4 +63,4 @@ export const mouthOptions: Options<"mouth"> = [
     value: "atsui",
     component: Atsui,
   },
-];
+] as const satisfies Options<string>;

@@ -5,6 +5,8 @@ import {
   useContext,
 } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
+import type { eyesOptions } from "~/components/parts/eyes";
+import type { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
 
 type Accessory =
@@ -51,15 +53,7 @@ type IconParams = WithComputedColor<{
     highlightColor?: Color;
   };
   eyes: {
-    type:
-      | "batsu"
-      | "close"
-      | "default"
-      | "funky"
-      | "guru"
-      | "hau"
-      | "jito"
-      | "small";
+    type: (typeof eyesOptions)[number]["value"];
     pupilBaseColor: Color;
     pupilSecondaryColor?: Color;
     eyeWhiteColor?: Color;
@@ -79,17 +73,7 @@ type IconParams = WithComputedColor<{
     baseColor?: Color;
   };
   mouth: {
-    type:
-      | "default"
-      | "a"
-      | "e"
-      | "i"
-      | "o"
-      | "u"
-      | "uwa"
-      | "gunya"
-      | "atsui"
-      | "smile";
+    type: (typeof mouthOptions)[number]["value"];
     strokeColor?: Color;
     teethColor?: Color;
     insideColor?: Color;
