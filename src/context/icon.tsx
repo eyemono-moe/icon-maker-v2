@@ -1,4 +1,12 @@
 import {
+  adjustHue,
+  darken,
+  desaturate,
+  lighten,
+  saturate,
+  toHex,
+} from "color2k";
+import {
   type ParentComponent,
   createContext,
   createMemo,
@@ -200,28 +208,38 @@ export const defaultParams = JSON.parse(
 export const IconParamsProvider: ParentComponent = (props) => {
   const [state, setState] = createStore(defaultIconParams);
 
-  computedHairHighlightColor = createMemo<Color>(() => "#DDFFFD");
-  computedHairStrokeColor = createMemo<Color>(() => state.hair.baseColor); // todo: gen from hair base color
-
+  computedHairHighlightColor = createMemo<Color>(() =>
+    toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4)),
+  );
+  computedHairStrokeColor = createMemo<Color>(() =>
+    toHex(darken(saturate(adjustHue(state.hair.baseColor, 32), 0.3), 0.3)),
+  );
+  computedEyePupilSecondaryColor = createMemo<Color>(() =>
+    toHex(
+      darken(desaturate(adjustHue(state.eyes.pupilBaseColor, 320), 0.2), 0.3),
+    ),
+  );
+  computedEyeEyeWhiteColor = createMemo<Color>(() => "#FFFFFF");
+  computedEyeShadowColor = createMemo<Color>(() => "#D5D5FF");
+  computedTeethColor = createMemo<Color>(() => "#ffffff");
+  computedInsideColor = createMemo<Color>(() =>
+    toHex(darken(desaturate(adjustHue(state.head.baseColor, 347), 0.3), 0.3)),
+  );
+  computedHeadShadowColor = createMemo<Color>(() =>
+    toHex(darken(adjustHue(state.head.baseColor, 10), 0.1)),
+  );
+  computedHeadStrokeColor = createMemo<Color>(() =>
+    toHex(darken(desaturate(adjustHue(state.head.baseColor, 336), 0.3), 0.65)),
+  );
   computedEyebrowsBaseColor = createMemo<Color>(
     () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
   );
-
-  computedEyePupilSecondaryColor = createMemo<Color>(() => "#551155"); // todo: darken
-  computedEyeEyeWhiteColor = createMemo<Color>(() => "#FFFFFF"); // todo: gen form pupil color
-  computedEyeShadowColor = createMemo<Color>(() => "#D5D5FF"); // todo: gen form eye white color
   computedEyeEyelashesColor = createMemo<Color>(
     () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
   );
-
-  computedTeethColor = createMemo<Color>(() => "#ffffff");
-  computedInsideColor = createMemo<Color>(() => "#DD4466"); // todo: gen from skin color
-
-  computedHeadShadowColor = createMemo<Color>(() => "#FFAA99"); // todo: gen from skin color
-  computedHeadStrokeColor = createMemo<Color>(() => "#661133"); // todo: gen from skin color
   computedMouthStrokeColor = createMemo<Color>(
     () => state.head.strokeColor ?? state.head.computedStrokeColor,
-  ); // todo: gen
+  );
 
   return (
     <IconParamsContext.Provider value={[state, { setProps: setState }]}>
