@@ -9,7 +9,7 @@ const HairSettings: Component = () => {
 
   return (
     <div>
-      <PartsSelect<"hair">
+      <PartsSelect
         options={hairOptions}
         label="hair type"
         value={iconParams.hair.type}

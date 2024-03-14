@@ -9,7 +9,7 @@ const MouthSettings: Component = () => {
 
   return (
     <div>
-      <PartsSelect<"mouth">
+      <PartsSelect
         options={mouthOptions}
         label="mouth type"
         value={iconParams.mouth.type}

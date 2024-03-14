@@ -10,7 +10,7 @@ const EyesSettings: Component = () => {
 
   return (
     <div>
-      <PartsSelect<"eyebrows">
+      <PartsSelect
         options={eyebrowsOptions}
         label="eyebrow type"
         value={iconParams.eyebrows.type}
@@ -33,7 +33,7 @@ const EyesSettings: Component = () => {
           );
         }}
       />
-      <PartsSelect<"eyes">
+      <PartsSelect
         options={eyesOptions}
         label="eyes type"
         value={iconParams.eyes.type}
