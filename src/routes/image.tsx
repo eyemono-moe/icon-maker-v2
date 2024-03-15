@@ -12,7 +12,7 @@ const imageQuerySchema = object({
 export type ImageQuery = Input<typeof imageQuerySchema>;
 
 export async function GET(event: APIEvent) {
-  const query = useQuery(event, imageQuerySchema);
+  const query = useQuery(event.nativeEvent, imageQuerySchema);
   let params: IconParams | undefined;
   if (query.p) {
     params = parseParams(query.p);

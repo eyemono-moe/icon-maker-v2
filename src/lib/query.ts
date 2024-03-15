@@ -1,9 +1,8 @@
-import type { APIEvent } from "@solidjs/start/server";
 import { type BaseSchema, parse } from "valibot";
-import { getQuery } from "vinxi/http";
+import { type HTTPEvent, getQuery } from "vinxi/http";
 
-export const useQuery = <T>(event: APIEvent, schema: BaseSchema<T>) => {
-  const query = getQuery(event.nativeEvent);
+export const useQuery = <T>(event: HTTPEvent, schema: BaseSchema<T>) => {
+  const query = getQuery(event);
 
   try {
     return parse(schema, query);

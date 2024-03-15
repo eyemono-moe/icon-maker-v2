@@ -30,10 +30,10 @@ export default createHandler(() => (
             property="og:description"
             content="君だけのeyemono.moeを作り出せ！"
           />
-          <meta
+          {/* <meta
             property="og:image"
             content="https://icon.eyemono.moe/OGP.webp"
-          />
+          /> */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta property="twitter:domain" content="icon.eyemono.moe" />
           <meta property="twitter:url" content="https://icon.eyemono.moe" />
@@ -42,10 +42,10 @@ export default createHandler(() => (
             name="twitter:description"
             content="君だけのeyemono.moeを作り出せ！"
           />
-          <meta
+          {/* <meta
             name="twitter:image"
             content="https://icon.eyemono.moe/OGP.webp"
-          />
+          /> */}
           {assets}
         </head>
         <body>
