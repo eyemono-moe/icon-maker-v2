@@ -1,7 +1,7 @@
 import { createUniqueId } from "solid-js";
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 
 const Jito: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
@@ -16,7 +16,8 @@ const Jito: PartsComponent = (props) => {
           d="M279 229.5C277.5 236.5 270.5 245.217 260.5 250C242.5 258.609 217.594 248.5 216.5 231C216.344 228.5 228.148 222.055 248.5 215C286 202 282.562 212.877 279 229.5Z"
         />
       </defs>
-      <Portal
+      <SsrPortal
+        target="eye-lower-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("eye-lower-target")!}
@@ -78,8 +79,9 @@ const Jito: PartsComponent = (props) => {
             }
           />
         </g>
-      </Portal>
-      <Portal
+      </SsrPortal>
+      <SsrPortal
+        target="eye-upper-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("eye-upper-target")!}
@@ -100,7 +102,7 @@ const Jito: PartsComponent = (props) => {
             iconParams.eyes.computedEyelashesColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

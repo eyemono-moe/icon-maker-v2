@@ -1,13 +1,14 @@
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 
 const Hau: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
     <>
-      <Portal
+      <SsrPortal
+        target="eye-upper-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("eye-upper-target")!}
@@ -20,7 +21,7 @@ const Hau: PartsComponent = (props) => {
             iconParams.eyes.computedEyelashesColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

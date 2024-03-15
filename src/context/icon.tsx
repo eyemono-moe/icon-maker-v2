@@ -58,7 +58,7 @@ type WithComputedColor<T extends Record<string, unknown>> = Prettify<
   }
 >;
 
-type IconParams = WithComputedColor<{
+export type IconParams = WithComputedColor<{
   hair: {
     type: "short";
     baseColor: Color;
@@ -211,9 +211,32 @@ const defaultIconParams: IconParams = {
 export const defaultParams = JSON.parse(
   JSON.stringify(defaultIconParams),
 ) as IconParams;
+export const parseParams = (params: string): IconParams => {
+  return JSON.parse(decompressFromEncodedURIComponent(params)) as IconParams;
+};
 
-export const IconParamsProvider: ParentComponent = (props) => {
+export const IconParamsProvider: ParentComponent<{
+  params?: IconParams;
+}> = (props) => {
   const [state, setState] = createStore(defaultIconParams);
+
+  const updateState = (data: IconParams) => {
+    type Entries<T> = (keyof T extends infer U
+      ? U extends keyof T
+        ? [U, T[U]]
+        : never
+      : never)[];
+    // objectをそのまま代入するとcomputedが消えるので(浅くマージされる)、entriesで代入する
+    (Object.entries(data) as Entries<IconParams>).map(([k, v]) => {
+      setState(k, v);
+    });
+  };
+
+  if (props.params) {
+    updateState(props.params);
+  } else {
+    updateState(defaultIconParams);
+  }
 
   computedHairHighlightColor = createMemo<Color>(() =>
     toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4)),
@@ -264,18 +287,8 @@ export const IconParamsProvider: ParentComponent = (props) => {
     const url = new URL(window.location.href);
     const p = url.searchParams.get("p");
     if (p) {
-      const data = JSON.parse(
-        decompressFromEncodedURIComponent(p),
-      ) as IconParams;
-      // objectをそのまま代入するとcomputedが消えるので(浅くマージされる)、entriesで代入する
-      type Entries<T> = (keyof T extends infer U
-        ? U extends keyof T
-          ? [U, T[U]]
-          : never
-        : never)[];
-      (Object.entries(data) as Entries<IconParams>).map(([k, v]) => {
-        setState(k, v);
-      });
+      const data = parseParams(p);
+      updateState(data);
     }
   };
 

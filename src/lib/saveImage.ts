@@ -1,3 +1,5 @@
+import type { ImageQuery } from "~/routes/image";
+
 const imageDataString = (svg: HTMLElement) => {
   const svgData = new XMLSerializer().serializeToString(svg);
   return `data:image/svg+xml;base64,${btoa(svgData)}`;
@@ -55,4 +57,13 @@ export const copyPng = (svg: HTMLElement) => {
     };
     img.src = imageDataString(svg);
   });
+};
+
+export const copyImageUrl = (format: Exclude<ImageQuery["f"], undefined>) => {
+  // 現在開いているURLのクエリパラメータはそのままに、パスを`/image`に変更する
+  const url = new URL(window.location.href);
+  url.pathname = "/image";
+  url.searchParams.set("f", format);
+
+  return navigator.clipboard.writeText(url.toString());
 };

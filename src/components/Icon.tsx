@@ -1,5 +1,11 @@
 import { type Component, For, Match, Suspense, Switch } from "solid-js";
 import { type IconParamsContextState, useIconParams } from "~/context/icon";
+// import { eyebrowsOptions } from "./parts/eyebrows";
+// import { eyesOptions } from "./parts/eyes";
+// import { hairOptions } from "./parts/hair";
+// import { headOptions } from "./parts/head";
+// import { mouthOptions } from "./parts/mouth";
+import { PortalTarget } from "../context/ssrPortal";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
 import { eyebrowsOptions } from "./parts/eyebrows";
@@ -51,40 +57,39 @@ const Parts = <K extends keyof SelectOptions>(props: {
 
 const Icon: Component = () => {
   return (
-    <Suspense fallback={<div class="w-full aspect-square h-auto bg-zinc" />}>
-      <svg
-        viewBox="0 0 400 400"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        class="w-full aspect-square h-auto"
-        id={iconSvgId}
-      >
-        <title>eyemono.moe icon</title>
-        <g id="background-target" />
-        <g id="accessory-bottom-target" />
-        <g id="hair-back-target" />
-        <g id="neck-target" />
-        <g id="head-target" />
-        <g id="accessory-skin-target" />
-        <g id="hair-shadow-target" />
-        <g id="eye-lower-target" />
-        <g id="hair-front-target" />
-        <g id="eye-upper-target" />
-        <g id="mouth-target" />
-        <g id="eyebrow-target" />
-        <g id="accessory-top-target" />
-        <Background />
-        <Parts
-          parts="eyebrows"
-          defaultParts="default"
-          options={eyebrowsOptions}
-        />
-        <Parts parts="eyes" defaultParts="default" options={eyesOptions} />
-        <Parts parts="hair" defaultParts="short" options={hairOptions} />
-        <Parts parts="head" defaultParts="default" options={headOptions} />
-        <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
-      </svg>
-    </Suspense>
+    <svg
+      viewBox="0 0 400 400"
+      width="400"
+      height="400"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      id={iconSvgId}
+    >
+      <title>eyemono.moe icon</title>
+      <Background />
+      <Parts
+        parts="eyebrows"
+        defaultParts="default"
+        options={eyebrowsOptions}
+      />
+      <Parts parts="eyes" defaultParts="default" options={eyesOptions} />
+      <Parts parts="hair" defaultParts="short" options={hairOptions} />
+      <Parts parts="head" defaultParts="default" options={headOptions} />
+      <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
+      <PortalTarget id="background-target" />
+      <PortalTarget id="accessory-bottom-target" />
+      <PortalTarget id="hair-back-target" />
+      <PortalTarget id="neck-target" />
+      <PortalTarget id="head-target" />
+      <PortalTarget id="accessory-skin-target" />
+      <PortalTarget id="hair-shadow-target" />
+      <PortalTarget id="eye-lower-target" />
+      <PortalTarget id="hair-front-target" />
+      <PortalTarget id="eye-upper-target" />
+      <PortalTarget id="mouth-target" />
+      <PortalTarget id="eyebrow-target" />
+      <PortalTarget id="accessory-top-target" />
+    </svg>
   );
 };
 
