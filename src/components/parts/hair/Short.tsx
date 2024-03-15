@@ -1,6 +1,6 @@
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
 const Short: PartsComponent = (props) => {
@@ -14,7 +14,8 @@ const Short: PartsComponent = (props) => {
           d="M215.383 143.435C217.057 155.92 218 169.483 218 184.5C218 199 217 237.5 212.5 264.5C245 213 246 159.5 246 139.5C246 134.015 245.547 128.57 244.697 123.214C267.086 170.568 274.5 218.579 274.5 247.5C274.5 264 274.5 297 262.399 337C312.767 281.084 320.598 234.939 321.79 206.707C320.741 235.02 315.923 251.31 311.328 266.848C307.372 280.224 303.581 293.044 302.5 312.5C308.333 297.843 314.658 285.199 320.659 273.203L320.66 273.202L320.66 273.202C334.72 245.095 347 220.547 347 182C347 93 287 20 205 20C106 20 35 94 35 192C35 285.612 102 347 175 375C168.539 304.816 184.242 266.247 198.146 232.099C198.431 231.397 198.716 230.698 199 230C208.505 206.63 218.068 179.831 215.383 143.435Z"
         />
       </defs>
-      <Portal
+      <SsrPortal
+        target="hair-back-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("hair-back-target")!}
@@ -26,8 +27,9 @@ const Short: PartsComponent = (props) => {
             iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
           }
         />
-      </Portal>
-      <Portal
+      </SsrPortal>
+      <SsrPortal
+        target="hair-shadow-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={document.getElementById("hair-shadow-target")!}
@@ -45,8 +47,9 @@ const Short: PartsComponent = (props) => {
             }
           />
         </g>
-      </Portal>
-      <Portal
+      </SsrPortal>
+      <SsrPortal
+        target="hair-front-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("hair-front-target")!}
@@ -82,7 +85,7 @@ const Short: PartsComponent = (props) => {
             iconParams.hair.computedHighlightColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

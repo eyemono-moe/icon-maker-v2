@@ -1,13 +1,14 @@
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 
 const Smile: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
 
   return (
     <>
-      <Portal
+      <SsrPortal
+        target="mouth-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("mouth-target")!}
@@ -18,7 +19,7 @@ const Smile: PartsComponent = (props) => {
             iconParams.mouth.strokeColor ?? iconParams.mouth.computedStrokeColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

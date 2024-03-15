@@ -1,13 +1,14 @@
 import type { Component } from "solid-js";
-import { Portal } from "solid-js/web";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 
 const Background: Component = () => {
   const [iconParams] = useIconParams();
 
   return (
     <>
-      <Portal
+      <SsrPortal
+        target="background-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={document.getElementById("background-target")!}
@@ -20,7 +21,7 @@ const Background: Component = () => {
           height="400"
           fill={iconParams.background}
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

@@ -1,6 +1,6 @@
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from ".";
 
 const Default: PartsComponent = (props) => {
@@ -18,7 +18,8 @@ const Default: PartsComponent = (props) => {
           d="M228 340C218.389 343.218 156.342 335.527 143.368 327.321C130.393 319.116 66 260.715 66 194.109C66 127.502 108.768 58 197.189 58C285.609 58 313 127.502 313 197.005C313 234.652 296.124 271.703 291.375 279.539C277.92 301.741 237.611 336.782 228 340Z"
         />
       </defs>
-      <Portal
+      <SsrPortal
+        target="neck-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("neck-target")!}
@@ -46,8 +47,9 @@ const Default: PartsComponent = (props) => {
             iconParams.head.shadowColor ?? iconParams.head.computedShadowColor
           }
         />
-      </Portal>
-      <Portal
+      </SsrPortal>
+      <SsrPortal
+        target="head-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("head-target")!}
@@ -73,7 +75,7 @@ const Default: PartsComponent = (props) => {
             iconParams.head.strokeColor ?? iconParams.head.computedStrokeColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };

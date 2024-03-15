@@ -1,7 +1,7 @@
 import { createUniqueId } from "solid-js";
-import { Portal } from "solid-js/web";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconParams } from "~/context/icon";
+import { SsrPortal } from "~/context/ssrPortal";
 
 const Small: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
@@ -16,7 +16,8 @@ const Small: PartsComponent = (props) => {
           d="M280 232C279 242.5 275.313 250.59 264 256C241 267 216 245.5 216 228C216 223.5 227.148 213.055 247.5 206C285 193 281.612 215.077 280 232Z"
         />
       </defs>
-      <Portal
+      <SsrPortal
+        target="eye-lower-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("eye-lower-target")!}
@@ -78,8 +79,9 @@ const Small: PartsComponent = (props) => {
             }
           />
         </g>
-      </Portal>
-      <Portal
+      </SsrPortal>
+      <SsrPortal
+        target="eye-upper-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("eye-upper-target")!}
@@ -100,7 +102,7 @@ const Small: PartsComponent = (props) => {
             iconParams.eyes.computedEyelashesColor
           }
         />
-      </Portal>
+      </SsrPortal>
     </>
   );
 };
