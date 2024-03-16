@@ -1,5 +1,5 @@
 import { Link, Meta, Title } from "@solidjs/meta";
-import { Show, getRequestEvent } from "solid-js/web";
+import { getRequestEvent } from "solid-js/web";
 import { object, optional, string } from "valibot";
 import Actions from "~/components/Actions";
 import Header from "~/components/Header";
@@ -26,21 +26,23 @@ export default function Home() {
   return (
     <>
       <Title>eyemono.moe icon maker</Title>
-      <Show when={serverIconParam}>
-        <Meta
-          property="og:image"
-          content={`https://icon.eyemono.moe/ogp?p=${serverIconParam}`}
-        />
-        <Meta
-          property="twitter:image"
-          content={`https://icon.eyemono.moe/ogp?p=${serverIconParam}`}
-        />
-        <Link
-          rel="icon"
-          type="image/svg+xml"
-          href={`/image?p=${serverIconParam}&f=svg`}
-        />
-      </Show>
+      <Meta
+        property="og:image"
+        content={`https://icon.eyemono.moe/ogp${
+          serverIconParam ? `?p=${serverIconParam}` : ""
+        }`}
+      />
+      <Meta
+        property="twitter:image"
+        content={`https://icon.eyemono.moe/ogp${
+          serverIconParam ? `?p=${serverIconParam}` : ""
+        }`}
+      />
+      <Link
+        rel="icon"
+        type="image/svg+xml"
+        href={`/image?f=svg${serverIconParam ? `&p=${serverIconParam}` : ""}`}
+      />
       <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset!">
         <Header />
         <main class="h-full w-full md:(text-base flex-row-reverse items-stretch) mx-a text-sm items-center max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
