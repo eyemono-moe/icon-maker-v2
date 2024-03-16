@@ -14,9 +14,9 @@ import "../assets/menubar.css";
 import { iconSvgId } from "./Icon";
 
 const contentClass =
-  "outline-none p-1 bg-white rounded border-1 shadow origin-[--kb-menu-content-transform-origin] animate-[contentHide] animate-duration-200 data-[expanded]:animate-[contentShow]";
+  "min-w-200px outline-none p-1 bg-white rounded border-1 shadow origin-[--kb-menu-content-transform-origin] animate-[contentHide] animate-duration-200 data-[expanded]:(animate-[contentShow] animate-duration-200)";
 const itemClass =
-  "parent outline-none rounded flex items-center pr-2 py-0.5 pl-6 relative select-none data-[expanded]:(bg-purple c-purple-200) data-[disabled]:(opacity-50 pointer-events-none) data-[highlighted]:(bg-purple-600 c-white)";
+  "parent outline-none rounded flex items-center pr-2 py-0.5 pl-6 relative select-none data-[expanded]:(bg-purple c-purple-200) data-[disabled]:(opacity-50 pointer-events-none) data-[highlighted]:(bg-purple-600! c-white!)";
 const itemRightSlot = "text-xs ml-a pl-4";
 const separatorClass = "h-px m-2";
 const indicatorClass = "absolute left-1";
