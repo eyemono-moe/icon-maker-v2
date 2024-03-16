@@ -1,5 +1,6 @@
 import { Menubar } from "@kobalte/core";
-import type { Component } from "solid-js";
+import { type Component, onCleanup, onMount } from "solid-js";
+import { isServer } from "solid-js/web";
 import { useIconParams } from "~/context/icon";
 import {
   copyImageUrl,
@@ -66,6 +67,29 @@ const Actions: Component = () => {
     });
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.shiftKey && e.key === "C") {
+      handleCopySvg();
+    }
+    if (e.ctrlKey && e.altKey && e.key === "c") {
+      handleCopySvgUrl();
+    }
+    if (e.ctrlKey && e.shiftKey && e.key === "S") {
+      handleDownloadSvg();
+    }
+  };
+
+  onMount(() => {
+    if (!isServer) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+  });
+  onCleanup(() => {
+    if (!isServer) {
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+  });
+
   return (
     <>
       <Menubar.Root class="flex justify-center items-center">
@@ -77,7 +101,7 @@ const Actions: Component = () => {
             <Menubar.Content class={contentClass}>
               <Menubar.Item class={itemClass} onSelect={handleCopySvg}>
                 Copy as SVG
-                <div class={itemRightSlot}>Ctrl + C</div>
+                <div class={itemRightSlot}>Ctrl + Shift + C</div>
               </Menubar.Item>
               <Menubar.Sub overlap gutter={4} shift={-5}>
                 <Menubar.SubTrigger class={itemClass}>
@@ -132,7 +156,7 @@ const Actions: Component = () => {
                   <Menubar.SubContent class={contentClass}>
                     <Menubar.Item class={itemClass} onSelect={handleCopySvgUrl}>
                       Copy SVG url
-                      <div class={itemRightSlot}>Ctrl + Shift + C</div>
+                      <div class={itemRightSlot}>Ctrl + Alt + C</div>
                     </Menubar.Item>
                     <Menubar.Item class={itemClass} onSelect={handleCopyPngUrl}>
                       Copy PNG url
