@@ -4,9 +4,13 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
+const hairFrontStrokeDefId = createUniqueId();
+const hairFrontFillDefId = createUniqueId();
+const highlightMaskId = createUniqueId();
+const hairShadowMaskId = createUniqueId();
+
 const PonyTail: PartsComponent = (props) => {
   const [iconParams] = useIconParams();
-  const hairFrontStrokeDefId = createUniqueId();
 
   return (
     <>
@@ -14,6 +18,10 @@ const PonyTail: PartsComponent = (props) => {
         <path
           id={hairFrontStrokeDefId}
           d="M215.383 143.435C217.057 155.92 218 169.483 218 184.5C218 199 217 237.5 212.5 264.5C245 213 246 159.5 246 139.5C246 134.015 245.547 128.57 244.697 123.214C267.086 170.568 274.5 218.579 274.5 247.5C274.5 264 274.5 297 262.399 337C276.979 320.815 287.994 305.448 296.316 291.097C311.339 274.445 347 232.56 347 182C347 93 287 20 205 20C106 20 35 94 35 192C35 285.612 102 347 175 375C168.539 304.816 184.242 266.247 198.146 232.099C198.431 231.397 198.716 230.698 199 230C208.505 206.63 218.068 179.831 215.383 143.435Z"
+        />
+        <path
+          id={hairFrontFillDefId}
+          d="M324 195C324 161.639 314.684 126.796 294.979 98.4117C313.452 127.143 322 162.293 322 195C322 221 318.5 271.5 262.399 337C275.5 298 276.5 264 276.5 247.5C276.5 217.248 267.779 165.702 242.33 116.24C244.053 123.981 245 131.955 245 140C245 160 243 213 212.5 264.5C218 237.5 219 199 219 184.5C219 143.308 211.518 113.051 201.426 86.005C223.501 150.88 213.077 192.929 198 230C196.864 232.794 195.69 235.618 194.498 238.486C180.891 271.218 164.886 309.72 175 375C102 345 41 285.612 41 192C41 94 106 24 205 24C287 24 344 93 344 182C344 234.751 312.032 271.756 298.901 286.957C298.59 287.317 298.289 287.665 298 288C298.655 286.543 299.672 284.62 300.929 282.239C308.307 268.275 324 238.571 324 195Z"
         />
       </defs>
       <SsrPortal
@@ -48,10 +56,10 @@ const PonyTail: PartsComponent = (props) => {
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
         mount={props.mount ?? document.getElementById("hair-shadow-target")!}
       >
-        <mask id="mask-hair-shadow" mask-type="alpha">
+        <mask id={hairShadowMaskId} mask-type="alpha">
           <use href={`#${headFillDefId}`} fill="white" />
         </mask>
-        <g mask="url(#mask-hair-shadow)">
+        <g mask={`url(#${hairShadowMaskId})`}>
           <use
             id="hair-shadow-fill"
             href={`#${hairFrontStrokeDefId}`}
@@ -75,16 +83,16 @@ const PonyTail: PartsComponent = (props) => {
             iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
           }
         />
-        <path
+        <use
+          href={`#${hairFrontFillDefId}`}
           id="hair-front-fill"
-          d="M324 195C324 161.639 314.684 126.796 294.979 98.4117C313.452 127.143 322 162.293 322 195C322 221 318.5 271.5 262.399 337C275.5 298 276.5 264 276.5 247.5C276.5 217.248 267.779 165.702 242.33 116.24C244.053 123.981 245 131.955 245 140C245 160 243 213 212.5 264.5C218 237.5 219 199 219 184.5C219 143.308 211.518 113.051 201.426 86.005C223.501 150.88 213.077 192.929 198 230C196.864 232.794 195.69 235.618 194.498 238.486C180.891 271.218 164.886 309.72 175 375C102 345 41 285.612 41 192C41 94 106 24 205 24C287 24 344 93 344 182C344 234.751 312.032 271.756 298.901 286.957C298.59 287.317 298.289 287.665 298 288C298.655 286.543 299.672 284.62 300.929 282.239C308.307 268.275 324 238.571 324 195Z"
           fill={iconParams.hair.baseColor}
         />
-        <mask id="mask-hair-front-highlight" mask-type="alpha">
-          <use href="#hair-front-fill" />
+        <mask id={highlightMaskId} mask-type="alpha">
+          <use href={`#${hairFrontFillDefId}`} fill="white" />
         </mask>
         <path
-          mask="url(#mask-hair-front-highlight)"
+          mask={`url(#${highlightMaskId})`}
           id="hair-front-highlight"
           d="M122 182C220.209 182 304.64 147.59 341.796 98.3108V18H29.5V384H212C121.978 384 48.9999 304.307 48.9999 206C48.9999 195.717 49.7984 185.638 51.3313 175.832C73.6726 179.842 97.4042 182 122 182ZM335.164 89.4015C309.993 120.089 243.754 142 166 142C128.695 142 94.0398 136.956 65.2997 128.319C91.7174 68.9349 147.481 28 212 28C261.183 28 305.278 51.7874 335.164 89.4015Z"
           fill={
