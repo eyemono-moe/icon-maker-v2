@@ -18,9 +18,10 @@ const itemClass =
   "parent outline-none rounded flex items-center pr-2 py-0.5 pl-6 relative select-none data-[expanded]:(bg-purple c-purple-200) data-[disabled]:(opacity-50 pointer-events-none) data-[highlighted]:(bg-purple-600 c-white)";
 const itemRightSlot = "text-xs ml-a pl-4";
 const separatorClass = "h-px m-2";
+const indicatorClass = "absolute left-1";
 
 const Actions: Component = () => {
-  const [_, { reset }] = useIconParams();
+  const [_, { reset, toggleAutosave, saveToUrl }, configs] = useIconParams();
 
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
@@ -151,16 +152,30 @@ const Actions: Component = () => {
               {/* <Menubar.Item class={itemClass}>
                 Undo
                 <div class={itemRightSlot}>Ctrl + Z</div>
-              </Menubar.Item>
-              <Menubar.Item class={itemClass}>
+                </Menubar.Item>
+                <Menubar.Item class={itemClass}>
                 Redo
                 <div class={itemRightSlot}>Ctrl + Z</div>
+                </Menubar.Item>
+              <Menubar.Separator class={separatorClass} /> */}
+              <Menubar.Item
+                class={itemClass}
+                onSelect={saveToUrl}
+                title="Save current state to URL search params"
+              >
+                Save
               </Menubar.Item>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.CheckboxItem class={itemClass}>
+              <Menubar.CheckboxItem
+                class={itemClass}
+                checked={configs.autosave}
+                onChange={toggleAutosave}
+              >
+                <Menubar.ItemIndicator class={indicatorClass}>
+                  <div class="i-material-symbols:check-small-rounded w-4 h-4" />
+                </Menubar.ItemIndicator>
                 Auto save
               </Menubar.CheckboxItem>
-              <Menubar.Separator class={separatorClass} /> */}
+              <Menubar.Separator class={separatorClass} />
               <Menubar.Item class={itemClass} onSelect={reset}>
                 Reset all
               </Menubar.Item>

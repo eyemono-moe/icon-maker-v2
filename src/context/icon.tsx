@@ -115,16 +115,22 @@ export type IconParams = WithComputedColor<IconParamsWithoutComputed>;
 
 export type IconParamsContextState = IconParams;
 
+export type IconParamsContextConfigs = {
+  autosave: boolean;
+};
+
 export type IconParamsContextActions = {
   setProps: SetStoreFunction<IconParamsContextState>;
   saveToUrl: () => void;
   loadFromUrl: () => void;
   reset: () => void;
+  toggleAutosave: () => void;
 };
 
 export type IconParamsContextValue = [
-  state: IconParamsContextState,
+  params: IconParamsContextState,
   actions: IconParamsContextActions,
+  config: IconParamsContextConfigs,
 ];
 
 export const IconParamsContext = createContext<IconParamsContextValue>();
@@ -231,6 +237,9 @@ export const IconParamsProvider: ParentComponent<{
   params?: IconParams;
 }> = (props) => {
   const [state, setState] = createStore(defaultIconParams);
+  const [configs, setConfigs] = createStore<IconParamsContextConfigs>({
+    autosave: true,
+  });
 
   const updateState = (data: IconParams) => {
     type Entries<T> = (keyof T extends infer U
@@ -306,12 +315,22 @@ export const IconParamsProvider: ParentComponent<{
     }
   };
 
+  const toggleAutosave = () => {
+    setConfigs("autosave", (prev) => !prev);
+  };
+
   onMount(loadFromUrl);
-  createEffect(saveToUrl);
+  createEffect(() => {
+    if (configs.autosave) saveToUrl();
+  });
 
   return (
     <IconParamsContext.Provider
-      value={[state, { setProps: setState, saveToUrl, loadFromUrl, reset }]}
+      value={[
+        state,
+        { setProps: setState, saveToUrl, loadFromUrl, reset, toggleAutosave },
+        configs,
+      ]}
     >
       {props.children}
     </IconParamsContext.Provider>
