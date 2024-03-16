@@ -9,7 +9,7 @@ export default createHandler(() => (
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+          <link rel="icon" type="image/svg+xml" href="/image?f=svg" />
           <link rel="icon" type="image/png" href="/favicon.png" />
           <link
             rel="preconnect"
@@ -30,10 +30,6 @@ export default createHandler(() => (
             property="og:description"
             content="君だけのeyemono.moeを作り出せ！"
           />
-          {/* <meta
-            property="og:image"
-            content="https://icon.eyemono.moe/OGP.webp"
-          /> */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta property="twitter:domain" content="icon.eyemono.moe" />
           <meta property="twitter:url" content="https://icon.eyemono.moe" />
@@ -42,10 +38,6 @@ export default createHandler(() => (
             name="twitter:description"
             content="君だけのeyemono.moeを作り出せ！"
           />
-          {/* <meta
-            name="twitter:image"
-            content="https://icon.eyemono.moe/OGP.webp"
-          /> */}
           {assets}
         </head>
         <body>

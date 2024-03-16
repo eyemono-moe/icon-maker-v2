@@ -1,41 +1,43 @@
-import { Meta, Title } from "@solidjs/meta";
-import { Show, getRequestEvent, isServer } from "solid-js/web";
+import { Link, Meta, Title } from "@solidjs/meta";
+import { Show, getRequestEvent } from "solid-js/web";
 import { object, optional, string } from "valibot";
 import Actions from "~/components/Actions";
 import Icon from "~/components/Icon";
 import Settings from "~/components/Settings";
 import { useQuery } from "~/lib/query";
 
-const getParams = () => {
-  "use server";
+const querySchema = object({
+  p: optional(string()),
+});
 
-  if (isServer) {
-    const event = getRequestEvent();
-    if (event) {
-      const querySchema = object({
-        p: optional(string()),
-      });
-      const query = useQuery(event.nativeEvent, querySchema);
-      return query.p;
-    }
+const getParamsServer = () => {
+  "use server";
+  const event = getRequestEvent();
+  if (event) {
+    const query = useQuery(querySchema, event.nativeEvent);
+    return query.p;
   }
-  return undefined;
 };
 
 export default function Home() {
-  const iconParams = getParams();
+  const serverIconParam = getParamsServer();
 
   return (
     <>
       <Title>eyemono.moe icon maker</Title>
-      <Show when={iconParams}>
+      <Show when={serverIconParam}>
         <Meta
           property="og:image"
-          content={`https://icon.eyemono.moe/ogp?p=${iconParams}`}
+          content={`https://icon.eyemono.moe/ogp?p=${serverIconParam}`}
         />
         <Meta
           property="twitter:image"
-          content={`https://icon.eyemono.moe/ogp?p=${iconParams}`}
+          content={`https://icon.eyemono.moe/ogp?p=${serverIconParam}`}
+        />
+        <Link
+          rel="icon"
+          type="image/svg+xml"
+          href={`/image?p=${serverIconParam}&f=svg`}
         />
       </Show>
       <main class="h-full prose md:(text-base flex-row-reverse) mx-a text-sm prose-zinc max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2">

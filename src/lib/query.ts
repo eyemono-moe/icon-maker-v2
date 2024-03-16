@@ -1,7 +1,7 @@
 import { type BaseSchema, parse } from "valibot";
 import { type HTTPEvent, getQuery } from "vinxi/http";
 
-export const useQuery = <T>(event: HTTPEvent, schema: BaseSchema<T>) => {
+export const useQuery = <T>(schema: BaseSchema<T>, event: HTTPEvent) => {
   const query = getQuery(event);
 
   try {
