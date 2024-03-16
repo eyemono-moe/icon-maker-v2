@@ -55,14 +55,14 @@ const Actions: Component = () => {
   const handleCopySvgUrl = () => {
     toast.promise(copyImageUrl("svg"), {
       loading: "copying...",
-      success: () => "copied!",
+      success: () => "copied SVG url!",
       error: () => "failed to copy",
     });
   };
   const handleCopyPngUrl = () => {
     toast.promise(copyImageUrl("png"), {
       loading: "copying...",
-      success: () => "copied!",
+      success: () => "copied PNG url!",
       error: () => "failed to copy",
     });
   };
