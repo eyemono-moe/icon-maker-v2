@@ -1,10 +1,5 @@
 import { type Component, For, Match, Suspense, Switch } from "solid-js";
 import { type IconParamsContextState, useIconParams } from "~/context/icon";
-// import { eyebrowsOptions } from "./parts/eyebrows";
-// import { eyesOptions } from "./parts/eyes";
-// import { hairOptions } from "./parts/hair";
-// import { headOptions } from "./parts/head";
-// import { mouthOptions } from "./parts/mouth";
 import { PortalTarget } from "../context/ssrPortal";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
@@ -83,6 +78,7 @@ const Icon: Component = () => {
       <PortalTarget id="head-target" />
       <PortalTarget id="accessory-skin-target" />
       <PortalTarget id="hair-shadow-target" />
+      <PortalTarget id="nose-target" />
       <PortalTarget id="eye-lower-target" />
       <PortalTarget id="hair-front-target" />
       <PortalTarget id="eye-upper-target" />

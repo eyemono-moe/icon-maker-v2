@@ -49,6 +49,20 @@ const Default: PartsComponent = (props) => {
         />
       </SsrPortal>
       <SsrPortal
+        target="nose-target"
+        isSVG={true}
+        // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
+        mount={props.mount ?? document.getElementById("nose-target")!}
+      >
+        <path
+          id="nose-fill"
+          d="M193 291C192.5 290.5 191.521 289.26 191 289C190 288.5 189 288.5 188 288.5C188.5 290 188.5 290 189 290.5C189.5 291 192 291 193 291Z"
+          fill={
+            iconParams.head.strokeColor ?? iconParams.head.computedStrokeColor
+          }
+        />
+      </SsrPortal>
+      <SsrPortal
         target="head-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
@@ -64,13 +78,6 @@ const Default: PartsComponent = (props) => {
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M141.5 332C155 340.5 218.5 345.333 228.5 342C238.5 338.667 281.5 305.5 295.5 282.5C300.441 274.382 318 236 318 197C318 125 289.5 53 197.5 53C105.5 53 61 125 61 194C61 263 128 323.5 141.5 332ZM143.368 327.321C156.342 335.527 218.389 343.218 228 340C237.611 336.782 277.92 301.741 291.375 279.539C296.124 271.703 313 234.652 313 197.005C313 127.502 285.609 58 197.189 58C108.768 58 66 127.502 66 194.109C66 260.715 130.393 319.116 143.368 327.321Z"
-          fill={
-            iconParams.head.strokeColor ?? iconParams.head.computedStrokeColor
-          }
-        />
-        <path
-          id="nose-fill"
-          d="M193 291C192.5 290.5 191.521 289.26 191 289C190 288.5 189 288.5 188 288.5C188.5 290 188.5 290 189 290.5C189.5 291 192 291 193 291Z"
           fill={
             iconParams.head.strokeColor ?? iconParams.head.computedStrokeColor
           }
