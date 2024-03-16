@@ -11,7 +11,6 @@ import {
   type ParentComponent,
   createContext,
   createEffect,
-  createMemo,
   onMount,
   useContext,
 } from "solid-js";
@@ -121,6 +120,7 @@ export type IconParamsContextConfigs = {
 
 export type IconParamsContextActions = {
   setProps: SetStoreFunction<IconParamsContextState>;
+  updateState: (data: IconParams) => void;
   saveToUrl: () => void;
   loadFromUrl: () => void;
   reset: () => void;
@@ -263,38 +263,37 @@ export const IconParamsProvider: ParentComponent<{
     updateState(defaultParamsWithoutComputed as IconParams);
   };
 
-  computedHairHighlightColor = createMemo<Color>(() =>
-    toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4)),
-  );
-  computedHairStrokeColor = createMemo<Color>(() =>
-    toHex(darken(saturate(adjustHue(state.hair.baseColor, 32), 0.3), 0.3)),
-  );
-  computedEyePupilSecondaryColor = createMemo<Color>(() =>
+  computedHairHighlightColor = () =>
+    toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4));
+
+  computedHairStrokeColor = () =>
+    toHex(darken(saturate(adjustHue(state.hair.baseColor, 32), 0.3), 0.3));
+
+  computedEyePupilSecondaryColor = () =>
     toHex(
       darken(desaturate(adjustHue(state.eyes.pupilBaseColor, 320), 0.2), 0.3),
-    ),
-  );
-  computedEyeEyeWhiteColor = createMemo<Color>(() => "#FFFFFF");
-  computedEyeShadowColor = createMemo<Color>(() => "#D5D5FF");
-  computedTeethColor = createMemo<Color>(() => "#ffffff");
-  computedInsideColor = createMemo<Color>(() =>
-    toHex(darken(desaturate(adjustHue(state.head.baseColor, 347), 0.3), 0.3)),
-  );
-  computedHeadShadowColor = createMemo<Color>(() =>
-    toHex(darken(adjustHue(state.head.baseColor, 10), 0.1)),
-  );
-  computedHeadStrokeColor = createMemo<Color>(() =>
-    toHex(darken(desaturate(adjustHue(state.head.baseColor, 336), 0.3), 0.65)),
-  );
-  computedEyebrowsBaseColor = createMemo<Color>(
-    () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
-  );
-  computedEyeEyelashesColor = createMemo<Color>(
-    () => state.hair.strokeColor ?? state.hair.computedStrokeColor,
-  );
-  computedMouthStrokeColor = createMemo<Color>(
-    () => state.head.strokeColor ?? state.head.computedStrokeColor,
-  );
+    );
+
+  computedEyeEyeWhiteColor = () => "#FFFFFF";
+  computedEyeShadowColor = () => "#D5D5FF";
+  computedTeethColor = () => "#ffffff";
+  computedInsideColor = () =>
+    toHex(darken(desaturate(adjustHue(state.head.baseColor, 347), 0.3), 0.3));
+
+  computedHeadShadowColor = () =>
+    toHex(darken(adjustHue(state.head.baseColor, 10), 0.1));
+
+  computedHeadStrokeColor = () =>
+    toHex(darken(desaturate(adjustHue(state.head.baseColor, 336), 0.3), 0.65));
+
+  computedEyebrowsBaseColor = () =>
+    state.hair.strokeColor ?? state.hair.computedStrokeColor;
+
+  computedEyeEyelashesColor = () =>
+    state.hair.strokeColor ?? state.hair.computedStrokeColor;
+
+  computedMouthStrokeColor = () =>
+    state.head.strokeColor ?? state.head.computedStrokeColor;
 
   const saveToUrl = () => {
     const url = new URL(window.location.href);
@@ -328,7 +327,14 @@ export const IconParamsProvider: ParentComponent<{
     <IconParamsContext.Provider
       value={[
         state,
-        { setProps: setState, saveToUrl, loadFromUrl, reset, toggleAutosave },
+        {
+          setProps: setState,
+          saveToUrl,
+          loadFromUrl,
+          reset,
+          toggleAutosave,
+          updateState,
+        },
         configs,
       ]}
     >

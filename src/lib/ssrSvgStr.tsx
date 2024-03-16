@@ -1,19 +1,40 @@
+import { type ParentComponent, createRenderEffect } from "solid-js";
 import { NoHydration, renderToString } from "solid-js/web";
 import Icon from "~/components/Icon";
-import { type IconParams, IconParamsProvider } from "~/context/icon";
+import {
+  type IconParams,
+  IconParamsProvider,
+  useIconParams,
+} from "~/context/icon";
 import { SsrPortalProvider } from "~/context/ssrPortal";
 import { optimizeSvg } from "./svg";
 
+const IconWithParam: ParentComponent<{ params?: IconParams }> = (props) => {
+  const [_, { updateState, reset }] = useIconParams();
+
+  createRenderEffect(() => {
+    if (props.params) {
+      updateState(props.params);
+    } else {
+      reset();
+    }
+  });
+
+  return <Icon />;
+};
+
 export const ssrSvgStr = (params?: IconParams) => {
-  const svgText = renderToString(() => (
-    <NoHydration>
-      <SsrPortalProvider>
-        <IconParamsProvider params={params}>
-          <Icon />
-        </IconParamsProvider>
-      </SsrPortalProvider>
-    </NoHydration>
-  ));
+  const svgText = renderToString(() => {
+    return (
+      <NoHydration>
+        <SsrPortalProvider>
+          <IconParamsProvider>
+            <IconWithParam params={params} />
+          </IconParamsProvider>
+        </SsrPortalProvider>
+      </NoHydration>
+    );
+  });
 
   const optimized = optimizeSvg(svgText);
   return optimized;
@@ -44,8 +65,8 @@ export const ssrOgpSvgStr = (params?: IconParams) => {
         <g mask="url(#mask)">
           <g transform="translate(81,62.5)">
             <SsrPortalProvider>
-              <IconParamsProvider params={params}>
-                <Icon />
+              <IconParamsProvider>
+                <IconWithParam params={params} />
               </IconParamsProvider>
             </SsrPortalProvider>
           </g>
