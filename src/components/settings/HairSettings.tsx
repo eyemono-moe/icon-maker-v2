@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { defaultParams, useIconParams } from "~/context/icon";
+import { defaultPlainParams, useIconParams } from "~/context/icon";
 import ColorField from "../UI/ColorField";
 import PartsSelect from "../UI/PartsSelect";
 import { hairOptions } from "../parts/hair";
@@ -23,7 +23,7 @@ const HairSettings: Component = () => {
         color={iconParams.hair.baseColor}
         setColor={(color) => setProps("hair", "baseColor", color)}
         resetColor={() => {
-          setProps("hair", "baseColor", defaultParams.hair.baseColor);
+          setProps("hair", "baseColor", defaultPlainParams.hair.baseColor);
         }}
       />
       <ColorField

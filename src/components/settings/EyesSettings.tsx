@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { defaultParams, useIconParams } from "~/context/icon";
+import { defaultPlainParams, useIconParams } from "~/context/icon";
 import ColorField from "../UI/ColorField";
 import PartsSelect from "../UI/PartsSelect";
 import { eyebrowsOptions } from "../parts/eyebrows";
@@ -47,7 +47,11 @@ const EyesSettings: Component = () => {
         color={iconParams.eyes.pupilBaseColor}
         setColor={(color) => setProps("eyes", "pupilBaseColor", color)}
         resetColor={() => {
-          setProps("eyes", "pupilBaseColor", defaultParams.eyes.pupilBaseColor);
+          setProps(
+            "eyes",
+            "pupilBaseColor",
+            defaultPlainParams.eyes.pupilBaseColor,
+          );
         }}
       />
       <ColorField

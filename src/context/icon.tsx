@@ -58,7 +58,7 @@ type WithComputedColor<T extends Record<string, unknown>> = Prettify<
   }
 >;
 
-export type IconParams = WithComputedColor<{
+type IconParamsWithoutComputed = {
   hair: {
     type: "short";
     baseColor: Color;
@@ -109,7 +109,9 @@ export type IconParams = WithComputedColor<{
     shadowColor?: Color;
   };
   background: Color;
-}>;
+};
+
+export type IconParams = WithComputedColor<IconParamsWithoutComputed>;
 
 export type IconParamsContextState = IconParams;
 
@@ -117,6 +119,7 @@ export type IconParamsContextActions = {
   setProps: SetStoreFunction<IconParamsContextState>;
   saveToUrl: () => void;
   loadFromUrl: () => void;
+  reset: () => void;
 };
 
 export type IconParamsContextValue = [
@@ -193,6 +196,7 @@ const defaultIconParams: IconParams = {
     },
   },
   mouth: {
+    type: "default",
     get computedStrokeColor() {
       return computedMouthStrokeColor();
     },
@@ -203,14 +207,22 @@ const defaultIconParams: IconParams = {
       return computedInsideColor();
     },
     open: 0,
-    type: "default",
   },
 };
 
 // need to deep clone
-export const defaultParams = JSON.parse(
+export const defaultPlainParams = JSON.parse(
   JSON.stringify(defaultIconParams),
 ) as IconParams;
+
+const removeComputedReplacer = (key: string, value: unknown) => {
+  if (key.startsWith("computed")) return undefined;
+  return value;
+};
+const defaultParamsWithoutComputed = JSON.parse(
+  JSON.stringify(defaultPlainParams, removeComputedReplacer),
+) as IconParamsWithoutComputed;
+
 export const parseParams = (params: string): IconParams => {
   return JSON.parse(decompressFromEncodedURIComponent(params)) as IconParams;
 };
@@ -237,6 +249,10 @@ export const IconParamsProvider: ParentComponent<{
   } else {
     updateState(defaultIconParams);
   }
+
+  const reset = () => {
+    updateState(defaultParamsWithoutComputed as IconParams);
+  };
 
   computedHairHighlightColor = createMemo<Color>(() =>
     toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4)),
@@ -271,15 +287,13 @@ export const IconParamsProvider: ParentComponent<{
     () => state.head.strokeColor ?? state.head.computedStrokeColor,
   );
 
-  const saveReplacer = (key: string, value: unknown) => {
-    if (key.startsWith("computed")) return undefined;
-    return value;
-  };
   const saveToUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.set(
       "p",
-      compressToEncodedURIComponent(JSON.stringify(state, saveReplacer)),
+      compressToEncodedURIComponent(
+        JSON.stringify(state, removeComputedReplacer),
+      ),
     );
     window.history.replaceState(null, "", url.toString());
   };
@@ -297,7 +311,7 @@ export const IconParamsProvider: ParentComponent<{
 
   return (
     <IconParamsContext.Provider
-      value={[state, { setProps: setState, saveToUrl, loadFromUrl }]}
+      value={[state, { setProps: setState, saveToUrl, loadFromUrl, reset }]}
     >
       {props.children}
     </IconParamsContext.Provider>

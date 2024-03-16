@@ -1,5 +1,6 @@
 import { Menubar } from "@kobalte/core";
 import type { Component } from "solid-js";
+import { useIconParams } from "~/context/icon";
 import {
   copyImageUrl,
   copyPng,
@@ -19,6 +20,8 @@ const itemRightSlot = "text-xs ml-a pl-4";
 const separatorClass = "h-px m-2";
 
 const Actions: Component = () => {
+  const [_, { reset }] = useIconParams();
+
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
     if (svgEl === null) return;
@@ -136,6 +139,31 @@ const Actions: Component = () => {
                   </Menubar.SubContent>
                 </Menubar.Portal>
               </Menubar.Sub>
+            </Menubar.Content>
+          </Menubar.Portal>
+        </Menubar.Menu>
+        <Menubar.Menu>
+          <Menubar.Trigger class="inline-flex items-center justify-center px-2 bg-zinc-200 enabled:hover:bg-zinc-300">
+            Edit
+          </Menubar.Trigger>
+          <Menubar.Portal>
+            <Menubar.Content class={contentClass}>
+              {/* <Menubar.Item class={itemClass}>
+                Undo
+                <div class={itemRightSlot}>Ctrl + Z</div>
+              </Menubar.Item>
+              <Menubar.Item class={itemClass}>
+                Redo
+                <div class={itemRightSlot}>Ctrl + Z</div>
+              </Menubar.Item>
+              <Menubar.Separator class={separatorClass} />
+              <Menubar.CheckboxItem class={itemClass}>
+                Auto save
+              </Menubar.CheckboxItem>
+              <Menubar.Separator class={separatorClass} /> */}
+              <Menubar.Item class={itemClass} onSelect={reset}>
+                Reset all
+              </Menubar.Item>
             </Menubar.Content>
           </Menubar.Portal>
         </Menubar.Menu>

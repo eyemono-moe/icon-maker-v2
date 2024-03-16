@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { defaultParams, useIconParams } from "~/context/icon";
+import { defaultPlainParams, useIconParams } from "~/context/icon";
 import ColorField from "../UI/ColorField";
 
 const SkinSettings: Component = () => {
@@ -12,7 +12,7 @@ const SkinSettings: Component = () => {
         color={iconParams.head.baseColor}
         setColor={(color) => setProps("head", "baseColor", color)}
         resetColor={() => {
-          setProps("head", "baseColor", defaultParams.head.baseColor);
+          setProps("head", "baseColor", defaultPlainParams.head.baseColor);
         }}
       />
       <ColorField

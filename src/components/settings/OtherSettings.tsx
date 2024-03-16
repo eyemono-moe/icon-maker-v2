@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { defaultParams, useIconParams } from "~/context/icon";
+import { defaultPlainParams, useIconParams } from "~/context/icon";
 import ColorField from "../UI/ColorField";
 
 const OtherSettings: Component = () => {
@@ -12,7 +12,7 @@ const OtherSettings: Component = () => {
         color={iconParams.background}
         setColor={(color) => setProps("background", color)}
         resetColor={() => {
-          setProps("background", defaultParams.background);
+          setProps("background", defaultPlainParams.background);
         }}
       />
     </>
