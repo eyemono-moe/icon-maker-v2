@@ -3,6 +3,7 @@ import { type Input, literal, object, optional, string, union } from "valibot";
 import { type IconParams, parseParams } from "~/context/icon";
 import { convertFromSvg } from "~/lib/image";
 import { useQuery } from "~/lib/query";
+import { retry } from "~/lib/retry";
 import { ssrSvgStr } from "~/lib/ssrSvgStr";
 
 const imageQuerySchema = object({
@@ -18,7 +19,10 @@ export async function GET(event: APIEvent) {
     params = parseParams(query.p);
   }
 
-  const svgText = ssrSvgStr(params);
+  const svgText = await retry(() => ssrSvgStr(params), {
+    retries: 2,
+    delay: 100,
+  });
 
   switch (query.f) {
     case "svg":
