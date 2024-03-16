@@ -1,6 +1,7 @@
 import { RadioGroup } from "@kobalte/core";
 import { For, type JSX, Suspense, createUniqueId } from "solid-js";
 import type { PartsComponent } from "../Icon";
+import LoadingSpinner from "./Loading";
 
 export type Options<T extends string = ""> = {
   label: string;
@@ -32,16 +33,16 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
               <RadioGroup.Item value={option.value}>
                 <RadioGroup.ItemInput class="peer" />
                 <RadioGroup.ItemControl class="b-2 rounded data-[checked]:b-purple-600 peer-focus-visible:(outline outline-offset-1)">
-                  <RadioGroup.ItemLabel class="cursor-pointer">
-                    <svg viewBox={props.previewViewBox} class="w-full h-auto">
-                      <title>{option.label}</title>
-                      <g id={id} />
-                      <Suspense>
+                  <RadioGroup.ItemLabel class="cursor-pointer w-full h-auto aspect-square block">
+                    <Suspense fallback={<LoadingSpinner />}>
+                      <svg viewBox={props.previewViewBox} class="w-full h-auto">
+                        <title>{option.label}</title>
+                        <g id={id} />
                         <option.component
                           mount={document.getElementById(id) ?? undefined}
                         />
-                      </Suspense>
-                    </svg>
+                      </svg>
+                    </Suspense>
                   </RadioGroup.ItemLabel>
                 </RadioGroup.ItemControl>
               </RadioGroup.Item>
