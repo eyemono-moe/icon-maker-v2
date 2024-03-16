@@ -19,7 +19,7 @@ const Button: ParentComponent<Props> = (props) => {
       {...kobalteProps}
       class="font-700 py-1 px-2 rounded"
       classList={{
-        "bg-purple-400 enabled:hover:bg-purple-500 text-white":
+        "bg-purple-600 enabled:hover:bg-purple-500 text-white":
           addedProps.variant === "primary",
         "bg-zinc-200 enabled:hover:bg-zinc-300":
           addedProps.variant === "secondary",

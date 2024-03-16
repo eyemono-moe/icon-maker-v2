@@ -31,7 +31,7 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
             return (
               <RadioGroup.Item value={option.value}>
                 <RadioGroup.ItemInput class="peer" />
-                <RadioGroup.ItemControl class="b-2 rounded data-[checked]:b-purple peer-focus-visible:(outline outline-offset-1)">
+                <RadioGroup.ItemControl class="b-2 rounded data-[checked]:b-purple-600 peer-focus-visible:(outline outline-offset-1)">
                   <RadioGroup.ItemLabel class="cursor-pointer">
                     <svg viewBox={props.previewViewBox} class="w-full h-auto">
                       <title>{option.label}</title>

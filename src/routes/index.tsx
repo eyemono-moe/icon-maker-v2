@@ -2,6 +2,7 @@ import { Link, Meta, Title } from "@solidjs/meta";
 import { Show, getRequestEvent } from "solid-js/web";
 import { object, optional, string } from "valibot";
 import Actions from "~/components/Actions";
+import Header from "~/components/Header";
 import Icon from "~/components/Icon";
 import Settings from "~/components/Settings";
 import { useQuery } from "~/lib/query";
@@ -40,15 +41,18 @@ export default function Home() {
           href={`/image?p=${serverIconParam}&f=svg`}
         />
       </Show>
-      <main class="h-full prose md:(text-base flex-row-reverse) mx-a text-sm prose-zinc max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2">
-        <div class="w-full md:h-full flex flex-col gap-4 justify-center items-center">
-          <div class="w-full md:max-w-unset max-w-40vh children-[svg]:(w-full aspect-square h-auto)">
-            <Icon />
+      <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset!">
+        <Header />
+        <main class="h-full w-full md:(text-base flex-row-reverse) mx-a text-sm  max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
+          <div class="w-full md:h-full flex flex-col gap-4 justify-center items-center">
+            <div class="w-full md:max-w-unset max-w-40vh children-[svg]:(w-full aspect-square h-auto)">
+              <Icon />
+            </div>
+            <Actions />
           </div>
-          <Actions />
-        </div>
-        <Settings />
-      </main>
+          <Settings />
+        </main>
+      </div>
     </>
   );
 }

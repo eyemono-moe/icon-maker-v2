@@ -63,7 +63,7 @@ const ColorField: Component<Props> = (props) => {
               <Checkbox.Input />
               <Checkbox.Control>
                 <Checkbox.Indicator class="parent" forceMount>
-                  <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple) w-6! h-6!" />
+                  <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple-600) w-6! h-6!" />
                 </Checkbox.Indicator>
               </Checkbox.Control>
               <Checkbox.Label>Set automatically</Checkbox.Label>
