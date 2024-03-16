@@ -43,11 +43,16 @@ export default function Home() {
       </Show>
       <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset!">
         <Header />
-        <main class="h-full w-full md:(text-base flex-row-reverse) mx-a text-sm  max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
-          <div class="w-full md:h-full flex flex-col gap-4 justify-center items-center">
-            <Actions />
-            <div class="w-full md:max-w-unset max-w-40vh children-[svg]:(w-full aspect-square h-auto)">
-              <Icon />
+        <main class="h-full w-full md:(text-base flex-row-reverse items-stretch) mx-a text-sm items-center max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
+          <div class="flex flex-col justify-center w-full md:max-w-unset max-w-25vh">
+            <div class="flex flex-col rounded overflow-hidden">
+              <div class="bg-zinc-200">
+                <div class="text-center c-zinc-500">eyemono.svg</div>
+                <Actions />
+              </div>
+              <div class="children-[svg]:(w-full aspect-square h-auto)">
+                <Icon />
+              </div>
             </div>
           </div>
           <Settings />

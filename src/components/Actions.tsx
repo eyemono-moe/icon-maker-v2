@@ -92,11 +92,9 @@ const Actions: Component = () => {
 
   return (
     <>
-      <Menubar.Root class="flex justify-center items-center">
+      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300">
         <Menubar.Menu>
-          <Menubar.Trigger class="inline-flex items-center justify-center px-2 bg-zinc-200 enabled:hover:bg-zinc-300">
-            File
-          </Menubar.Trigger>
+          <Menubar.Trigger>File</Menubar.Trigger>
           <Menubar.Portal>
             <Menubar.Content class={contentClass}>
               <Menubar.Item class={itemClass} onSelect={handleCopySvg}>
@@ -168,9 +166,7 @@ const Actions: Component = () => {
           </Menubar.Portal>
         </Menubar.Menu>
         <Menubar.Menu>
-          <Menubar.Trigger class="inline-flex items-center justify-center px-2 bg-zinc-200 enabled:hover:bg-zinc-300">
-            Edit
-          </Menubar.Trigger>
+          <Menubar.Trigger>Edit</Menubar.Trigger>
           <Menubar.Portal>
             <Menubar.Content class={contentClass}>
               {/* <Menubar.Item class={itemClass}>
