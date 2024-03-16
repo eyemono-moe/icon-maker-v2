@@ -1,8 +1,10 @@
 import type { ImageQuery } from "~/routes/image";
+import { optimizeSvg } from "./svg";
 
 const imageDataString = (svg: HTMLElement) => {
   const svgData = new XMLSerializer().serializeToString(svg);
-  return `data:image/svg+xml;base64,${btoa(svgData)}`;
+  const optimized = optimizeSvg(svgData);
+  return `data:image/svg+xml;base64,${btoa(optimized)}`;
 };
 
 const saveWithAnchor = (data: string, filename: string) => {
@@ -34,7 +36,8 @@ export const downloadPng = (svg: HTMLElement, filename?: string) => {
 
 export const copySvg = (svg: HTMLElement) => {
   const stringSvg = new XMLSerializer().serializeToString(svg);
-  return navigator.clipboard.writeText(stringSvg);
+  const optimized = optimizeSvg(stringSvg);
+  return navigator.clipboard.writeText(optimized);
 };
 
 export const copyPng = (svg: HTMLElement) => {

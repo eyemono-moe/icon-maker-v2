@@ -11,7 +11,7 @@ const Header: Component = () => {
           rel="noopener noreferrer"
           aria-label="GitHub Repository"
         >
-          <div class="i-ri:github-fill h-6 w-6 text-text-white" />
+          <div class="i-ri:github-fill h-6 w-6" />
         </a>
       </div>
     </header>

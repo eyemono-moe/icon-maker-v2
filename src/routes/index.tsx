@@ -45,10 +45,10 @@ export default function Home() {
         <Header />
         <main class="h-full w-full md:(text-base flex-row-reverse) mx-a text-sm  max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
           <div class="w-full md:h-full flex flex-col gap-4 justify-center items-center">
+            <Actions />
             <div class="w-full md:max-w-unset max-w-40vh children-[svg]:(w-full aspect-square h-auto)">
               <Icon />
             </div>
-            <Actions />
           </div>
           <Settings />
         </main>

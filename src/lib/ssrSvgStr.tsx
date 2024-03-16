@@ -1,8 +1,8 @@
 import { renderToString } from "solid-js/web";
-import { optimize } from "svgo";
 import Icon from "~/components/Icon";
 import { type IconParams, IconParamsProvider } from "~/context/icon";
 import { SsrPortalProvider } from "~/context/ssrPortal";
+import { optimizeSvg } from "./svg";
 
 export const ssrSvgStr = (params?: IconParams) => {
   const svgText = renderToString(() => (
@@ -13,19 +13,8 @@ export const ssrSvgStr = (params?: IconParams) => {
     </SsrPortalProvider>
   ));
 
-  const optimized = optimize(svgText, {
-    plugins: [
-      "removeComments",
-      "removeUselessDefs",
-      {
-        name: "removeUnknownsAndDefaults",
-        params: {
-          keepDataAttrs: false,
-        },
-      },
-    ],
-  });
-  return optimized.data;
+  const optimized = optimizeSvg(svgText);
+  return optimized;
 };
 
 export const ssrOgpSvgStr = (params?: IconParams) => {
@@ -62,17 +51,6 @@ export const ssrOgpSvgStr = (params?: IconParams) => {
     </svg>
   ));
 
-  const optimized = optimize(svgText, {
-    plugins: [
-      "removeComments",
-      "removeUselessDefs",
-      {
-        name: "removeUnknownsAndDefaults",
-        params: {
-          keepDataAttrs: false,
-        },
-      },
-    ],
-  });
-  return optimized.data;
+  const optimized = optimizeSvg(svgText);
+  return optimized;
 };
