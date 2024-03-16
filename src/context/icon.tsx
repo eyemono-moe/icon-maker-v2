@@ -16,6 +16,7 @@ import {
 } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { eyesOptions } from "~/components/parts/eyes";
+import type { hairOptions } from "~/components/parts/hair";
 import type { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
 const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
@@ -59,7 +60,7 @@ type WithComputedColor<T extends Record<string, unknown>> = Prettify<
 
 type IconParamsWithoutComputed = {
   hair: {
-    type: "short";
+    type: (typeof hairOptions)[number]["value"];
     baseColor: Color;
     strokeColor?: Color;
     highlightColor?: Color;

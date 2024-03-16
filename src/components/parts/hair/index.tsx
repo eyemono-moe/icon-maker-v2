@@ -1,8 +1,9 @@
 import { lazy } from "solid-js";
 import type { Options } from "~/components/UI/PartsSelect";
-import PonyTail from "./Ponytail";
 
 const Short = lazy(() => import("./Short"));
+const PonyTail = lazy(() => import("./Ponytail"));
+const Blunt = lazy(() => import("./Blunt"));
 
 export const hairOptions = [
   {
@@ -14,5 +15,10 @@ export const hairOptions = [
     label: "Ponytail",
     value: "ponytail",
     component: PonyTail,
+  },
+  {
+    label: "Blunt",
+    value: "blunt",
+    component: Blunt,
   },
 ] as const satisfies Options<string>;

@@ -46,7 +46,7 @@ const PonyTail: PartsComponent = (props) => {
         target="hair-shadow-target"
         isSVG={true}
         // biome-ignore lint/style/noNonNullAssertion: Always mounted when this component is rendered
-        mount={document.getElementById("hair-shadow-target")!}
+        mount={props.mount ?? document.getElementById("hair-shadow-target")!}
       >
         <mask id="mask-hair-shadow" mask-type="alpha">
           <use href={`#${headFillDefId}`} fill="white" />
