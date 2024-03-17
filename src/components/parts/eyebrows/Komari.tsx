@@ -3,7 +3,7 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Komari: PartsComponent = (props) => {
-  const [iconParams] = useIconParams();
+  const [iconParams, { computeColors }] = useIconParams();
 
   return (
     <>
@@ -18,7 +18,7 @@ const Komari: PartsComponent = (props) => {
           d="M221.5 171C213.045 173.182 201 181.5 193 184C201 186.5 220.621 185.098 224.5 184C227.387 183.183 252 178 279 165C263 169 237 167 221.5 171Z"
           fill={
             iconParams.eyebrows.baseColor ??
-            iconParams.eyebrows.computedBaseColor
+            computeColors.eyebrows.computedBaseColor
           }
         />
       </SsrPortal>

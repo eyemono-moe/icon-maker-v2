@@ -4,13 +4,12 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
-const hairFrontStrokeDefId = createUniqueId();
-const hairFrontFillDefId = createUniqueId();
-const highlightMaskId = createUniqueId();
-const hairShadowMaskId = createUniqueId();
-
 const PonyTail: PartsComponent = (props) => {
-  const [iconParams] = useIconParams();
+  const [iconParams, { computeColors }] = useIconParams();
+  const hairFrontStrokeDefId = createUniqueId();
+  const hairFrontFillDefId = createUniqueId();
+  const highlightMaskId = createUniqueId();
+  const hairShadowMaskId = createUniqueId();
 
   return (
     <>
@@ -34,7 +33,8 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-back-stroke-1"
           d="M259.5 208.5C265.545 263.766 281.384 291.978 295.784 317.628C303.271 330.964 310.369 343.607 315.5 359C315.5 352.238 314.857 346.033 313.748 340.181C317.647 346.309 321.736 353.621 326.707 366.001C336.507 354.891 345.25 342.926 352.533 329.811C350.307 341.542 346.743 352.955 342 366C382.955 319.572 390.203 258.192 364.845 160.457C364.805 160.305 364.766 160.153 364.726 160C345.935 87.7826 316.651 31.3768 268.688 29.1884L268.688 29.1884C229.592 27.4057 245.075 119.759 254.625 176.719C256.79 189.637 258.651 200.734 259.5 208.5Z"
           fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+            iconParams.hair.strokeColor ??
+            computeColors.hair.computedStrokeColor
           }
         />
         <path
@@ -46,7 +46,8 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-back-stroke-2"
           d="M42 193C42 324 205.5 349.5 238.5 338C271.5 326.5 342 237 342 197C342 137 302 37 202 37C82 37 42 137 42 193Z"
           fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+            iconParams.hair.strokeColor ??
+            computeColors.hair.computedStrokeColor
           }
         />
       </SsrPortal>
@@ -65,7 +66,8 @@ const PonyTail: PartsComponent = (props) => {
             href={`#${hairFrontStrokeDefId}`}
             transform="translate(3 12)"
             fill={
-              iconParams.head.shadowColor ?? iconParams.head.computedShadowColor
+              iconParams.head.shadowColor ??
+              computeColors.head.computedShadowColor
             }
           />
         </g>
@@ -80,7 +82,8 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-front-stroke"
           href={`#${hairFrontStrokeDefId}`}
           fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+            iconParams.hair.strokeColor ??
+            computeColors.hair.computedStrokeColor
           }
         />
         <use
@@ -97,7 +100,7 @@ const PonyTail: PartsComponent = (props) => {
           d="M122 182C220.209 182 304.64 147.59 341.796 98.3108V18H29.5V384H212C121.978 384 48.9999 304.307 48.9999 206C48.9999 195.717 49.7984 185.638 51.3313 175.832C73.6726 179.842 97.4042 182 122 182ZM335.164 89.4015C309.993 120.089 243.754 142 166 142C128.695 142 94.0398 136.956 65.2997 128.319C91.7174 68.9349 147.481 28 212 28C261.183 28 305.278 51.7874 335.164 89.4015Z"
           fill={
             iconParams.hair.highlightColor ??
-            iconParams.hair.computedHighlightColor
+            computeColors.hair.computedHighlightColor
           }
         />
       </SsrPortal>

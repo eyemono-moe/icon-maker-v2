@@ -4,7 +4,7 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Jito: PartsComponent = (props) => {
-  const [iconParams] = useIconParams();
+  const [iconParams, { computeColors }] = useIconParams();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
 
@@ -27,7 +27,7 @@ const Jito: PartsComponent = (props) => {
           href={`#${whiteFillId}`}
           fill={
             iconParams.eyes.eyeWhiteColor ??
-            iconParams.eyes.computedEyeWhiteColor
+            computeColors.eyes.computedEyeWhiteColor
           }
         />
         <mask id={maskId} mask-type="alpha">
@@ -39,7 +39,7 @@ const Jito: PartsComponent = (props) => {
             d="M271.132 212.58C276.528 226.613 273.711 238.991 263.598 242.106C253.486 245.221 244.193 236.573 240.757 221.936C237.321 207.299 239.903 194.994 248.291 192.41C256.679 189.826 265.737 198.546 271.132 212.58Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
-              iconParams.eyes.computedPupilSecondaryColor
+              computeColors.eyes.computedPupilSecondaryColor
             }
           />
           <path
@@ -52,7 +52,7 @@ const Jito: PartsComponent = (props) => {
             d="M266.092 209.947C269.984 219.099 268.245 228.118 261.977 230.049C255.71 231.98 249.197 225.501 247.266 215.746C245.313 205.884 248.795 199.579 252.263 198.511C255.731 197.443 262.157 200.695 266.092 209.947Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
-              iconParams.eyes.computedPupilSecondaryColor
+              computeColors.eyes.computedPupilSecondaryColor
             }
           />
           <path
@@ -66,7 +66,7 @@ const Jito: PartsComponent = (props) => {
               d="M288 193.5C247.5 193.5 233 197 207 223.5C207 232.5 217 246 224 250C237 224 274 212 288 212C288 199.5 288 199.424 288 193.5Z"
               fill={
                 iconParams.eyes.shadowColor ??
-                iconParams.eyes.computedShadowColor
+                computeColors.eyes.computedShadowColor
               }
             />
           </g>
@@ -75,7 +75,7 @@ const Jito: PartsComponent = (props) => {
             d="M274.5 239C269.5 246 250.5 254 236.5 252C236.5 260 274.5 257.5 274.5 239Z"
             fill={
               iconParams.eyes.eyelashesColor ??
-              iconParams.eyes.computedEyelashesColor
+              computeColors.eyes.computedEyelashesColor
             }
           />
         </g>
@@ -91,7 +91,7 @@ const Jito: PartsComponent = (props) => {
           d="M208.5 238.5C215.5 226.5 231 217 247 211.5C263.893 205.693 277.5 203 287 205.5C284.5 211.5 285 211.5 279 229.5C279.5 222.5 279.5 212.75 278 211.5C277 210.667 254.399 218.218 249.5 220C238.5 224 219.5 232 208.5 238.5Z"
           fill={
             iconParams.eyes.eyelashesColor ??
-            iconParams.eyes.computedEyelashesColor
+            computeColors.eyes.computedEyelashesColor
           }
         />
         <path
@@ -99,7 +99,7 @@ const Jito: PartsComponent = (props) => {
           d="M211.5 226.5C218 221 227 215 236 210C226 213 216.5 218.5 211.5 226.5Z"
           fill={
             iconParams.eyes.eyelashesColor ??
-            iconParams.eyes.computedEyelashesColor
+            computeColors.eyes.computedEyelashesColor
           }
         />
       </SsrPortal>

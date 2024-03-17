@@ -1,6 +1,7 @@
 import { RadioGroup } from "@kobalte/core";
 import { For, type JSX, Suspense, createUniqueId } from "solid-js";
 import type { PartsComponent } from "../Icon";
+import Button from "./Button";
 import LoadingSpinner from "./Loading";
 
 export type Options<T extends string = ""> = {
@@ -15,6 +16,7 @@ type Props<T extends string> = {
   value: string;
   onChange: (value: T) => void;
   previewViewBox?: string;
+  onReset?: () => void;
 };
 
 const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
@@ -22,9 +24,14 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
     <RadioGroup.Root
       value={props.value}
       onChange={(value) => props.onChange(value as T)}
-      class="flex flex-col"
+      class="flex flex-col gap-1"
     >
-      <RadioGroup.Label class="font-700">{props.label}</RadioGroup.Label>
+      <div class="flex gap-2 items-center">
+        <RadioGroup.Label class="font-700">{props.label}</RadioGroup.Label>
+        <Button variant="secondary" type="button" onClick={props.onReset}>
+          Reset
+        </Button>
+      </div>
       <div class="grid grid-cols-minmax-100px gap-1">
         <For each={props.options}>
           {(option) => {

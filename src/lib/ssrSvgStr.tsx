@@ -10,11 +10,11 @@ import { SsrPortalProvider } from "~/context/ssrPortal";
 import { optimizeSvg } from "./svg";
 
 const IconWithParam: ParentComponent<{ params?: IconParams }> = (props) => {
-  const [_, { updateState, reset }] = useIconParams();
+  const [_, { setProps, reset }] = useIconParams();
 
   createRenderEffect(() => {
     if (props.params) {
-      updateState(props.params);
+      setProps(props.params);
     } else {
       reset();
     }

@@ -16,7 +16,7 @@ type Props = (
     }
 ) & {
   label: string;
-  resetColor?: () => void;
+  onReset?: () => void;
 };
 
 const ColorField: Component<Props> = (props) => {
@@ -32,6 +32,13 @@ const ColorField: Component<Props> = (props) => {
       props.setColor(selectedColor());
     }
   });
+
+  const handleReset = () => {
+    props.onReset?.();
+    setSelectedColor(
+      !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
+    );
+  };
 
   return (
     <div class="flex w-full">
@@ -72,10 +79,10 @@ const ColorField: Component<Props> = (props) => {
         </div>
         <div class="flex items-center gap-2 overflow-hidden">
           <TextField.Input type="color" class="w-full h-8 rounded" />
-          <Show when={props.resetColor}>
+          <Show when={props.onReset}>
             <Button
               variant="secondary"
-              onClick={props.resetColor}
+              onClick={handleReset}
               type="button"
               disabled={isAuto()}
             >

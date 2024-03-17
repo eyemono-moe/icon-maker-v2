@@ -4,7 +4,7 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Default: PartsComponent = (props) => {
-  const [iconParams] = useIconParams();
+  const [iconParams, { computeColors }] = useIconParams();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
 
@@ -27,7 +27,7 @@ const Default: PartsComponent = (props) => {
           href={`#${whiteFillId}`}
           fill={
             iconParams.eyes.eyeWhiteColor ??
-            iconParams.eyes.computedEyeWhiteColor
+            computeColors.eyes.computedEyeWhiteColor
           }
         />
         <mask id={maskId} mask-type="alpha">
@@ -39,7 +39,7 @@ const Default: PartsComponent = (props) => {
             d="M271.132 212.58C276.528 226.613 273.711 238.991 263.598 242.106C253.486 245.221 244.193 236.573 240.757 221.936C237.321 207.299 239.903 194.994 248.291 192.41C256.679 189.826 265.737 198.546 271.132 212.58Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
-              iconParams.eyes.computedPupilSecondaryColor
+              computeColors.eyes.computedPupilSecondaryColor
             }
           />
           <path
@@ -52,7 +52,7 @@ const Default: PartsComponent = (props) => {
             d="M266.092 209.947C269.984 219.099 268.245 228.118 261.977 230.049C255.71 231.98 249.197 225.501 247.266 215.746C245.313 205.884 248.795 199.579 252.263 198.511C255.731 197.443 262.157 200.695 266.092 209.947Z"
             fill={
               iconParams.eyes.pupilSecondaryColor ??
-              iconParams.eyes.computedPupilSecondaryColor
+              computeColors.eyes.computedPupilSecondaryColor
             }
           />
           <path
@@ -66,7 +66,7 @@ const Default: PartsComponent = (props) => {
               d="M288 193.5C247.5 193.5 233 197 207 223.5C207 232.5 217 246 224 250C237 224 274 212 288 212C288 199.5 288 199.424 288 193.5Z"
               fill={
                 iconParams.eyes.shadowColor ??
-                iconParams.eyes.computedShadowColor
+                computeColors.eyes.computedShadowColor
               }
             />
           </g>
@@ -75,7 +75,7 @@ const Default: PartsComponent = (props) => {
             d="M277 245C271.5 253 255 262 239 257C239 265 277 263.5 277 245Z"
             fill={
               iconParams.eyes.eyelashesColor ??
-              iconParams.eyes.computedEyelashesColor
+              computeColors.eyes.computedEyelashesColor
             }
           />
         </g>
@@ -91,7 +91,7 @@ const Default: PartsComponent = (props) => {
           d="M207 236C212 222 228.5 210.315 244.5 203.5C260.935 196.5 277 197.5 286.5 200C284 206 286 214 280 232C280.5 225 279 210 276 207.5C272.741 204.784 252.899 210.218 248 212C237 216 218 225.5 207 236Z"
           fill={
             iconParams.eyes.eyelashesColor ??
-            iconParams.eyes.computedEyelashesColor
+            computeColors.eyes.computedEyelashesColor
           }
         />
         <path
@@ -99,7 +99,7 @@ const Default: PartsComponent = (props) => {
           d="M211 225C217.5 218 225 212 234 207C224 210 215 216 211 225Z"
           fill={
             iconParams.eyes.eyelashesColor ??
-            iconParams.eyes.computedEyelashesColor
+            computeColors.eyes.computedEyelashesColor
           }
         />
       </SsrPortal>
