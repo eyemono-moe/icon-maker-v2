@@ -255,10 +255,8 @@ export const IconParamsProvider: ParentComponent<{
     k1?: K1,
     k2?: K2,
   ) => {
-    console.log(k1, k2);
     if (k1) {
       if (k2) {
-        console.log(k1, k2, defaultPlainParams()[k1][k2]);
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         setState(k1, k2 as any, defaultPlainParams()[k1][k2]);
       } else {
