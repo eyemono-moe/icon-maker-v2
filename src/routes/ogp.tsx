@@ -28,6 +28,7 @@ export async function GET(event: APIEvent) {
   return new Response(png, {
     headers: {
       "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000",
     },
   });
 }

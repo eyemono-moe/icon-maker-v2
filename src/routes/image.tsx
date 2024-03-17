@@ -12,6 +12,8 @@ const imageQuerySchema = object({
 });
 export type ImageQuery = Input<typeof imageQuerySchema>;
 
+const cache = "public, max-age=31536000";
+
 export async function GET(event: APIEvent) {
   const query = useQuery(imageQuerySchema, event.nativeEvent);
   let params: IconParams | undefined;
@@ -29,6 +31,7 @@ export async function GET(event: APIEvent) {
       return new Response(svgText, {
         headers: {
           "Content-Type": "image/svg+xml",
+          "Cache-Control": cache
         },
       });
     case "png": {
@@ -36,6 +39,7 @@ export async function GET(event: APIEvent) {
       return new Response(png, {
         headers: {
           "Content-Type": "image/png",
+          "Cache-Control": cache
         },
       });
     }
