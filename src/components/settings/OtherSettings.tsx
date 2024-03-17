@@ -11,7 +11,7 @@ const OtherSettings: Component = () => {
         label="background color"
         color={iconParams.background}
         setColor={(color) => setProps("background", color)}
-        resetColor={() => {
+        onReset={() => {
           reset("background");
         }}
       />

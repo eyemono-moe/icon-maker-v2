@@ -18,6 +18,9 @@ const EyesSettings: Component = () => {
           setProps("eyebrows", "type", value);
         }}
         previewViewBox="185 125 100 100"
+        onReset={() => {
+          reset("eyebrows", "type");
+        }}
       />
       <ColorField
         label="eyebrow color"
@@ -25,7 +28,7 @@ const EyesSettings: Component = () => {
         fallbackColor={computeColors.eyebrows.computedBaseColor}
         setColor={(color) => setProps("eyebrows", "baseColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("eyebrows", "baseColor");
         }}
       />
@@ -37,12 +40,15 @@ const EyesSettings: Component = () => {
           setProps("eyes", "type", value);
         }}
         previewViewBox="200 175 100 100"
+        onReset={() => {
+          reset("eyes", "type");
+        }}
       />
       <ColorField
         label="pupil color 1"
         color={iconParams.eyes.pupilBaseColor}
         setColor={(color) => setProps("eyes", "pupilBaseColor", color)}
-        resetColor={() => {
+        onReset={() => {
           reset("eyes", "pupilBaseColor");
         }}
       />
@@ -52,7 +58,7 @@ const EyesSettings: Component = () => {
         fallbackColor={computeColors.eyes.computedPupilSecondaryColor}
         setColor={(color) => setProps("eyes", "pupilSecondaryColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("eyes", "pupilSecondaryColor");
         }}
       />
@@ -62,7 +68,7 @@ const EyesSettings: Component = () => {
         fallbackColor={computeColors.eyes.computedEyelashesColor}
         setColor={(color) => setProps("eyes", "eyelashesColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("eyes", "eyelashesColor");
         }}
       />
@@ -72,7 +78,7 @@ const EyesSettings: Component = () => {
         fallbackColor={computeColors.eyes.computedEyeWhiteColor}
         setColor={(color) => setProps("eyes", "eyeWhiteColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("eyes", "eyeWhiteColor");
         }}
       />
@@ -82,7 +88,7 @@ const EyesSettings: Component = () => {
         fallbackColor={computeColors.eyes.computedShadowColor}
         setColor={(color) => setProps("eyes", "shadowColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("eyes", "shadowColor");
         }}
       />

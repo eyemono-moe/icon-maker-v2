@@ -17,12 +17,15 @@ const HairSettings: Component = () => {
           setProps("hair", "type", value);
         }}
         previewViewBox="0 0 400 400"
+        onReset={() => {
+          reset("hair", "type");
+        }}
       />
       <ColorField
         label="base color"
         color={iconParams.hair.baseColor}
         setColor={(color) => setProps("hair", "baseColor", color)}
-        resetColor={() => {
+        onReset={() => {
           reset("hair", "baseColor");
         }}
       />
@@ -32,7 +35,7 @@ const HairSettings: Component = () => {
         fallbackColor={computeColors.hair.computedHighlightColor}
         setColor={(color) => setProps("hair", "highlightColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("hair", "highlightColor");
         }}
       />
@@ -42,7 +45,7 @@ const HairSettings: Component = () => {
         fallbackColor={computeColors.hair.computedStrokeColor}
         setColor={(color) => setProps("hair", "strokeColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("hair", "strokeColor");
         }}
       />

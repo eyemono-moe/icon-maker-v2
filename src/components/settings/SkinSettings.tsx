@@ -11,7 +11,7 @@ const SkinSettings: Component = () => {
         label="skin color"
         color={iconParams.head.baseColor}
         setColor={(color) => setProps("head", "baseColor", color)}
-        resetColor={() => {
+        onReset={() => {
           reset("head", "baseColor");
         }}
       />
@@ -21,7 +21,7 @@ const SkinSettings: Component = () => {
         fallbackColor={computeColors.head.computedShadowColor}
         setColor={(color) => setProps("head", "shadowColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("head", "shadowColor");
         }}
       />
@@ -31,7 +31,7 @@ const SkinSettings: Component = () => {
         fallbackColor={computeColors.head.computedStrokeColor}
         setColor={(color) => setProps("head", "strokeColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("head", "strokeColor");
         }}
       />

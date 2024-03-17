@@ -17,6 +17,9 @@ const MouthSettings: Component = () => {
           setProps("mouth", "type", value);
         }}
         previewViewBox="188 282 60 60"
+        onReset={() => {
+          reset("mouth", "type");
+        }}
       />
       <ColorField
         label="line color"
@@ -24,7 +27,7 @@ const MouthSettings: Component = () => {
         fallbackColor={computeColors.mouth.computedStrokeColor}
         setColor={(color) => setProps("mouth", "strokeColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("mouth", "strokeColor");
         }}
       />
@@ -34,7 +37,7 @@ const MouthSettings: Component = () => {
         fallbackColor={computeColors.mouth.computedInsideColor}
         setColor={(color) => setProps("mouth", "insideColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("mouth", "insideColor");
         }}
       />
@@ -44,7 +47,7 @@ const MouthSettings: Component = () => {
         fallbackColor={computeColors.mouth.computedTeethColor}
         setColor={(color) => setProps("mouth", "teethColor", color)}
         canEmpty
-        resetColor={() => {
+        onReset={() => {
           reset("mouth", "teethColor");
         }}
       />

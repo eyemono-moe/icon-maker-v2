@@ -4,19 +4,19 @@ import Button from "./Button";
 
 type Props = (
   | {
-    setColor: (color: string) => void;
-    canEmpty?: false;
-    color: string;
-  }
+      setColor: (color: string) => void;
+      canEmpty?: false;
+      color: string;
+    }
   | {
-    setColor: (color: string | undefined) => void;
-    canEmpty: true;
-    color?: string;
-    fallbackColor: string;
-  }
+      setColor: (color: string | undefined) => void;
+      canEmpty: true;
+      color?: string;
+      fallbackColor: string;
+    }
 ) & {
   label: string;
-  resetColor?: () => void;
+  onReset?: () => void;
 };
 
 const ColorField: Component<Props> = (props) => {
@@ -34,11 +34,11 @@ const ColorField: Component<Props> = (props) => {
   });
 
   const handleReset = () => {
-    props.resetColor?.();
+    props.onReset?.();
     setSelectedColor(
       !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
     );
-  }
+  };
 
   return (
     <div class="flex w-full">
@@ -79,7 +79,7 @@ const ColorField: Component<Props> = (props) => {
         </div>
         <div class="flex items-center gap-2 overflow-hidden">
           <TextField.Input type="color" class="w-full h-8 rounded" />
-          <Show when={props.resetColor}>
+          <Show when={props.onReset}>
             <Button
               variant="secondary"
               onClick={handleReset}
