@@ -4,13 +4,12 @@ import { useIconParams } from "~/context/icon";
 import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
-const hairFrontStrokeDefId = createUniqueId();
-const hairFrontFillDefId = createUniqueId();
-const highlightMaskId = createUniqueId();
-const hairShadowMaskId = createUniqueId();
-
 const Blunt: PartsComponent = (props) => {
-  const [iconParams] = useIconParams();
+  const [iconParams, { computeColors }] = useIconParams();
+  const hairFrontStrokeDefId = createUniqueId();
+  const hairFrontFillDefId = createUniqueId();
+  const highlightMaskId = createUniqueId();
+  const hairShadowMaskId = createUniqueId();
 
   return (
     <>
@@ -34,7 +33,8 @@ const Blunt: PartsComponent = (props) => {
           id="hair-back-fill"
           d="M169.5 360C147.5 351 42 284 42 193C42 137 82 37 202 37C302 37 342 137 342 197C342 226.5 295 314.5 281.5 334C279.281 335.11 276.966 336.19 274.569 337.241C276.031 321.069 277 307.231 277 290C276.652 307.276 275.042 322.116 273.077 337.886C269.318 339.492 265.371 341.025 261.291 342.48C256.937 321.264 254.906 313.758 249 298.5C253.874 313.61 256.671 326.252 259.297 343.181C252.002 345.712 244.316 347.996 236.54 350.006C233.394 343.171 231.716 338.908 230.081 334.754C228.564 330.899 227.084 327.137 224.5 321.5C227.916 332.724 231.809 342.996 234.783 350.456C227.623 352.266 220.407 353.843 213.369 355.165C202.768 341.094 196.855 330.74 189.5 317.5C195.794 330.572 201.619 342.237 210.606 355.673C202.663 357.101 194.989 358.196 187.928 358.927C179.141 350.117 170.862 341.256 163 330C169.809 340.7 177.091 349.508 185.307 359.184C179.507 359.722 174.17 360 169.5 360Z"
           fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+            iconParams.hair.strokeColor ??
+            computeColors.hair.computedStrokeColor
           }
         />
       </SsrPortal>
@@ -53,7 +53,8 @@ const Blunt: PartsComponent = (props) => {
             href={`#${hairFrontStrokeDefId}`}
             transform="translate(3 12)"
             fill={
-              iconParams.head.shadowColor ?? iconParams.head.computedShadowColor
+              iconParams.head.shadowColor ??
+              computeColors.head.computedShadowColor
             }
           />
         </g>
@@ -68,7 +69,8 @@ const Blunt: PartsComponent = (props) => {
           id="hair-front-stroke"
           href={`#${hairFrontStrokeDefId}`}
           fill={
-            iconParams.hair.strokeColor ?? iconParams.hair.computedStrokeColor
+            iconParams.hair.strokeColor ??
+            computeColors.hair.computedStrokeColor
           }
         />
         <use
@@ -85,7 +87,7 @@ const Blunt: PartsComponent = (props) => {
           d="M122 182C220.209 182 304.64 147.59 341.796 98.3108V18H29.5V384H212C121.978 384 48.9999 304.307 48.9999 206C48.9999 195.717 49.7984 185.638 51.3313 175.832C73.6726 179.842 97.4042 182 122 182ZM335.164 89.4015C309.993 120.089 243.754 142 166 142C128.695 142 94.0398 136.956 65.2997 128.319C91.7174 68.9349 147.481 28 212 28C261.183 28 305.278 51.7874 335.164 89.4015Z"
           fill={
             iconParams.hair.highlightColor ??
-            iconParams.hair.computedHighlightColor
+            computeColors.hair.computedHighlightColor
           }
         />
       </SsrPortal>

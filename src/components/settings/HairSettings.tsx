@@ -1,11 +1,11 @@
 import type { Component } from "solid-js";
-import { defaultPlainParams, useIconParams } from "~/context/icon";
+import { useIconParams } from "~/context/icon";
 import ColorField from "../UI/ColorField";
 import PartsSelect from "../UI/PartsSelect";
 import { hairOptions } from "../parts/hair";
 
 const HairSettings: Component = () => {
-  const [iconParams, { setProps }] = useIconParams();
+  const [iconParams, { setProps, computeColors, reset }] = useIconParams();
 
   return (
     <>
@@ -23,31 +23,27 @@ const HairSettings: Component = () => {
         color={iconParams.hair.baseColor}
         setColor={(color) => setProps("hair", "baseColor", color)}
         resetColor={() => {
-          setProps("hair", "baseColor", defaultPlainParams.hair.baseColor);
+          reset("hair", "baseColor");
         }}
       />
       <ColorField
         label="highlight color"
         color={iconParams.hair.highlightColor}
-        fallbackColor={iconParams.hair.computedHighlightColor}
+        fallbackColor={computeColors.hair.computedHighlightColor}
         setColor={(color) => setProps("hair", "highlightColor", color)}
         canEmpty
         resetColor={() => {
-          setProps(
-            "hair",
-            "highlightColor",
-            iconParams.hair.computedHighlightColor,
-          );
+          reset("hair", "highlightColor");
         }}
       />
       <ColorField
         label="stroke color"
         color={iconParams.hair.strokeColor}
-        fallbackColor={iconParams.hair.computedStrokeColor}
+        fallbackColor={computeColors.hair.computedStrokeColor}
         setColor={(color) => setProps("hair", "strokeColor", color)}
         canEmpty
         resetColor={() => {
-          setProps("hair", "strokeColor", iconParams.hair.computedStrokeColor);
+          reset("hair", "strokeColor");
         }}
       />
     </>

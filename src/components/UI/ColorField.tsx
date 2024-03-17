@@ -75,7 +75,14 @@ const ColorField: Component<Props> = (props) => {
           <Show when={props.resetColor}>
             <Button
               variant="secondary"
-              onClick={props.resetColor}
+              onClick={() => {
+                props.resetColor?.();
+                setSelectedColor(
+                  !props.canEmpty
+                    ? props.color
+                    : props.color ?? props.fallbackColor,
+                );
+              }}
               type="button"
               disabled={isAuto()}
             >

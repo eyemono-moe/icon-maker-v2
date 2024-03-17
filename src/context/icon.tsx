@@ -7,18 +7,26 @@ import {
   toHex,
 } from "color2k";
 import pkg from "lz-string";
+import { useContext } from "solid-js";
 import {
   type ParentComponent,
   createContext,
   createEffect,
   onMount,
-  useContext,
 } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { eyesOptions } from "~/components/parts/eyes";
 import type { hairOptions } from "~/components/parts/hair";
 import type { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
+import type {
+  OmitEmptyObject,
+  OmitNever,
+  OmitUndefined,
+  OptionalProps,
+  Prettify,
+  ResetStore,
+} from "~/lib/utilityTypes";
 const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
   pkg;
 
@@ -36,26 +44,22 @@ type Accessory =
       colors: [Color, Color];
     };
 
-type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
-
-type OptionalProps<T> = T extends Record<string, unknown>
-  ? {
-      [P in keyof T as undefined | Color extends T[P] ? P : never]: T[P];
-    }
-  : never;
-
-type WithComputedColor<T extends Record<string, unknown>> = Prettify<
-  {
-    readonly [O in keyof OptionalProps<T> as `computed${Capitalize<
-      Extract<O, string>
-    >}`]-?: Color;
-  } & {
-    [P in keyof T]: T[P] extends Record<string, unknown>
-      ? WithComputedColor<T[P]>
-      : T[P];
-  }
+type ComputedColor<T extends Record<string, unknown>> = Prettify<
+  OmitEmptyObject<
+    OmitUndefined<
+      OmitNever<
+        {
+          readonly [O in keyof OptionalProps<T> as `computed${Capitalize<
+            Extract<O, string>
+          >}`]-?: Color;
+        } & {
+          [P in keyof T]: T[P] extends Record<string, unknown>
+            ? ComputedColor<T[P]>
+            : never;
+        }
+      >
+    >
+  >
 >;
 
 type IconParamsWithoutComputed = {
@@ -111,7 +115,8 @@ type IconParamsWithoutComputed = {
   background: Color;
 };
 
-export type IconParams = WithComputedColor<IconParamsWithoutComputed>;
+export type IconParams = IconParamsWithoutComputed;
+export type ComputedColors = ComputedColor<IconParamsWithoutComputed>;
 
 export type IconParamsContextState = IconParams;
 
@@ -121,10 +126,10 @@ export type IconParamsContextConfigs = {
 
 export type IconParamsContextActions = {
   setProps: SetStoreFunction<IconParamsContextState>;
-  updateState: (data: IconParams) => void;
+  computeColors: ComputedColors;
+  reset: ResetStore<IconParamsContextState>;
   saveToUrl: () => void;
   loadFromUrl: () => void;
-  reset: () => void;
   toggleAutosave: () => void;
 };
 
@@ -136,48 +141,13 @@ export type IconParamsContextValue = [
 
 export const IconParamsContext = createContext<IconParamsContextValue>();
 
-let computedHairHighlightColor: () => Color = () => "";
-let computedHairStrokeColor: () => Color = () => "";
-
-let computedEyebrowsBaseColor: () => Color = () => "";
-
-let computedEyePupilSecondaryColor: () => Color = () => "";
-let computedEyeEyeWhiteColor: () => Color = () => "";
-let computedEyeShadowColor: () => Color = () => "";
-let computedEyeEyelashesColor: () => Color = () => "";
-
-let computedMouthStrokeColor: () => Color = () => "";
-let computedTeethColor: () => Color = () => "";
-let computedInsideColor: () => Color = () => "";
-
-let computedHeadShadowColor: () => Color = () => "";
-let computedHeadStrokeColor: () => Color = () => "";
-
 const defaultIconParams: IconParams = {
   hair: {
     baseColor: "#9940BB",
     type: "short",
-    get computedHighlightColor() {
-      return computedHairHighlightColor();
-    },
-    get computedStrokeColor() {
-      return computedHairStrokeColor();
-    },
   },
   eyes: {
     pupilBaseColor: "#EE2266",
-    get computedPupilSecondaryColor() {
-      return computedEyePupilSecondaryColor();
-    },
-    get computedEyeWhiteColor() {
-      return computedEyeEyeWhiteColor();
-    },
-    get computedShadowColor() {
-      return computedEyeShadowColor();
-    },
-    get computedEyelashesColor() {
-      return computedEyeEyelashesColor();
-    },
     open: 1,
     position: { x: 0, y: 0 },
     type: "default",
@@ -185,9 +155,6 @@ const defaultIconParams: IconParams = {
   accessories: [],
   background: "#BBEE66",
   eyebrows: {
-    get computedBaseColor() {
-      return computedEyebrowsBaseColor();
-    },
     type: "default",
   },
   head: {
@@ -195,40 +162,16 @@ const defaultIconParams: IconParams = {
     position: { x: 0, y: 0 },
     rotation: 0,
     baseColor: "#FFCCCC",
-    get computedShadowColor() {
-      return computedHeadShadowColor();
-    },
-    get computedStrokeColor() {
-      return computedHeadStrokeColor();
-    },
   },
   mouth: {
     type: "default",
-    get computedStrokeColor() {
-      return computedMouthStrokeColor();
-    },
-    get computedTeethColor() {
-      return computedTeethColor();
-    },
-    get computedInsideColor() {
-      return computedInsideColor();
-    },
     open: 0,
   },
 };
 
 // need to deep clone
-export const defaultPlainParams = JSON.parse(
-  JSON.stringify(defaultIconParams),
-) as IconParams;
-
-const removeComputedReplacer = (key: string, value: unknown) => {
-  if (key.startsWith("computed")) return undefined;
-  return value;
-};
-const defaultParamsWithoutComputed = JSON.parse(
-  JSON.stringify(defaultPlainParams, removeComputedReplacer),
-) as IconParamsWithoutComputed;
+const defaultPlainParams = () =>
+  JSON.parse(JSON.stringify(defaultIconParams)) as IconParams;
 
 export const parseParams = (params: string): IconParams => {
   return JSON.parse(decompressFromEncodedURIComponent(params)) as IconParams;
@@ -237,72 +180,100 @@ export const parseParams = (params: string): IconParams => {
 export const IconParamsProvider: ParentComponent<{
   params?: IconParams;
 }> = (props) => {
-  const [state, setState] = createStore(defaultIconParams);
+  const [state, setState] = createStore<IconParamsContextState>(
+    defaultPlainParams(),
+  );
   const [configs, setConfigs] = createStore<IconParamsContextConfigs>({
     autosave: true,
   });
 
-  const updateState = (data: IconParams) => {
-    type Entries<T> = (keyof T extends infer U
-      ? U extends keyof T
-        ? [U, T[U]]
-        : never
-      : never)[];
-    // objectをそのまま代入するとcomputedが消えるので(浅くマージされる)、entriesで代入する
-    (Object.entries(data) as Entries<IconParams>).map(([k, v]) => {
-      setState(k, v);
-    });
+  const computeColors: ComputedColors = {
+    hair: {
+      get computedHighlightColor() {
+        return toHex(
+          lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4),
+        );
+      },
+      get computedStrokeColor() {
+        return toHex(
+          darken(saturate(adjustHue(state.hair.baseColor, 32), 0.3), 0.3),
+        );
+      },
+    },
+    eyes: {
+      get computedPupilSecondaryColor() {
+        return toHex(
+          darken(
+            desaturate(adjustHue(state.eyes.pupilBaseColor, 320), 0.2),
+            0.3,
+          ),
+        );
+      },
+      get computedEyeWhiteColor() {
+        return defaultPlainParams().eyes.eyeWhiteColor ?? "#FFFFFF";
+      },
+      get computedShadowColor() {
+        return defaultPlainParams().eyes.shadowColor ?? "#D5D5FF";
+      },
+      get computedEyelashesColor() {
+        return state.hair.strokeColor ?? computeColors.hair.computedStrokeColor;
+      },
+    },
+    eyebrows: {
+      get computedBaseColor() {
+        return state.hair.strokeColor ?? computeColors.hair.computedStrokeColor;
+      },
+    },
+    mouth: {
+      get computedStrokeColor() {
+        return state.head.strokeColor ?? computeColors.head.computedStrokeColor;
+      },
+      get computedTeethColor() {
+        return defaultPlainParams().mouth.teethColor ?? "#ffffff";
+      },
+      get computedInsideColor() {
+        return defaultPlainParams().mouth.insideColor ?? "#DD4466";
+      },
+    },
+    head: {
+      get computedShadowColor() {
+        return toHex(darken(adjustHue(state.head.baseColor, 10), 0.1));
+      },
+      get computedStrokeColor() {
+        return toHex(
+          darken(desaturate(adjustHue(state.head.baseColor, 336), 0.3), 0.65),
+        );
+      },
+    },
   };
 
-  if (props.params) {
-    updateState(props.params);
-  } else {
-    updateState(defaultIconParams);
-  }
-
-  const reset = () => {
-    updateState(defaultParamsWithoutComputed as IconParams);
+  // TODO: 可変長引数に対応する
+  const reset = <
+    K1 extends keyof IconParamsContextState,
+    K2 extends keyof IconParamsContextState[K1],
+  >(
+    k1?: K1,
+    k2?: K2,
+  ) => {
+    console.log(k1, k2);
+    if (k1) {
+      if (k2) {
+        console.log(k1, k2, defaultPlainParams()[k1][k2]);
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        setState(k1, k2 as any, defaultPlainParams()[k1][k2]);
+      } else {
+        setState(k1, defaultPlainParams()[k1]);
+      }
+    } else {
+      setState(defaultPlainParams());
+    }
   };
-
-  computedHairHighlightColor = () =>
-    toHex(lighten(saturate(adjustHue(state.hair.baseColor, 260), 0.4), 0.4));
-
-  computedHairStrokeColor = () =>
-    toHex(darken(saturate(adjustHue(state.hair.baseColor, 32), 0.3), 0.3));
-
-  computedEyePupilSecondaryColor = () =>
-    toHex(
-      darken(desaturate(adjustHue(state.eyes.pupilBaseColor, 320), 0.2), 0.3),
-    );
-
-  computedEyeEyeWhiteColor = () => "#FFFFFF";
-  computedEyeShadowColor = () => "#D5D5FF";
-  computedTeethColor = () => "#ffffff";
-  computedInsideColor = () =>
-    toHex(darken(desaturate(adjustHue(state.head.baseColor, 347), 0.3), 0.3));
-
-  computedHeadShadowColor = () =>
-    toHex(darken(adjustHue(state.head.baseColor, 10), 0.1));
-
-  computedHeadStrokeColor = () =>
-    toHex(darken(desaturate(adjustHue(state.head.baseColor, 336), 0.3), 0.65));
-
-  computedEyebrowsBaseColor = () =>
-    state.hair.strokeColor ?? state.hair.computedStrokeColor;
-
-  computedEyeEyelashesColor = () =>
-    state.hair.strokeColor ?? state.hair.computedStrokeColor;
-
-  computedMouthStrokeColor = () =>
-    state.head.strokeColor ?? state.head.computedStrokeColor;
 
   const saveToUrl = () => {
     const url = new URL(window.location.href);
     url.searchParams.set(
       "p",
-      compressToEncodedURIComponent(
-        JSON.stringify(state, removeComputedReplacer),
-      ),
+      compressToEncodedURIComponent(JSON.stringify(state)),
     );
     window.history.replaceState(null, "", url.toString());
   };
@@ -311,7 +282,7 @@ export const IconParamsProvider: ParentComponent<{
     const p = url.searchParams.get("p");
     if (p) {
       const data = parseParams(p);
-      updateState(data);
+      setState(data);
     }
   };
 
@@ -330,11 +301,11 @@ export const IconParamsProvider: ParentComponent<{
         state,
         {
           setProps: setState,
+          computeColors,
           saveToUrl,
           loadFromUrl,
           reset,
           toggleAutosave,
-          updateState,
         },
         configs,
       ]}
