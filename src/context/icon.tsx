@@ -15,10 +15,13 @@ import {
   onMount,
 } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
-import type { eyesOptions } from "~/components/parts/eyes";
-import type { hairOptions } from "~/components/parts/hair";
-import type { mouthOptions } from "~/components/parts/mouth";
+import { eyebrowsOptions } from "~/components/parts/eyebrows";
+import { eyesOptions } from "~/components/parts/eyes";
+import { hairOptions } from "~/components/parts/hair";
+import { headOptions } from "~/components/parts/head";
+import { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
+import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
   OmitNever,
@@ -86,7 +89,7 @@ type IconParamsWithoutComputed = {
     open: number;
   };
   eyebrows: {
-    type: "default" | "komari" | "angry";
+    type: (typeof eyebrowsOptions)[number]["value"];
     baseColor?: Color;
   };
   mouth: {
@@ -99,7 +102,7 @@ type IconParamsWithoutComputed = {
   };
   accessories: Accessory[];
   head: {
-    type: "default";
+    type: (typeof headOptions)[number]["value"];
     position: {
       /** 0 mean center */
       x: number;
@@ -131,6 +134,7 @@ export type IconParamsContextActions = {
   saveToUrl: () => void;
   loadFromUrl: () => void;
   toggleAutosave: () => void;
+  randomize: () => void;
 };
 
 export type IconParamsContextValue = [
@@ -288,6 +292,19 @@ export const IconParamsProvider: ParentComponent<{
     setConfigs("autosave", (prev) => !prev);
   };
 
+  const randomize = () => {
+    reset();
+    setState("hair", "type", choice(hairOptions).value);
+    setState("hair", "baseColor", randomHSL([0, 360], [0, 1], [0.05, 1]));
+    setState("eyes", "type", choice(eyesOptions).value);
+    setState("eyes", "pupilBaseColor", randomHSL([0, 360], [0, 1], [0, 1]));
+    setState("eyebrows", "type", choice(eyebrowsOptions).value);
+    setState("mouth", "type", choice(mouthOptions).value);
+    setState("head", "type", choice(headOptions).value);
+    setState("head", "baseColor", randomHSL([0, 25], [0.5, 1], [0.6, 0.9]));
+    setState("background", randomHSL([0, 360], [0.2, 1], [0.2, 0.9]));
+  };
+
   onMount(loadFromUrl);
   createEffect(() => {
     if (configs.autosave) saveToUrl();
@@ -304,6 +321,7 @@ export const IconParamsProvider: ParentComponent<{
           loadFromUrl,
           reset,
           toggleAutosave,
+          randomize,
         },
         configs,
       ]}

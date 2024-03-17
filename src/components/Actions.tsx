@@ -22,7 +22,8 @@ const separatorClass = "h-px m-2";
 const indicatorClass = "absolute left-1";
 
 const Actions: Component = () => {
-  const [_, { reset, toggleAutosave, saveToUrl }, configs] = useIconParams();
+  const [_, { reset, toggleAutosave, saveToUrl, randomize }, configs] =
+    useIconParams();
 
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
@@ -195,6 +196,10 @@ const Actions: Component = () => {
                 </Menubar.ItemIndicator>
                 Auto save
               </Menubar.CheckboxItem>
+              <Menubar.Separator class={separatorClass} />
+              <Menubar.Item class={itemClass} onSelect={randomize}>
+                Randomize
+              </Menubar.Item>
               <Menubar.Separator class={separatorClass} />
               <Menubar.Item class={itemClass} onSelect={reset}>
                 Reset all
