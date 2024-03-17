@@ -4,16 +4,16 @@ import Button from "./Button";
 
 type Props = (
   | {
-      setColor: (color: string) => void;
-      canEmpty?: false;
-      color: string;
-    }
+    setColor: (color: string) => void;
+    canEmpty?: false;
+    color: string;
+  }
   | {
-      setColor: (color: string | undefined) => void;
-      canEmpty: true;
-      color?: string;
-      fallbackColor: string;
-    }
+    setColor: (color: string | undefined) => void;
+    canEmpty: true;
+    color?: string;
+    fallbackColor: string;
+  }
 ) & {
   label: string;
   resetColor?: () => void;
@@ -32,6 +32,13 @@ const ColorField: Component<Props> = (props) => {
       props.setColor(selectedColor());
     }
   });
+
+  const handleReset = () => {
+    props.resetColor?.();
+    setSelectedColor(
+      !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
+    );
+  }
 
   return (
     <div class="flex w-full">
@@ -75,14 +82,7 @@ const ColorField: Component<Props> = (props) => {
           <Show when={props.resetColor}>
             <Button
               variant="secondary"
-              onClick={() => {
-                props.resetColor?.();
-                setSelectedColor(
-                  !props.canEmpty
-                    ? props.color
-                    : props.color ?? props.fallbackColor,
-                );
-              }}
+              onClick={handleReset}
               type="button"
               disabled={isAuto()}
             >
