@@ -22,8 +22,11 @@ const separatorClass = "h-px m-2";
 const indicatorClass = "absolute left-1";
 
 const Actions: Component = () => {
-  const [_, { reset, toggleAutosave, saveToUrl, randomize }, configs] =
-    useIconParams();
+  const [
+    _,
+    { reset, toggleAutosave, saveToUrl, randomize, undo, redo },
+    configs,
+  ] = useIconParams();
 
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
@@ -77,6 +80,14 @@ const Actions: Component = () => {
     }
     if (e.ctrlKey && e.shiftKey && e.key === "S") {
       handleDownloadSvg();
+    }
+
+    e.preventDefault();
+    if (e.ctrlKey && e.key === "z") {
+      undo();
+    }
+    if (e.ctrlKey && e.shiftKey && e.key === "Z") {
+      redo();
     }
   };
 
@@ -170,15 +181,15 @@ const Actions: Component = () => {
           <Menubar.Trigger>Edit</Menubar.Trigger>
           <Menubar.Portal>
             <Menubar.Content class={contentClass}>
-              {/* <Menubar.Item class={itemClass}>
+              <Menubar.Item class={itemClass} onSelect={undo}>
                 Undo
                 <div class={itemRightSlot}>Ctrl + Z</div>
-                </Menubar.Item>
-                <Menubar.Item class={itemClass}>
+              </Menubar.Item>
+              <Menubar.Item class={itemClass} onSelect={redo}>
                 Redo
-                <div class={itemRightSlot}>Ctrl + Z</div>
-                </Menubar.Item>
-              <Menubar.Separator class={separatorClass} /> */}
+                <div class={itemRightSlot}>Ctrl + Shift + Z</div>
+              </Menubar.Item>
+              <Menubar.Separator class={separatorClass} />
               <Menubar.Item
                 class={itemClass}
                 onSelect={saveToUrl}

@@ -1,5 +1,6 @@
 import { Checkbox, TextField } from "@kobalte/core";
 import { type Component, Show, createEffect, createSignal } from "solid-js";
+import { useIconParams } from "~/context/icon";
 import Button from "./Button";
 
 type Props = (
@@ -20,6 +21,7 @@ type Props = (
 };
 
 const ColorField: Component<Props> = (props) => {
+  const [_, { setTrackHistory }] = useIconParams();
   const [isAuto, setIsAuto] = createSignal(props.color === undefined);
   const [selectedColor, setSelectedColor] = createSignal(
     !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
@@ -47,14 +49,9 @@ const ColorField: Component<Props> = (props) => {
           props.canEmpty ? props.color ?? props.fallbackColor : props.color
         }
         onChange={(v) => {
-          if (props.canEmpty && isAuto()) {
-            // computed color
-            props.setColor(undefined);
-          } else {
-            // manual color
-            props.setColor(v);
-            setSelectedColor(v);
-          }
+          setTrackHistory(false);
+          props.setColor(v);
+          setSelectedColor(v);
         }}
         disabled={isAuto()}
         class="parent grid  data-[disabled]:grid-rows-[max-content_0fr] grid-rows-[max-content_1fr] transition-all-100 w-full"
@@ -78,7 +75,15 @@ const ColorField: Component<Props> = (props) => {
           </Show>
         </div>
         <div class="flex items-center gap-2 overflow-hidden">
-          <TextField.Input type="color" class="w-full h-8 rounded" />
+          <TextField.Input
+            type="color"
+            class="w-full h-8 rounded"
+            onChange={(e) => {
+              // historyに一度だけ保存するためにonChangeでsetColorを呼ぶ
+              setTrackHistory(true);
+              props.setColor(e.currentTarget.value);
+            }}
+          />
           <Show when={props.onReset}>
             <Button
               variant="secondary"

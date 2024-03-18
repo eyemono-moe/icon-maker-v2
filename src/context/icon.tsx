@@ -1,3 +1,4 @@
+import { createUndoHistory } from "@solid-primitives/history";
 import {
   adjustHue,
   darken,
@@ -7,14 +8,14 @@ import {
   toHex,
 } from "color2k";
 import pkg from "lz-string";
-import { useContext } from "solid-js";
+import { type Setter, createSignal, useContext } from "solid-js";
 import {
   type ParentComponent,
   createContext,
   createEffect,
   onMount,
 } from "solid-js";
-import { type SetStoreFunction, createStore } from "solid-js/store";
+import { type SetStoreFunction, createStore, reconcile } from "solid-js/store";
 import { eyebrowsOptions } from "~/components/parts/eyebrows";
 import { eyesOptions } from "~/components/parts/eyes";
 import { hairOptions } from "~/components/parts/hair";
@@ -135,6 +136,10 @@ export type IconParamsContextActions = {
   loadFromUrl: () => void;
   toggleAutosave: () => void;
   randomize: () => void;
+  // history
+  setTrackHistory: Setter<boolean>;
+  undo: () => void;
+  redo: () => void;
 };
 
 export type IconParamsContextValue = [
@@ -190,6 +195,20 @@ export const IconParamsProvider: ParentComponent<{
   const [configs, setConfigs] = createStore<IconParamsContextConfigs>({
     autosave: true,
   });
+
+  // see: https://github.com/solidjs-community/solid-primitives/tree/main/packages/history
+  const [trackHistory, setTrackHistory] = createSignal(true);
+  const history = createUndoHistory(
+    () => {
+      if (trackHistory()) {
+        const copy = JSON.parse(JSON.stringify(state));
+        return () => setState(reconcile(copy));
+      }
+    },
+    {
+      limit: 30,
+    },
+  );
 
   const computeColors: ComputedColors = {
     hair: {
@@ -267,7 +286,7 @@ export const IconParamsProvider: ParentComponent<{
         setState(k1, defaultPlainParams()[k1]);
       }
     } else {
-      setState(defaultPlainParams());
+      setState(reconcile(defaultPlainParams()));
     }
   };
 
@@ -322,6 +341,9 @@ export const IconParamsProvider: ParentComponent<{
           reset,
           toggleAutosave,
           randomize,
+          setTrackHistory,
+          undo: history.undo,
+          redo: history.redo,
         },
         configs,
       ]}
