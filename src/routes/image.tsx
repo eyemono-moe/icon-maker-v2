@@ -31,7 +31,7 @@ export async function GET(event: APIEvent) {
       return new Response(svgText, {
         headers: {
           "Content-Type": "image/svg+xml",
-          "Cache-Control": cache
+          "Cache-Control": cache,
         },
       });
     case "png": {
@@ -39,7 +39,7 @@ export async function GET(event: APIEvent) {
       return new Response(png, {
         headers: {
           "Content-Type": "image/png",
-          "Cache-Control": cache
+          "Cache-Control": cache,
         },
       });
     }
