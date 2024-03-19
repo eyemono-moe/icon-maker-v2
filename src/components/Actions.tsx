@@ -104,7 +104,7 @@ const Actions: Component = () => {
 
   return (
     <>
-      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300 data-[expanded]:children:bg-zinc-300">
+      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300/50 data-[expanded]:children:bg-zinc-300/50">
         <Menubar.Menu>
           <Menubar.Trigger>File</Menubar.Trigger>
           <Menubar.Portal>

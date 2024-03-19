@@ -1,10 +1,12 @@
+import { Splitter } from "@ark-ui/solid";
 import { Link, Meta, Title } from "@solidjs/meta";
+import { Show, createSignal } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
 import { object, optional, string } from "valibot";
-import Actions from "~/components/Actions";
 import Header from "~/components/Header";
 import Icon from "~/components/Icon";
 import Settings from "~/components/Settings";
+import { useIconColors } from "~/context/iconColors";
 import { useQuery } from "~/lib/query";
 
 const querySchema = object({
@@ -22,6 +24,32 @@ const getParamsServer = () => {
 
 export default function Home() {
   const serverIconParam = getParamsServer();
+  const [state] = useIconColors();
+  const [isFull, setIsFull] = createSignal(false);
+
+  const IconWrapper = () => (
+    <div
+      class="relative grid place-items-center w-full h-full children-[svg]:(w-full max-w-100vh aspect-square h-auto)"
+      style={{
+        background: state.background,
+      }}
+    >
+      <Icon />
+      <button
+        type="button"
+        onClick={() => setIsFull((prev) => !prev)}
+        class="absolute top-4 right-4 p-1 rounded-full bg-zinc-800 opacity-10 hover:enabled:opacity-50 transition-opacity-100"
+      >
+        <div
+          class="w-6 h-6 c-zinc-50"
+          classList={{
+            "i-material-symbols:fullscreen-rounded": !isFull(),
+            "i-material-symbols:fullscreen-exit-rounded": isFull(),
+          }}
+        />
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -43,23 +71,31 @@ export default function Home() {
         type="image/svg+xml"
         href={`/image?f=svg${serverIconParam ? `&p=${serverIconParam}` : ""}`}
       />
-      <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset!">
-        <Header />
-        <main class="h-full w-full md:(text-base flex-row-reverse items-stretch) mx-a text-sm items-center max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
-          <div class="flex flex-col justify-center w-full md:max-w-unset max-w-25vh">
-            <div class="flex flex-col rounded overflow-hidden">
-              <div class="bg-zinc-200">
-                <div class="text-center c-zinc-500">eyemono.svg</div>
-                <Actions />
-              </div>
-              <div class="children-[svg]:(w-full aspect-square h-auto)">
-                <Icon />
-              </div>
-            </div>
-          </div>
-          <Settings />
-        </main>
-      </div>
+      <Show when={!isFull()} fallback={<IconWrapper />}>
+        <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset! overflow-hidden">
+          <Header />
+          <main class="h-full w-full overflow-hidden">
+            <Splitter.Root
+              orientation="horizontal"
+              size={[
+                { id: "icon", size: 50, minSize: 20 },
+                { id: "settings", size: 50, minSize: 20 },
+              ]}
+            >
+              <Splitter.Panel id="icon">
+                <IconWrapper />
+              </Splitter.Panel>
+              <Splitter.ResizeTrigger
+                class="outline-none min-w-1 bg-zinc-200"
+                id="icon:settings"
+              />
+              <Splitter.Panel id="settings">
+                <Settings />
+              </Splitter.Panel>
+            </Splitter.Root>
+          </main>
+        </div>
+      </Show>
     </>
   );
 }

@@ -57,7 +57,9 @@ const ColorField: Component<Props> = (props) => {
         class="parent grid  data-[disabled]:grid-rows-[max-content_0fr] grid-rows-[max-content_1fr] transition-all-100 w-full"
       >
         <div class="flex items-center gap-4">
-          <TextField.Label class="font-700">{props.label}</TextField.Label>
+          <TextField.Label class="font-700 text-nowrap">
+            {props.label}
+          </TextField.Label>
           <Show when={props.canEmpty}>
             <Checkbox.Root
               checked={isAuto()}
@@ -70,7 +72,9 @@ const ColorField: Component<Props> = (props) => {
                   <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple-600) w-6! h-6!" />
                 </Checkbox.Indicator>
               </Checkbox.Control>
-              <Checkbox.Label>Set automatically</Checkbox.Label>
+              <Checkbox.Label class="text-nowrap">
+                Set automatically
+              </Checkbox.Label>
             </Checkbox.Root>
           </Show>
         </div>

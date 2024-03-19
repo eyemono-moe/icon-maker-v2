@@ -27,7 +27,9 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
       class="flex flex-col gap-1"
     >
       <div class="flex gap-2 items-center">
-        <RadioGroup.Label class="font-700">{props.label}</RadioGroup.Label>
+        <RadioGroup.Label class="font-700 text-nowrap">
+          {props.label}
+        </RadioGroup.Label>
         <Button variant="secondary" type="button" onClick={props.onReset}>
           Reset
         </Button>
