@@ -1,5 +1,8 @@
 import { type Component, For, Match, Suspense, Switch } from "solid-js";
-import { type IconParamsContextState, useIconParams } from "~/context/icon";
+import {
+  type IconColorsContextState,
+  useIconColors,
+} from "~/context/iconColors";
 import { PortalTarget } from "../context/ssrPortal";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
@@ -12,14 +15,14 @@ import { mouthOptions } from "./parts/mouth";
 export const iconSvgId = "icon-svg";
 
 export type SelectOptions = {
-  [K in keyof IconParamsContextState as IconParamsContextState[K] extends {
+  [K in keyof IconColorsContextState as IconColorsContextState[K] extends {
     type: string;
   }
     ? K
-    : never]: IconParamsContextState[K] extends {
+    : never]: IconColorsContextState[K] extends {
     type: string;
   }
-    ? IconParamsContextState[K]["type"]
+    ? IconColorsContextState[K]["type"]
     : never;
 };
 
@@ -30,7 +33,7 @@ const Parts = <K extends keyof SelectOptions>(props: {
   options: Options<SelectOptions[K]>;
   defaultParts: SelectOptions[K];
 }) => {
-  const [iconParams] = useIconParams();
+  const [iconColors] = useIconColors();
   const Fallback =
     props.options.find((o) => o.value === props.defaultParts)?.component ??
     (() => <></>);
@@ -39,7 +42,7 @@ const Parts = <K extends keyof SelectOptions>(props: {
     <Switch fallback={<Fallback />}>
       <For each={props.options}>
         {(option) => (
-          <Match when={iconParams[props.parts].type === option.value}>
+          <Match when={iconColors[props.parts].type === option.value}>
             <Suspense>
               <option.component />
             </Suspense>

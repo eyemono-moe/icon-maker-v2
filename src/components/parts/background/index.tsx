@@ -1,9 +1,9 @@
 import type { Component } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Background: Component = () => {
-  const [iconParams] = useIconParams();
+  const [iconColors] = useIconColors();
 
   return (
     <>
@@ -19,7 +19,7 @@ const Background: Component = () => {
           y="0"
           width="400"
           height="400"
-          fill={iconParams.background}
+          fill={iconColors.background}
         />
       </SsrPortal>
     </>

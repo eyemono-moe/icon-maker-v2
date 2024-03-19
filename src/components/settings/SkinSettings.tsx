@@ -1,25 +1,25 @@
 import type { Component } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
 
 const SkinSettings: Component = () => {
-  const [iconParams, { setProps, computeColors, reset }] = useIconParams();
+  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
 
   return (
     <>
       <ColorField
         label="skin color"
-        color={iconParams.head.baseColor}
-        setColor={(color) => setProps("head", "baseColor", color)}
+        color={iconColors.head.baseColor}
+        setColor={(color) => setColors("head", "baseColor", color)}
         onReset={() => {
           reset("head", "baseColor");
         }}
       />
       <ColorField
         label="shadow color"
-        color={iconParams.head.shadowColor}
+        color={iconColors.head.shadowColor}
         fallbackColor={computeColors.head.computedShadowColor}
-        setColor={(color) => setProps("head", "shadowColor", color)}
+        setColor={(color) => setColors("head", "shadowColor", color)}
         canEmpty
         onReset={() => {
           reset("head", "shadowColor");
@@ -27,9 +27,9 @@ const SkinSettings: Component = () => {
       />
       <ColorField
         label="line color"
-        color={iconParams.head.strokeColor}
+        color={iconColors.head.strokeColor}
         fallbackColor={computeColors.head.computedStrokeColor}
-        setColor={(color) => setProps("head", "strokeColor", color)}
+        setColor={(color) => setColors("head", "strokeColor", color)}
         canEmpty
         onReset={() => {
           reset("head", "strokeColor");

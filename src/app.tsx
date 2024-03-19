@@ -4,7 +4,7 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import "@unocss/reset/tailwind-compat.css";
 import { Suspense } from "solid-js";
-import { IconParamsProvider } from "./context/icon";
+import { IconColorsProvider } from "./context/iconColors";
 import { Toaster } from "./lib/toast";
 
 export default function App() {
@@ -12,9 +12,9 @@ export default function App() {
     <Router
       root={(props) => (
         <MetaProvider>
-          <IconParamsProvider>
+          <IconColorsProvider>
             <Suspense>{props.children}</Suspense>
-          </IconParamsProvider>
+          </IconColorsProvider>
           <Toaster />
         </MetaProvider>
       )}

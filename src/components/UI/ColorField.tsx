@@ -1,6 +1,6 @@
 import { Checkbox, TextField } from "@kobalte/core";
 import { type Component, Show, createEffect, createSignal } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import Button from "./Button";
 
 type Props = (
@@ -21,7 +21,7 @@ type Props = (
 };
 
 const ColorField: Component<Props> = (props) => {
-  const [_, { setTrackHistory }] = useIconParams();
+  const [_, { setTrackHistory }] = useIconColors();
   const [isAuto, setIsAuto] = createSignal(props.color === undefined);
   const [selectedColor, setSelectedColor] = createSignal(
     !props.canEmpty ? props.color : props.color ?? props.fallbackColor,

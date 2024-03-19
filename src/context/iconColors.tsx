@@ -66,7 +66,7 @@ type ComputedColor<T extends Record<string, unknown>> = Prettify<
   >
 >;
 
-type IconParamsWithoutComputed = {
+type IconColorsWithoutComputed = {
   hair: {
     type: (typeof hairOptions)[number]["value"];
     baseColor: Color;
@@ -80,14 +80,6 @@ type IconParamsWithoutComputed = {
     eyeWhiteColor?: Color;
     shadowColor?: Color;
     eyelashesColor?: Color;
-    position: {
-      /** -1.0 ~ 1.0 */
-      x: number;
-      /** -1.0 ~ 1.0 */
-      y: number;
-    };
-    /** 0.0 ~ 1.0 */
-    open: number;
   };
   eyebrows: {
     type: (typeof eyebrowsOptions)[number]["value"];
@@ -98,12 +90,36 @@ type IconParamsWithoutComputed = {
     strokeColor?: Color;
     teethColor?: Color;
     insideColor?: Color;
-    /** 0.0 ~ 1.0 */
-    open: number;
   };
   accessories: Accessory[];
   head: {
     type: (typeof headOptions)[number]["value"];
+    baseColor: Color;
+    strokeColor?: Color;
+    shadowColor?: Color;
+  };
+  background: Color;
+};
+
+export type IconColors = IconColorsWithoutComputed;
+export type ComputedColors = ComputedColor<IconColorsWithoutComputed>;
+
+type IconTransform = {
+  eyes: {
+    position: {
+      /** -1.0 ~ 1.0 */
+      x: number;
+      /** -1.0 ~ 1.0 */
+      y: number;
+    };
+    /** 0.0 ~ 1.0 */
+    open: number;
+  };
+  mouth: {
+    /** 0.0 ~ 1.0 */
+    open: number;
+  };
+  head: {
     position: {
       /** 0 mean center */
       x: number;
@@ -112,26 +128,19 @@ type IconParamsWithoutComputed = {
     };
     /** 0 mean no rotation */
     rotation: number;
-    baseColor: Color;
-    strokeColor?: Color;
-    shadowColor?: Color;
   };
-  background: Color;
 };
 
-export type IconParams = IconParamsWithoutComputed;
-export type ComputedColors = ComputedColor<IconParamsWithoutComputed>;
+export type IconColorsContextState = IconColors;
 
-export type IconParamsContextState = IconParams;
-
-export type IconParamsContextConfigs = {
+export type IconColorsContextConfigs = {
   autosave: boolean;
 };
 
-export type IconParamsContextActions = {
-  setProps: SetStoreFunction<IconParamsContextState>;
+export type IconColorsContextActions = {
+  setColors: SetStoreFunction<IconColorsContextState>;
   computeColors: ComputedColors;
-  reset: ResetStore<IconParamsContextState>;
+  reset: ResetStore<IconColorsContextState>;
   saveToUrl: () => void;
   loadFromUrl: () => void;
   toggleAutosave: () => void;
@@ -142,23 +151,21 @@ export type IconParamsContextActions = {
   redo: () => void;
 };
 
-export type IconParamsContextValue = [
-  params: IconParamsContextState,
-  actions: IconParamsContextActions,
-  config: IconParamsContextConfigs,
+export type IconColorsContextValue = [
+  colors: IconColorsContextState,
+  actions: IconColorsContextActions,
+  config: IconColorsContextConfigs,
 ];
 
-export const IconParamsContext = createContext<IconParamsContextValue>();
+export const IconColorsContext = createContext<IconColorsContextValue>();
 
-const defaultIconParams: IconParams = {
+const defaultIconColors: IconColors = {
   hair: {
     baseColor: "#9940BB",
     type: "short",
   },
   eyes: {
     pupilBaseColor: "#EE2266",
-    open: 1,
-    position: { x: 0, y: 0 },
     type: "default",
   },
   accessories: [],
@@ -168,31 +175,28 @@ const defaultIconParams: IconParams = {
   },
   head: {
     type: "default",
-    position: { x: 0, y: 0 },
-    rotation: 0,
     baseColor: "#FFCCCC",
   },
   mouth: {
     type: "default",
-    open: 0,
   },
 };
 
 // need to deep clone
-const defaultPlainParams = () =>
-  JSON.parse(JSON.stringify(defaultIconParams)) as IconParams;
+const defaultPlainColors = () =>
+  JSON.parse(JSON.stringify(defaultIconColors)) as IconColors;
 
-export const parseParams = (params: string): IconParams => {
-  return JSON.parse(decompressFromEncodedURIComponent(params)) as IconParams;
+export const parseColors = (params: string): IconColors => {
+  return JSON.parse(decompressFromEncodedURIComponent(params)) as IconColors;
 };
 
-export const IconParamsProvider: ParentComponent<{
-  params?: IconParams;
+export const IconColorsProvider: ParentComponent<{
+  params?: IconColors;
 }> = (props) => {
-  const [state, setState] = createStore<IconParamsContextState>(
-    defaultPlainParams(),
+  const [state, setState] = createStore<IconColorsContextState>(
+    defaultPlainColors(),
   );
-  const [configs, setConfigs] = createStore<IconParamsContextConfigs>({
+  const [configs, setConfigs] = createStore<IconColorsContextConfigs>({
     autosave: true,
   });
 
@@ -233,10 +237,10 @@ export const IconParamsProvider: ParentComponent<{
         );
       },
       get computedEyeWhiteColor() {
-        return defaultPlainParams().eyes.eyeWhiteColor ?? "#FFFFFF";
+        return defaultPlainColors().eyes.eyeWhiteColor ?? "#FFFFFF";
       },
       get computedShadowColor() {
-        return defaultPlainParams().eyes.shadowColor ?? "#D5D5FF";
+        return defaultPlainColors().eyes.shadowColor ?? "#D5D5FF";
       },
       get computedEyelashesColor() {
         return state.hair.strokeColor ?? computeColors.hair.computedStrokeColor;
@@ -252,10 +256,10 @@ export const IconParamsProvider: ParentComponent<{
         return state.head.strokeColor ?? computeColors.head.computedStrokeColor;
       },
       get computedTeethColor() {
-        return defaultPlainParams().mouth.teethColor ?? "#ffffff";
+        return defaultPlainColors().mouth.teethColor ?? "#ffffff";
       },
       get computedInsideColor() {
-        return defaultPlainParams().mouth.insideColor ?? "#DD4466";
+        return defaultPlainColors().mouth.insideColor ?? "#DD4466";
       },
     },
     head: {
@@ -272,8 +276,8 @@ export const IconParamsProvider: ParentComponent<{
 
   // TODO: 可変長引数に対応する
   const reset = <
-    K1 extends keyof IconParamsContextState,
-    K2 extends keyof IconParamsContextState[K1],
+    K1 extends keyof IconColorsContextState,
+    K2 extends keyof IconColorsContextState[K1],
   >(
     k1?: K1,
     k2?: K2,
@@ -281,12 +285,12 @@ export const IconParamsProvider: ParentComponent<{
     if (k1) {
       if (k2) {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setState(k1, k2 as any, defaultPlainParams()[k1][k2]);
+        setState(k1, k2 as any, defaultPlainColors()[k1][k2]);
       } else {
-        setState(k1, defaultPlainParams()[k1]);
+        setState(k1, defaultPlainColors()[k1]);
       }
     } else {
-      setState(reconcile(defaultPlainParams()));
+      setState(reconcile(defaultPlainColors()));
     }
   };
 
@@ -302,7 +306,7 @@ export const IconParamsProvider: ParentComponent<{
     const url = new URL(window.location.href);
     const p = url.searchParams.get("p");
     if (p) {
-      const data = parseParams(p);
+      const data = parseColors(p);
       setState(data);
     }
   };
@@ -330,11 +334,11 @@ export const IconParamsProvider: ParentComponent<{
   });
 
   return (
-    <IconParamsContext.Provider
+    <IconColorsContext.Provider
       value={[
         state,
         {
-          setProps: setState,
+          setColors: setState,
           computeColors,
           saveToUrl,
           loadFromUrl,
@@ -349,12 +353,12 @@ export const IconParamsProvider: ParentComponent<{
       ]}
     >
       {props.children}
-    </IconParamsContext.Provider>
+    </IconColorsContext.Provider>
   );
 };
 
-export const useIconParams = () => {
-  const c = useContext(IconParamsContext);
+export const useIconColors = () => {
+  const c = useContext(IconColorsContext);
   if (!c)
     throw new Error("useIconParams must be used within a IconParamsProvider");
   return c;

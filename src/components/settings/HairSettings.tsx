@@ -1,20 +1,20 @@
 import type { Component } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
 import PartsSelect from "../UI/PartsSelect";
 import { hairOptions } from "../parts/hair";
 
 const HairSettings: Component = () => {
-  const [iconParams, { setProps, computeColors, reset }] = useIconParams();
+  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
 
   return (
     <>
       <PartsSelect
         options={hairOptions}
         label="hair type"
-        value={iconParams.hair.type}
+        value={iconColors.hair.type}
         onChange={(value) => {
-          setProps("hair", "type", value);
+          setColors("hair", "type", value);
         }}
         previewViewBox="0 0 400 400"
         onReset={() => {
@@ -23,17 +23,17 @@ const HairSettings: Component = () => {
       />
       <ColorField
         label="base color"
-        color={iconParams.hair.baseColor}
-        setColor={(color) => setProps("hair", "baseColor", color)}
+        color={iconColors.hair.baseColor}
+        setColor={(color) => setColors("hair", "baseColor", color)}
         onReset={() => {
           reset("hair", "baseColor");
         }}
       />
       <ColorField
         label="highlight color"
-        color={iconParams.hair.highlightColor}
+        color={iconColors.hair.highlightColor}
         fallbackColor={computeColors.hair.computedHighlightColor}
-        setColor={(color) => setProps("hair", "highlightColor", color)}
+        setColor={(color) => setColors("hair", "highlightColor", color)}
         canEmpty
         onReset={() => {
           reset("hair", "highlightColor");
@@ -41,9 +41,9 @@ const HairSettings: Component = () => {
       />
       <ColorField
         label="stroke color"
-        color={iconParams.hair.strokeColor}
+        color={iconColors.hair.strokeColor}
         fallbackColor={computeColors.hair.computedStrokeColor}
-        setColor={(color) => setProps("hair", "strokeColor", color)}
+        setColor={(color) => setColors("hair", "strokeColor", color)}
         canEmpty
         onReset={() => {
           reset("hair", "strokeColor");

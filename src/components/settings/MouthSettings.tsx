@@ -1,20 +1,20 @@
 import type { Component } from "solid-js";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
 import PartsSelect from "../UI/PartsSelect";
 import { mouthOptions } from "../parts/mouth";
 
 const MouthSettings: Component = () => {
-  const [iconParams, { setProps, computeColors, reset }] = useIconParams();
+  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
 
   return (
     <>
       <PartsSelect
         options={mouthOptions}
         label="mouth type"
-        value={iconParams.mouth.type}
+        value={iconColors.mouth.type}
         onChange={(value) => {
-          setProps("mouth", "type", value);
+          setColors("mouth", "type", value);
         }}
         previewViewBox="188 282 60 60"
         onReset={() => {
@@ -23,9 +23,9 @@ const MouthSettings: Component = () => {
       />
       <ColorField
         label="line color"
-        color={iconParams.mouth.strokeColor}
+        color={iconColors.mouth.strokeColor}
         fallbackColor={computeColors.mouth.computedStrokeColor}
-        setColor={(color) => setProps("mouth", "strokeColor", color)}
+        setColor={(color) => setColors("mouth", "strokeColor", color)}
         canEmpty
         onReset={() => {
           reset("mouth", "strokeColor");
@@ -33,9 +33,9 @@ const MouthSettings: Component = () => {
       />
       <ColorField
         label="inside color"
-        color={iconParams.mouth.insideColor}
+        color={iconColors.mouth.insideColor}
         fallbackColor={computeColors.mouth.computedInsideColor}
-        setColor={(color) => setProps("mouth", "insideColor", color)}
+        setColor={(color) => setColors("mouth", "insideColor", color)}
         canEmpty
         onReset={() => {
           reset("mouth", "insideColor");
@@ -43,9 +43,9 @@ const MouthSettings: Component = () => {
       />
       <ColorField
         label="teeth color"
-        color={iconParams.mouth.teethColor}
+        color={iconColors.mouth.teethColor}
         fallbackColor={computeColors.mouth.computedTeethColor}
-        setColor={(color) => setProps("mouth", "teethColor", color)}
+        setColor={(color) => setColors("mouth", "teethColor", color)}
         canEmpty
         onReset={() => {
           reset("mouth", "teethColor");

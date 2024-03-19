@@ -1,7 +1,7 @@
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 
 const Accessories: PartsComponent = () => {
-  const [iconParams] = useIconParams();
+  const [iconColors] = useIconColors();
   return <></>;
 };
 

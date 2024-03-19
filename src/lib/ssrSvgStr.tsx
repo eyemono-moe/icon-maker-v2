@@ -2,19 +2,19 @@ import { type ParentComponent, createRenderEffect } from "solid-js";
 import { renderToString } from "solid-js/web";
 import Icon from "~/components/Icon";
 import {
-  type IconParams,
-  IconParamsProvider,
-  useIconParams,
-} from "~/context/icon";
+  type IconColors,
+  IconColorsProvider,
+  useIconColors,
+} from "~/context/iconColors";
 import { SsrPortalProvider } from "~/context/ssrPortal";
 import { optimizeSvg } from "./svg";
 
-const IconWithParam: ParentComponent<{ params?: IconParams }> = (props) => {
-  const [_, { setProps, reset }] = useIconParams();
+const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
+  const [_, { setColors, reset }] = useIconColors();
 
   createRenderEffect(() => {
     if (props.params) {
-      setProps(props.params);
+      setColors(props.params);
     } else {
       reset();
     }
@@ -23,13 +23,13 @@ const IconWithParam: ParentComponent<{ params?: IconParams }> = (props) => {
   return <Icon />;
 };
 
-export const ssrSvgStr = (params?: IconParams) => {
+export const ssrSvgStr = (params?: IconColors) => {
   const svgText = renderToString(() => {
     return (
       <SsrPortalProvider>
-        <IconParamsProvider>
+        <IconColorsProvider>
           <IconWithParam params={params} />
-        </IconParamsProvider>
+        </IconColorsProvider>
       </SsrPortalProvider>
     );
   });
@@ -38,7 +38,7 @@ export const ssrSvgStr = (params?: IconParams) => {
   return optimized;
 };
 
-export const ssrOgpSvgStr = (params?: IconParams) => {
+export const ssrOgpSvgStr = (params?: IconColors) => {
   const svgText = renderToString(() => (
     // biome-ignore lint/a11y/noSvgWithoutTitle: pngに変換するので必要ない
     <svg
@@ -55,9 +55,9 @@ export const ssrOgpSvgStr = (params?: IconParams) => {
       <g mask="url(#mask)">
         <g transform="translate(81,62.5)">
           <SsrPortalProvider>
-            <IconParamsProvider>
+            <IconColorsProvider>
               <IconWithParam params={params} />
-            </IconParamsProvider>
+            </IconColorsProvider>
           </SsrPortalProvider>
         </g>
       </g>

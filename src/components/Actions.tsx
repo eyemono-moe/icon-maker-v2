@@ -1,7 +1,7 @@
 import { Menubar } from "@kobalte/core";
 import { type Component, onCleanup, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import {
   copyImageUrl,
   copyPng,
@@ -26,7 +26,7 @@ const Actions: Component = () => {
     _,
     { reset, toggleAutosave, saveToUrl, randomize, undo, redo },
     configs,
-  ] = useIconParams();
+  ] = useIconColors();
 
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
