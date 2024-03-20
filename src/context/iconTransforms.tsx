@@ -112,12 +112,12 @@ export const IconTransformsProvider: ParentComponent<{
     isSyncing: false,
   });
 
-  const [faceDetect] = useFaceDetect();
+  const [faceDetect] = useFaceDetect() ?? [];
 
   createEffect(() => {
-    if (faceDetect.result) {
+    if (faceDetect?.result) {
       const headTransform = calcHeadTransform(
-        faceDetect?.result?.facialTransformationMatrixes?.[0],
+        faceDetect.result?.facialTransformationMatrixes?.[0],
         faceDetect.isMirrored,
       );
 

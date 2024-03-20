@@ -160,7 +160,11 @@ const defaultPlainColors = () =>
   JSON.parse(JSON.stringify(defaultIconColors)) as IconColors;
 
 export const parseColors = (params: string): IconColors => {
-  return JSON.parse(decompressFromEncodedURIComponent(params)) as IconColors;
+  try {
+    return JSON.parse(decompressFromEncodedURIComponent(params)) as IconColors;
+  } catch (e) {
+    return defaultPlainColors();
+  }
 };
 
 export const IconColorsProvider: ParentComponent<{

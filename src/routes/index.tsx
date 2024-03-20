@@ -40,6 +40,15 @@ const breakPoints = {
 
 export default function Home() {
   const serverIconParam = getParamsServer();
+  const ogpParams = new URLSearchParams(
+    serverIconParam ? { p: serverIconParam } : undefined,
+  );
+  const ogpUrl = `https://icon.eyemono.moe/ogp?${ogpParams.toString()}`;
+  const iconParams = new URLSearchParams(
+    serverIconParam ? { p: serverIconParam } : undefined,
+  );
+  const iconUrl = `/image?f=svg&${iconParams.toString()}`;
+
   const [isFull, setIsFull] = createSignal(false);
 
   const matches = createBreakpoints(breakPoints);
@@ -85,23 +94,9 @@ export default function Home() {
   return (
     <>
       <Title>eyemono.moe icon maker</Title>
-      <Meta
-        property="og:image"
-        content={`https://icon.eyemono.moe/ogp${
-          serverIconParam ? `?p=${serverIconParam}` : ""
-        }`}
-      />
-      <Meta
-        property="twitter:image"
-        content={`https://icon.eyemono.moe/ogp${
-          serverIconParam ? `?p=${serverIconParam}` : ""
-        }`}
-      />
-      <Link
-        rel="icon"
-        type="image/svg+xml"
-        href={`/image?f=svg${serverIconParam ? `&p=${serverIconParam}` : ""}`}
-      />
+      <Meta property="og:image" content={ogpUrl} />
+      <Meta property="twitter:image" content={ogpUrl} />
+      <Link rel="icon" type="image/svg+xml" href={iconUrl} />
       <FaceDetectProvider>
         <IconTransformsProvider>
           <IconColorsProvider params={param()}>
