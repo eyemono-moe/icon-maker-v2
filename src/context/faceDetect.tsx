@@ -4,7 +4,6 @@ import {
   type FaceLandmarkerResult,
   FilesetResolver,
 } from "@mediapipe/tasks-vision";
-import pkg from "lz-string";
 import {
   type Component,
   Show,
@@ -18,9 +17,6 @@ import {
 import { type ParentComponent, createContext } from "solid-js";
 import { createStore } from "solid-js/store";
 import Loading from "~/components/UI/Loading";
-
-const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
-  pkg;
 
 export type FaceDetectContextState = {
   deviceId?: string;
@@ -152,7 +148,6 @@ export const FaceDetectProvider: ParentComponent = (props) => {
             },
           })
           .then((stream) => {
-            setState("cameraState", "loaded");
             onMediaStreamLoaded(stream);
           })
           .catch((err) => {
@@ -176,6 +171,7 @@ export const FaceDetectProvider: ParentComponent = (props) => {
         canvas.height = detectResVideoRef?.videoHeight ?? 0;
       }
 
+      setState("cameraState", "loaded");
       // 顔認識を開始
       predict();
     });
@@ -254,15 +250,15 @@ export const FaceDetectProvider: ParentComponent = (props) => {
   ) => {
     return (
       <Show
-        when={state.deviceId}
+        when={state.cameraState !== "unselected"}
         fallback={
-          <div class="w-full aspect-2 rounded bg-black flex flex-col gap-4 items-center justify-center ">
+          <div class="w-full aspect-1.5 rounded bg-black c-zinc flex flex-col gap-4 items-center justify-center ">
             <div class="i-material-symbols:videocam-off-outline-rounded w-12 h-12" />
             no camera selected
           </div>
         }
       >
-        <div class="relative overflow-hidden rounded">
+        <div class="relative overflow-hidden rounded bg-black c-zinc">
           {/* biome-ignore lint/a11y/useMediaCaption: プレビューなのでcaptionは不要 */}
           <video
             ref={detectResVideoRef}
@@ -271,15 +267,24 @@ export const FaceDetectProvider: ParentComponent = (props) => {
               "scale-x-[-1]": state.isMirrored,
             }}
           />
-          <Show when={state.cameraState === "loading"}>
+          <Show
+            when={state.cameraState === "loading"}
+            fallback={
+              <>
+                <Show when={!props.showVideo}>
+                  <div class="absolute w-full h-full top-0 bg-black" />
+                </Show>
+                <Show when={!props.showVideo && !props.showCanvas}>
+                  <div class="absolute w-full h-full top-0 bg-black flex flex-col gap-4 items-center justify-center">
+                    <div class="i-material-symbols:preview-off-rounded w-12 h-12" />
+                    <div>camera loaded but preview is hidden</div>
+                  </div>
+                </Show>
+              </>
+            }
+          >
             <div class="absolute w-full h-full top-0">
               <Loading />
-            </div>
-          </Show>
-          <Show when={!props.showVideo && state.cameraState === "loaded"}>
-            <div class="absolute w-full h-full top-0 bg-black flex flex-col gap-4 items-center justify-center">
-              <div class="i-material-symbols:preview-off-rounded w-12 h-12" />
-              <div>camera loaded but preview is hidden</div>
             </div>
           </Show>
           <canvas
