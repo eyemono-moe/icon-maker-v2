@@ -73,20 +73,24 @@ const Actions: Component = () => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.shiftKey && e.key === "C") {
+      e.preventDefault();
       handleCopySvg();
     }
     if (e.ctrlKey && e.altKey && e.key === "c") {
+      e.preventDefault();
       handleCopySvgUrl();
     }
     if (e.ctrlKey && e.shiftKey && e.key === "S") {
+      e.preventDefault();
       handleDownloadSvg();
     }
 
-    e.preventDefault();
     if (e.ctrlKey && e.key === "z") {
+      e.preventDefault();
       undo();
     }
     if (e.ctrlKey && e.shiftKey && e.key === "Z") {
+      e.preventDefault();
       redo();
     }
   };
