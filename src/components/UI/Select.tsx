@@ -31,19 +31,25 @@ const Select = <T extends string>(props: Props<T>): JSX.Element => {
       itemComponent={(itemProps) => (
         <KSelect.Item
           item={itemProps.item}
-          class="rounded flex items-center justify-between px-2 data-[highlighted]:(outline-none bg-zinc-200)"
+          class="rounded flex items-center justify-between p-2 data-[highlighted]:(outline-none bg-zinc-200) data-[selected]:(bg-purple-600! c-white!)"
         >
           <KSelect.ItemLabel>{itemProps.item.rawValue.label}</KSelect.ItemLabel>
+          <KSelect.ItemIndicator>
+            <div class="i-material-symbols:check-small-rounded w-6 h-6" />
+          </KSelect.ItemIndicator>
         </KSelect.Item>
       )}
       class="flex flex-col gap-1 w-full"
     >
       <KSelect.Label class="font-700 text-nowrap">{props.label}</KSelect.Label>
       <div class="flex items-center gap-2 overflow-hidden">
-        <KSelect.Trigger class="inline-flex items-center w-full rounded p-2 b-2 bg-white">
+        <KSelect.Trigger class="inline-flex items-center justify-between w-full rounded p-2 b-2 bg-white">
           <KSelect.Value<Option<T>> class="data-[placeholder-shown]:c-zinc">
             {(state) => state.selectedOption().label}
           </KSelect.Value>
+          <KSelect.Icon class="data-[expanded]:rotate-180 transition-transform-250">
+            <div class="i-material-symbols:arrow-drop-down-rounded w-6 h-6 c-zinc" />
+          </KSelect.Icon>
         </KSelect.Trigger>
         <Show when={props.onReset}>
           <Button variant="secondary" onClick={props.onReset} type="button">
