@@ -1,11 +1,11 @@
 import { createUniqueId } from "solid-js";
 import type { PartsComponent } from "~/components/Icon";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
 const PonyTail: PartsComponent = (props) => {
-  const [iconParams, { computeColors }] = useIconParams();
+  const [iconColors, { computeColors }] = useIconColors();
   const hairFrontStrokeDefId = createUniqueId();
   const hairFrontFillDefId = createUniqueId();
   const highlightMaskId = createUniqueId();
@@ -33,20 +33,20 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-back-stroke-1"
           d="M259.5 208.5C265.545 263.766 281.384 291.978 295.784 317.628C303.271 330.964 310.369 343.607 315.5 359C315.5 352.238 314.857 346.033 313.748 340.181C317.647 346.309 321.736 353.621 326.707 366.001C336.507 354.891 345.25 342.926 352.533 329.811C350.307 341.542 346.743 352.955 342 366C382.955 319.572 390.203 258.192 364.845 160.457C364.805 160.305 364.766 160.153 364.726 160C345.935 87.7826 316.651 31.3768 268.688 29.1884L268.688 29.1884C229.592 27.4057 245.075 119.759 254.625 176.719C256.79 189.637 258.651 200.734 259.5 208.5Z"
           fill={
-            iconParams.hair.strokeColor ??
+            iconColors.hair.strokeColor ??
             computeColors.hair.computedStrokeColor
           }
         />
         <path
           id="hair-back-fill"
           d="M336.795 182.816C361.019 290.686 363.413 313.712 342 366C378.5 319.5 386.226 259 360.726 161C342 79 307.5 31.1885 268.688 31.1885C231.713 31.1885 246.868 119.461 256.429 175.778C258.682 189.048 260.624 200.489 261.5 208.5C267.285 261.39 282.833 290.097 296.302 314.964C304.224 329.591 311.426 342.89 315.5 359C313.172 336.751 306.772 320.928 300.059 304.326C293.797 288.842 287.261 272.682 283.5 250C283.473 249.842 283.447 249.683 283.421 249.524C283.447 249.683 283.474 249.842 283.5 250C287.055 271.439 294.025 287.363 300.555 302.283C304.266 310.761 307.834 318.915 310.553 327.571C316.564 339.155 322.008 350.549 326.707 366.001C337 350.569 346.376 335.576 354.07 319.972C357.765 289.802 352.819 254.27 336.795 182.816Z"
-          fill={iconParams.hair.baseColor}
+          fill={iconColors.hair.baseColor}
         />
         <path
           id="hair-back-stroke-2"
           d="M42 193C42 324 205.5 349.5 238.5 338C271.5 326.5 342 237 342 197C342 137 302 37 202 37C82 37 42 137 42 193Z"
           fill={
-            iconParams.hair.strokeColor ??
+            iconColors.hair.strokeColor ??
             computeColors.hair.computedStrokeColor
           }
         />
@@ -66,7 +66,7 @@ const PonyTail: PartsComponent = (props) => {
             href={`#${hairFrontStrokeDefId}`}
             transform="translate(3 12)"
             fill={
-              iconParams.head.shadowColor ??
+              iconColors.head.shadowColor ??
               computeColors.head.computedShadowColor
             }
           />
@@ -82,14 +82,14 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-front-stroke"
           href={`#${hairFrontStrokeDefId}`}
           fill={
-            iconParams.hair.strokeColor ??
+            iconColors.hair.strokeColor ??
             computeColors.hair.computedStrokeColor
           }
         />
         <use
           href={`#${hairFrontFillDefId}`}
           id="hair-front-fill"
-          fill={iconParams.hair.baseColor}
+          fill={iconColors.hair.baseColor}
         />
         <mask id={highlightMaskId} mask-type="alpha">
           <use href={`#${hairFrontFillDefId}`} fill="white" />
@@ -99,7 +99,7 @@ const PonyTail: PartsComponent = (props) => {
           id="hair-front-highlight"
           d="M122 182C220.209 182 304.64 147.59 341.796 98.3108V18H29.5V384H212C121.978 384 48.9999 304.307 48.9999 206C48.9999 195.717 49.7984 185.638 51.3313 175.832C73.6726 179.842 97.4042 182 122 182ZM335.164 89.4015C309.993 120.089 243.754 142 166 142C128.695 142 94.0398 136.956 65.2997 128.319C91.7174 68.9349 147.481 28 212 28C261.183 28 305.278 51.7874 335.164 89.4015Z"
           fill={
-            iconParams.hair.highlightColor ??
+            iconColors.hair.highlightColor ??
             computeColors.hair.computedHighlightColor
           }
         />

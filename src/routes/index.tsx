@@ -1,10 +1,19 @@
+import { Splitter } from "@ark-ui/solid";
+import { createBreakpoints } from "@solid-primitives/media";
 import { Link, Meta, Title } from "@solidjs/meta";
-import { getRequestEvent } from "solid-js/web";
+import { createSignal } from "solid-js";
+import { getRequestEvent, isServer } from "solid-js/web";
 import { object, optional, string } from "valibot";
-import Actions from "~/components/Actions";
 import Header from "~/components/Header";
 import Icon from "~/components/Icon";
 import Settings from "~/components/Settings";
+import { FaceDetectProvider } from "~/context/faceDetect";
+import {
+  IconColorsProvider,
+  parseColors,
+  useIconColors,
+} from "~/context/iconColors";
+import { IconTransformsProvider } from "~/context/iconTransforms";
 import { useQuery } from "~/lib/query";
 
 const querySchema = object({
@@ -20,46 +29,123 @@ const getParamsServer = () => {
   }
 };
 
+const getParamsClient = () => {
+  const search = new URLSearchParams(window.location.search);
+  return search.get("p");
+};
+
+const breakPoints = {
+  md: "768px",
+};
+
 export default function Home() {
   const serverIconParam = getParamsServer();
+  const ogpParams = new URLSearchParams(
+    serverIconParam ? { p: serverIconParam } : undefined,
+  );
+  const ogpUrl = `https://icon.eyemono.moe/ogp?${ogpParams.toString()}`;
+  const iconParams = new URLSearchParams(
+    serverIconParam ? { p: serverIconParam } : undefined,
+  );
+  const iconUrl = `/image?f=svg&${iconParams.toString()}`;
+
+  const [isFull, setIsFull] = createSignal(false);
+
+  const matches = createBreakpoints(breakPoints);
+
+  const IconWrapper = () => {
+    const [state] = useIconColors();
+    return (
+      <div
+        class="relative grid place-items-center w-full h-full overflow-hidden min-w-0 min-h-0 children-[svg]:(w-[100cqmin] aspect-suqare h-auto)"
+        style={{
+          background: state.background,
+          "container-type": "size",
+        }}
+      >
+        <Icon />
+        <button
+          type="button"
+          onClick={() => setIsFull((prev) => !prev)}
+          class="absolute top-4 right-4 p-1 rounded-full bg-zinc-800 opacity-10 hover:enabled:opacity-50 transition-opacity-100"
+        >
+          <div
+            class="w-6 h-6 c-zinc-50"
+            classList={{
+              "i-material-symbols:fullscreen-rounded": !isFull(),
+              "i-material-symbols:fullscreen-exit-rounded": isFull(),
+            }}
+          />
+        </button>
+      </div>
+    );
+  };
+
+  const param = () => {
+    if (isServer) {
+      return typeof serverIconParam === "string"
+        ? parseColors(serverIconParam)
+        : undefined;
+    }
+    const param = getParamsClient();
+    return param ? parseColors(param) : undefined;
+  };
 
   return (
     <>
       <Title>eyemono.moe icon maker</Title>
-      <Meta
-        property="og:image"
-        content={`https://icon.eyemono.moe/ogp${
-          serverIconParam ? `?p=${serverIconParam}` : ""
-        }`}
-      />
-      <Meta
-        property="twitter:image"
-        content={`https://icon.eyemono.moe/ogp${
-          serverIconParam ? `?p=${serverIconParam}` : ""
-        }`}
-      />
-      <Link
-        rel="icon"
-        type="image/svg+xml"
-        href={`/image?f=svg${serverIconParam ? `&p=${serverIconParam}` : ""}`}
-      />
-      <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset!">
-        <Header />
-        <main class="h-full w-full md:(text-base flex-row-reverse items-stretch) mx-a text-sm items-center max-w-1024px! flex flex-col px-2 pb-4 pt-2 gap-2 overflow-hidden">
-          <div class="flex flex-col justify-center w-full md:max-w-unset max-w-25vh">
-            <div class="flex flex-col rounded overflow-hidden">
-              <div class="bg-zinc-200">
-                <div class="text-center c-zinc-500">eyemono.svg</div>
-                <Actions />
+      <Meta property="og:image" content={ogpUrl} />
+      <Meta property="twitter:image" content={ogpUrl} />
+      <Link rel="icon" type="image/svg+xml" href={iconUrl} />
+      <FaceDetectProvider>
+        <IconTransformsProvider>
+          <IconColorsProvider params={param()}>
+            <div
+              class="grid w-full h-full prose prose-zinc max-w-unset! overflow-hidden"
+              classList={{
+                "grid-rows-[1fr]": isFull(),
+                "grid-rows-[auto_1fr]": !isFull(),
+              }}
+            >
+              <div
+                classList={{
+                  "hidden!": isFull(),
+                }}
+              >
+                <Header />
               </div>
-              <div class="children-[svg]:(w-full aspect-square h-auto)">
-                <Icon />
-              </div>
+              <main class="h-full w-full overflow-hidden">
+                <Splitter.Root
+                  orientation={matches.md ? "horizontal" : "vertical"}
+                  size={[
+                    { id: "icon", size: 50, minSize: 20 },
+                    { id: "settings", size: 50, minSize: 20 },
+                  ]}
+                >
+                  <Splitter.Panel id="icon">
+                    <IconWrapper />
+                  </Splitter.Panel>
+                  <Splitter.ResizeTrigger
+                    id="icon:settings"
+                    class="outline-none min-w-1 min-h-1 bg-zinc-200"
+                    classList={{
+                      "hidden!": isFull(),
+                    }}
+                  />
+                  <Splitter.Panel
+                    id="settings"
+                    classList={{
+                      "hidden!": isFull(),
+                    }}
+                  >
+                    <Settings />
+                  </Splitter.Panel>
+                </Splitter.Root>
+              </main>
             </div>
-          </div>
-          <Settings />
-        </main>
-      </div>
+          </IconColorsProvider>
+        </IconTransformsProvider>
+      </FaceDetectProvider>
     </>
   );
 }

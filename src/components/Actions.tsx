@@ -1,7 +1,7 @@
 import { Menubar } from "@kobalte/core";
 import { type Component, onCleanup, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import {
   copyImageUrl,
   copyPng,
@@ -26,7 +26,7 @@ const Actions: Component = () => {
     _,
     { reset, toggleAutosave, saveToUrl, randomize, undo, redo },
     configs,
-  ] = useIconParams();
+  ] = useIconColors();
 
   const handleDownloadSvg = () => {
     const svgEl = document.getElementById(iconSvgId);
@@ -73,20 +73,24 @@ const Actions: Component = () => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.shiftKey && e.key === "C") {
+      e.preventDefault();
       handleCopySvg();
     }
     if (e.ctrlKey && e.altKey && e.key === "c") {
+      e.preventDefault();
       handleCopySvgUrl();
     }
     if (e.ctrlKey && e.shiftKey && e.key === "S") {
+      e.preventDefault();
       handleDownloadSvg();
     }
 
-    e.preventDefault();
     if (e.ctrlKey && e.key === "z") {
+      e.preventDefault();
       undo();
     }
     if (e.ctrlKey && e.shiftKey && e.key === "Z") {
+      e.preventDefault();
       redo();
     }
   };
@@ -104,7 +108,7 @@ const Actions: Component = () => {
 
   return (
     <>
-      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300 data-[expanded]:children:bg-zinc-300">
+      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300/50 data-[expanded]:children:bg-zinc-300/50">
         <Menubar.Menu>
           <Menubar.Trigger>File</Menubar.Trigger>
           <Menubar.Portal>

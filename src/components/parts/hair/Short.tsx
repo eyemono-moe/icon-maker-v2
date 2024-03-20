@@ -1,11 +1,11 @@
 import { createUniqueId } from "solid-js";
 import type { PartsComponent } from "~/components/Icon";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import { SsrPortal } from "~/context/ssrPortal";
 import { headFillDefId } from "../head";
 
 const Short: PartsComponent = (props) => {
-  const [iconParams, { computeColors }] = useIconParams();
+  const [iconColors, { computeColors }] = useIconColors();
   const hairFrontStrokeDefId = createUniqueId();
   const hairFrontFillDefId = createUniqueId();
   const highlightMaskId = createUniqueId();
@@ -33,7 +33,7 @@ const Short: PartsComponent = (props) => {
           id="hair-back-fill"
           d="M233 360C236 356 237 352 238 345C241 352 247 357 252 360C252 354 253 347 256 339C257 344 260 348 262 350C262 342 264 336 266 332C267 336 268 339 270 342C271 335 274 330 278 324C278 327 278 331 279 333C280 328 284 315 288 310C287 314 285 322 285 330C287 319 342 237 342 197C342 137 302 37 202 37C82 37 42 137 42 193C42 324 162 330 197 359C197 352 196 347 194 343C204 348 208.202 351 217.222 358C216.22 352.5 215.503 349.5 214 346C221 349 230 353 233 360Z"
           fill={
-            iconParams.hair.strokeColor ??
+            iconColors.hair.strokeColor ??
             computeColors.hair.computedStrokeColor
           }
         />
@@ -53,7 +53,7 @@ const Short: PartsComponent = (props) => {
             href={`#${hairFrontStrokeDefId}`}
             transform="translate(3 12)"
             fill={
-              iconParams.head.shadowColor ??
+              iconColors.head.shadowColor ??
               computeColors.head.computedShadowColor
             }
           />
@@ -69,14 +69,14 @@ const Short: PartsComponent = (props) => {
           id="hair-front-stroke"
           href={`#${hairFrontStrokeDefId}`}
           fill={
-            iconParams.hair.strokeColor ??
+            iconColors.hair.strokeColor ??
             computeColors.hair.computedStrokeColor
           }
         />
         <use
           href={`#${hairFrontFillDefId}`}
           id="hair-front-fill"
-          fill={iconParams.hair.baseColor}
+          fill={iconColors.hair.baseColor}
         />
         <mask id={highlightMaskId} mask-type="alpha">
           <use href={`#${hairFrontFillDefId}`} fill="white" />
@@ -86,7 +86,7 @@ const Short: PartsComponent = (props) => {
           id="hair-front-highlight"
           d="M122 182C220.209 182 304.64 147.59 341.796 98.3108V18H29.5V384H212C121.978 384 48.9999 304.307 48.9999 206C48.9999 195.717 49.7984 185.638 51.3313 175.832C73.6726 179.842 97.4042 182 122 182ZM335.164 89.4015C309.993 120.089 243.754 142 166 142C128.695 142 94.0398 136.956 65.2997 128.319C91.7174 68.9349 147.481 28 212 28C261.183 28 305.278 51.7874 335.164 89.4015Z"
           fill={
-            iconParams.hair.highlightColor ??
+            iconColors.hair.highlightColor ??
             computeColors.hair.computedHighlightColor
           }
         />

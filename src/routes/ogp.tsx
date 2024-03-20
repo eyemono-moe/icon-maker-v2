@@ -1,6 +1,6 @@
 import type { APIEvent } from "@solidjs/start/server";
 import { type Input, literal, object, optional, string, union } from "valibot";
-import { type IconParams, parseParams } from "~/context/icon";
+import { type IconColors, parseColors } from "~/context/iconColors";
 import { convertFromSvg } from "~/lib/image";
 import { useQuery } from "~/lib/query";
 import { retry } from "~/lib/retry";
@@ -14,9 +14,9 @@ export type ImageQuery = Input<typeof imageQuerySchema>;
 
 export async function GET(event: APIEvent) {
   const query = useQuery(imageQuerySchema, event.nativeEvent);
-  let params: IconParams | undefined;
+  let params: IconColors | undefined;
   if (query.p) {
-    params = parseParams(query.p);
+    params = parseColors(query.p);
   }
 
   const svgText = await retry(() => ssrOgpSvgStr(params), {

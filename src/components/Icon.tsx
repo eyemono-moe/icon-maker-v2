@@ -1,5 +1,9 @@
 import { type Component, For, Match, Suspense, Switch } from "solid-js";
-import { type IconParamsContextState, useIconParams } from "~/context/icon";
+import {
+  type IconColorsContextState,
+  useIconColors,
+} from "~/context/iconColors";
+import { useIconTransforms } from "~/context/iconTransforms";
 import { PortalTarget } from "../context/ssrPortal";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
@@ -12,14 +16,14 @@ import { mouthOptions } from "./parts/mouth";
 export const iconSvgId = "icon-svg";
 
 export type SelectOptions = {
-  [K in keyof IconParamsContextState as IconParamsContextState[K] extends {
+  [K in keyof IconColorsContextState as IconColorsContextState[K] extends {
     type: string;
   }
     ? K
-    : never]: IconParamsContextState[K] extends {
+    : never]: IconColorsContextState[K] extends {
     type: string;
   }
-    ? IconParamsContextState[K]["type"]
+    ? IconColorsContextState[K]["type"]
     : never;
 };
 
@@ -30,7 +34,7 @@ const Parts = <K extends keyof SelectOptions>(props: {
   options: Options<SelectOptions[K]>;
   defaultParts: SelectOptions[K];
 }) => {
-  const [iconParams] = useIconParams();
+  const [iconColors] = useIconColors();
   const Fallback =
     props.options.find((o) => o.value === props.defaultParts)?.component ??
     (() => <></>);
@@ -39,7 +43,7 @@ const Parts = <K extends keyof SelectOptions>(props: {
     <Switch fallback={<Fallback />}>
       <For each={props.options}>
         {(option) => (
-          <Match when={iconParams[props.parts].type === option.value}>
+          <Match when={iconColors[props.parts].type === option.value}>
             <Suspense>
               <option.component />
             </Suspense>
@@ -51,6 +55,8 @@ const Parts = <K extends keyof SelectOptions>(props: {
 };
 
 const Icon: Component = () => {
+  const [transform] = useIconTransforms();
+
   return (
     <svg
       viewBox="0 0 400 400"
@@ -59,6 +65,7 @@ const Icon: Component = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       id={iconSvgId}
+      class="overflow-visible"
     >
       <title>eyemono.moe icon</title>
       <Background />
@@ -72,19 +79,54 @@ const Icon: Component = () => {
       <Parts parts="head" defaultParts="default" options={headOptions} />
       <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
       <PortalTarget id="background-target" />
-      <PortalTarget id="accessory-bottom-target" />
-      <PortalTarget id="hair-back-target" />
-      <PortalTarget id="neck-target" />
-      <PortalTarget id="head-target" />
-      <PortalTarget id="accessory-skin-target" />
-      <PortalTarget id="hair-shadow-target" />
-      <PortalTarget id="nose-target" />
-      <PortalTarget id="eye-lower-target" />
-      <PortalTarget id="hair-front-target" />
-      <PortalTarget id="eye-upper-target" />
-      <PortalTarget id="mouth-target" />
-      <PortalTarget id="eyebrow-target" />
-      <PortalTarget id="accessory-top-target" />
+      <g
+        id="head-translate"
+        transform={`translate(${transform.transform.head.position.x * 10},${
+          -transform.transform.head.position.y * 10
+        })`}
+      >
+        <PortalTarget id="accessory-bottom-target" />
+        <g
+          id="neck-rotation-for-hair-back"
+          transform={`rotate(${
+            transform.transform.head.rotation / 2
+          }, 255, 365)`}
+        >
+          <g
+            id="head-rotation-for-hair-back"
+            transform={`rotate(${
+              transform.transform.head.rotation / 2
+            }, 230, 310)`}
+          >
+            <PortalTarget id="hair-back-target" />
+          </g>
+        </g>
+        <g
+          id="neck-rotation"
+          transform={`rotate(${
+            transform.transform.head.rotation / 2
+          }, 255, 365)`}
+        >
+          <PortalTarget id="neck-target" />
+          <g
+            id="head-rotation"
+            transform={`rotate(${
+              transform.transform.head.rotation / 2
+            }, 230, 310)`}
+          >
+            <PortalTarget id="head-target" />
+            <PortalTarget id="accessory-skin-target" />
+            <PortalTarget id="hair-shadow-target" />
+            <PortalTarget id="nose-target" />
+            <PortalTarget id="eye-lower-target" />
+            <PortalTarget id="hair-front-target" />
+            <PortalTarget id="eye-upper-target" />
+            <PortalTarget id="mouth-target" />
+            <PortalTarget id="eyebrow-target" />
+            <PortalTarget id="accessory-top-target" />
+          </g>
+        </g>
+      </g>
     </svg>
   );
 };

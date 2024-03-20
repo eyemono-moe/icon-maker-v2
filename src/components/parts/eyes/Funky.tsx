@@ -1,10 +1,10 @@
 import { createUniqueId } from "solid-js";
 import type { PartsComponent } from "~/components/Icon";
-import { useIconParams } from "~/context/icon";
+import { useIconColors } from "~/context/iconColors";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Funky: PartsComponent = (props) => {
-  const [iconParams, { computeColors }] = useIconParams();
+  const [iconColors, { computeColors }] = useIconColors();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
 
@@ -26,7 +26,7 @@ const Funky: PartsComponent = (props) => {
           id="eye-white-fill"
           href={`#${whiteFillId}`}
           fill={
-            iconParams.eyes.eyeWhiteColor ??
+            iconColors.eyes.eyeWhiteColor ??
             computeColors.eyes.computedEyeWhiteColor
           }
         />
@@ -39,7 +39,7 @@ const Funky: PartsComponent = (props) => {
               id="eye-shadow-fill"
               d="M288 193.5C247.5 193.5 233 197 207 223.5C207 232.5 217 246 224 250C237 224 274 212 288 212C288 199.5 288 199.424 288 193.5Z"
               fill={
-                iconParams.eyes.shadowColor ??
+                iconColors.eyes.shadowColor ??
                 computeColors.eyes.computedShadowColor
               }
             />
@@ -48,7 +48,7 @@ const Funky: PartsComponent = (props) => {
             id="eye-lower-eyelid-fill"
             d="M277 245C271.5 253 255 262 239 257C239 265 277 263.5 277 245Z"
             fill={
-              iconParams.eyes.eyelashesColor ??
+              iconColors.eyes.eyelashesColor ??
               computeColors.eyes.computedEyelashesColor
             }
           />
@@ -64,7 +64,7 @@ const Funky: PartsComponent = (props) => {
           id="eyelash-fill"
           d="M207 236C212 222 228.5 210.315 244.5 203.5C260.935 196.5 277 197.5 286.5 200C284 206 286 214 280 232C280.5 225 279 210 276 207.5C272.741 204.784 252.899 210.218 248 212C237 216 218 225.5 207 236Z"
           fill={
-            iconParams.eyes.eyelashesColor ??
+            iconColors.eyes.eyelashesColor ??
             computeColors.eyes.computedEyelashesColor
           }
         />
@@ -72,7 +72,7 @@ const Funky: PartsComponent = (props) => {
           id="eyelid-fill"
           d="M211 225C217.5 218 225 212 234 207C224 210 215 216 211 225Z"
           fill={
-            iconParams.eyes.eyelashesColor ??
+            iconColors.eyes.eyelashesColor ??
             computeColors.eyes.computedEyelashesColor
           }
         />

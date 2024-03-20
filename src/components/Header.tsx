@@ -1,10 +1,14 @@
 import type { Component } from "solid-js";
+import Actions from "./Actions";
 
 const Header: Component = () => {
   return (
-    <header class="w-full bg-zinc-200 p-2">
-      <div class="mx-a max-w-1024px flex justify-between items-center">
-        <h1 class="not-prose font-700 text-lg">eyemono.moe icon maker</h1>
+    <header class="w-full bg-zinc-200 px-2 py-1">
+      <div class="flex justify-between items-center">
+        <div>
+          <Actions />
+        </div>
+        <h1 class="not-prose font-700 text-lg">eyemono.svg</h1>
         <a
           href="https://github.com/eyemono-moe/icon-maker-v2"
           target="_blank"
