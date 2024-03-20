@@ -1,7 +1,7 @@
 import { Splitter } from "@ark-ui/solid";
 import { createBreakpoints } from "@solid-primitives/media";
 import { Link, Meta, Title } from "@solidjs/meta";
-import { Show, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import { getRequestEvent, isServer } from "solid-js/web";
 import { object, optional, string } from "valibot";
 import Header from "~/components/Header";
@@ -105,31 +105,49 @@ export default function Home() {
       <FaceDetectProvider>
         <IconTransformsProvider>
           <IconColorsProvider params={param()}>
-            <Show when={!isFull()} fallback={<IconWrapper />}>
-              <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset! overflow-hidden">
+            <div
+              class="grid w-full h-full prose prose-zinc max-w-unset! overflow-hidden"
+              classList={{
+                "grid-rows-[1fr]": isFull(),
+                "grid-rows-[auto_1fr]": !isFull(),
+              }}
+            >
+              <div
+                classList={{
+                  "hidden!": isFull(),
+                }}
+              >
                 <Header />
-                <main class="h-full w-full overflow-hidden">
-                  <Splitter.Root
-                    orientation={matches.md ? "horizontal" : "vertical"}
-                    size={[
-                      { id: "icon", size: 50, minSize: 20 },
-                      { id: "settings", size: 50, minSize: 20 },
-                    ]}
-                  >
-                    <Splitter.Panel id="icon">
-                      <IconWrapper />
-                    </Splitter.Panel>
-                    <Splitter.ResizeTrigger
-                      class="outline-none min-w-1 min-h-1 bg-zinc-200"
-                      id="icon:settings"
-                    />
-                    <Splitter.Panel id="settings">
-                      <Settings />
-                    </Splitter.Panel>
-                  </Splitter.Root>
-                </main>
               </div>
-            </Show>
+              <main class="h-full w-full overflow-hidden">
+                <Splitter.Root
+                  orientation={matches.md ? "horizontal" : "vertical"}
+                  size={[
+                    { id: "icon", size: 50, minSize: 20 },
+                    { id: "settings", size: 50, minSize: 20 },
+                  ]}
+                >
+                  <Splitter.Panel id="icon">
+                    <IconWrapper />
+                  </Splitter.Panel>
+                  <Splitter.ResizeTrigger
+                    id="icon:settings"
+                    class="outline-none min-w-1 min-h-1 bg-zinc-200"
+                    classList={{
+                      "hidden!": isFull(),
+                    }}
+                  />
+                  <Splitter.Panel
+                    id="settings"
+                    classList={{
+                      "hidden!": isFull(),
+                    }}
+                  >
+                    <Settings />
+                  </Splitter.Panel>
+                </Splitter.Root>
+              </main>
+            </div>
           </IconColorsProvider>
         </IconTransformsProvider>
       </FaceDetectProvider>
