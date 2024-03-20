@@ -9,7 +9,11 @@ const CameraSettings: Component = () => {
     detectState,
     { setDeviceId, toggleMirrored },
     { DetectResultPreview },
-  ] = useFaceDetect();
+  ] =
+    useFaceDetect() ??
+    (() => {
+      throw new Error("FaceDetectContext not found");
+    })();
 
   const [showVideo, setShowVideo] = createSignal(false);
   const [showCanvas, setShowCanvas] = createSignal(false);

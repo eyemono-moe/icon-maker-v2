@@ -18,7 +18,7 @@ type Props<T extends string> = {
   onReset?: () => void;
 };
 
-const Select = <T extends string>(props: Props<T>): JSX.Element => {
+const _Select = <T extends string>(props: Props<T>): JSX.Element => {
   return (
     <KSelect.Root<Option<T>>
       value={props.value}
@@ -66,4 +66,4 @@ const Select = <T extends string>(props: Props<T>): JSX.Element => {
   );
 };
 
-export default Select;
+export default _Select;
