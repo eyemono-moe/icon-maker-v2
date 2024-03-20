@@ -1,13 +1,12 @@
 import { createCameras } from "@solid-primitives/devices";
 import { type Component, createSignal } from "solid-js";
-import { useCamera } from "~/context/camera";
-import { useIconTransforms } from "~/context/iconTransforms";
+import { useFaceDetect } from "~/context/faceDetect";
 import Select from "../UI/Select";
 import Switch from "../UI/Switch";
 
 const CameraSettings: Component = () => {
-  const [transform, actions, { DetectResultPreview }] = useIconTransforms();
-  const [state, { setDeviceId }] = useCamera();
+  const [detectState, { setDeviceId }, { DetectResultPreview }] =
+    useFaceDetect();
 
   const [showVideo, setShowVideo] = createSignal(false);
   const [showCanvas, setShowCanvas] = createSignal(false);
@@ -31,7 +30,7 @@ const CameraSettings: Component = () => {
       />
       <DetectResultPreview showVideo={showVideo()} showCanvas={showCanvas()} />
       <Switch
-        label="show video"
+        label="show video input"
         checked={showVideo()}
         onChange={setShowVideo}
       />
