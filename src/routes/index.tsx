@@ -35,6 +35,8 @@ const getParamsClient = () => {
 };
 
 const breakPoints = {
+  // ハイドレーションが終わったかどうかを判定するための値
+  loaded: "0px",
   md: "768px",
 };
 
@@ -116,7 +118,9 @@ export default function Home() {
               </div>
               <main class="h-full w-full overflow-hidden">
                 <Splitter.Root
-                  orientation={matches.md ? "horizontal" : "vertical"}
+                  orientation={
+                    matches.loaded && !matches.md ? "vertical" : "horizontal"
+                  }
                   size={[
                     { id: "icon", size: 50, minSize: 20 },
                     { id: "settings", size: 50, minSize: 20 },
