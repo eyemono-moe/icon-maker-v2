@@ -3,6 +3,7 @@ import {
   type IconColorsContextState,
   useIconColors,
 } from "~/context/iconColors";
+import { useIconTransforms } from "~/context/iconTransforms";
 import { PortalTarget } from "../context/ssrPortal";
 import type { Options } from "./UI/PartsSelect";
 import Background from "./parts/background";
@@ -54,6 +55,8 @@ const Parts = <K extends keyof SelectOptions>(props: {
 };
 
 const Icon: Component = () => {
+  const [transform] = useIconTransforms();
+
   return (
     <svg
       viewBox="0 0 400 400"
@@ -62,6 +65,7 @@ const Icon: Component = () => {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       id={iconSvgId}
+      class="overflow-visible"
     >
       <title>eyemono.moe icon</title>
       <Background />
@@ -75,19 +79,54 @@ const Icon: Component = () => {
       <Parts parts="head" defaultParts="default" options={headOptions} />
       <Parts parts="mouth" defaultParts="default" options={mouthOptions} />
       <PortalTarget id="background-target" />
-      <PortalTarget id="accessory-bottom-target" />
-      <PortalTarget id="hair-back-target" />
-      <PortalTarget id="neck-target" />
-      <PortalTarget id="head-target" />
-      <PortalTarget id="accessory-skin-target" />
-      <PortalTarget id="hair-shadow-target" />
-      <PortalTarget id="nose-target" />
-      <PortalTarget id="eye-lower-target" />
-      <PortalTarget id="hair-front-target" />
-      <PortalTarget id="eye-upper-target" />
-      <PortalTarget id="mouth-target" />
-      <PortalTarget id="eyebrow-target" />
-      <PortalTarget id="accessory-top-target" />
+      <g
+        id="head-translate"
+        transform={`translate(${transform.transform.head.position.x * 10},${
+          -transform.transform.head.position.y * 10
+        })`}
+      >
+        <PortalTarget id="accessory-bottom-target" />
+        <g
+          id="neck-rotation-for-hair-back"
+          transform={`rotate(${
+            transform.transform.head.rotation / 2
+          }, 255, 365)`}
+        >
+          <g
+            id="head-rotation-for-hair-back"
+            transform={`rotate(${
+              transform.transform.head.rotation / 2
+            }, 230, 310)`}
+          >
+            <PortalTarget id="hair-back-target" />
+          </g>
+        </g>
+        <g
+          id="neck-rotation"
+          transform={`rotate(${
+            transform.transform.head.rotation / 2
+          }, 255, 365)`}
+        >
+          <PortalTarget id="neck-target" />
+          <g
+            id="head-rotation"
+            transform={`rotate(${
+              transform.transform.head.rotation / 2
+            }, 230, 310)`}
+          >
+            <PortalTarget id="head-target" />
+            <PortalTarget id="accessory-skin-target" />
+            <PortalTarget id="hair-shadow-target" />
+            <PortalTarget id="nose-target" />
+            <PortalTarget id="eye-lower-target" />
+            <PortalTarget id="hair-front-target" />
+            <PortalTarget id="eye-upper-target" />
+            <PortalTarget id="mouth-target" />
+            <PortalTarget id="eyebrow-target" />
+            <PortalTarget id="accessory-top-target" />
+          </g>
+        </g>
+      </g>
     </svg>
   );
 };

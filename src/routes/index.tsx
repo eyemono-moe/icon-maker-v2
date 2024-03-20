@@ -13,6 +13,7 @@ import {
   parseColors,
   useIconColors,
 } from "~/context/iconColors";
+import { IconTransformsProvider } from "~/context/iconTransforms";
 import { useQuery } from "~/lib/query";
 
 const querySchema = object({
@@ -102,33 +103,35 @@ export default function Home() {
         href={`/image?f=svg${serverIconParam ? `&p=${serverIconParam}` : ""}`}
       />
       <FaceDetectProvider>
-        <IconColorsProvider params={param()}>
-          <Show when={!isFull()} fallback={<IconWrapper />}>
-            <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset! overflow-hidden">
-              <Header />
-              <main class="h-full w-full overflow-hidden">
-                <Splitter.Root
-                  orientation={matches.md ? "horizontal" : "vertical"}
-                  size={[
-                    { id: "icon", size: 50, minSize: 20 },
-                    { id: "settings", size: 50, minSize: 20 },
-                  ]}
-                >
-                  <Splitter.Panel id="icon">
-                    <IconWrapper />
-                  </Splitter.Panel>
-                  <Splitter.ResizeTrigger
-                    class="outline-none min-w-1 min-h-1 bg-zinc-200"
-                    id="icon:settings"
-                  />
-                  <Splitter.Panel id="settings">
-                    <Settings />
-                  </Splitter.Panel>
-                </Splitter.Root>
-              </main>
-            </div>
-          </Show>
-        </IconColorsProvider>
+        <IconTransformsProvider>
+          <IconColorsProvider params={param()}>
+            <Show when={!isFull()} fallback={<IconWrapper />}>
+              <div class="grid grid-rows-[auto_1fr] w-full h-full prose prose-zinc max-w-unset! overflow-hidden">
+                <Header />
+                <main class="h-full w-full overflow-hidden">
+                  <Splitter.Root
+                    orientation={matches.md ? "horizontal" : "vertical"}
+                    size={[
+                      { id: "icon", size: 50, minSize: 20 },
+                      { id: "settings", size: 50, minSize: 20 },
+                    ]}
+                  >
+                    <Splitter.Panel id="icon">
+                      <IconWrapper />
+                    </Splitter.Panel>
+                    <Splitter.ResizeTrigger
+                      class="outline-none min-w-1 min-h-1 bg-zinc-200"
+                      id="icon:settings"
+                    />
+                    <Splitter.Panel id="settings">
+                      <Settings />
+                    </Splitter.Panel>
+                  </Splitter.Root>
+                </main>
+              </div>
+            </Show>
+          </IconColorsProvider>
+        </IconTransformsProvider>
       </FaceDetectProvider>
     </>
   );

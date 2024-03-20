@@ -56,7 +56,13 @@ export const SsrPortal: ParentComponent<
   );
 };
 
-export const PortalTarget: ParentComponent<{ id: string }> = (props) => {
+export const PortalTarget: ParentComponent<JSX.GSVGAttributes<SVGGElement>> = (
+  props,
+) => {
+  if (props.id === undefined) {
+    throw new Error("id is required");
+  }
+
   const c = useContext(SsrPortalContext);
 
   if (c) {

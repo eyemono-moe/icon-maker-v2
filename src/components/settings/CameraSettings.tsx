@@ -5,8 +5,11 @@ import Select from "../UI/Select";
 import Switch from "../UI/Switch";
 
 const CameraSettings: Component = () => {
-  const [detectState, { setDeviceId }, { DetectResultPreview }] =
-    useFaceDetect();
+  const [
+    detectState,
+    { setDeviceId, toggleMirrored },
+    { DetectResultPreview },
+  ] = useFaceDetect();
 
   const [showVideo, setShowVideo] = createSignal(false);
   const [showCanvas, setShowCanvas] = createSignal(false);
@@ -38,6 +41,11 @@ const CameraSettings: Component = () => {
         label="show face mesh"
         checked={showCanvas()}
         onChange={setShowCanvas}
+      />
+      <Switch
+        label="mirror video"
+        checked={detectState.isMirrored}
+        onChange={toggleMirrored}
       />
     </>
   );

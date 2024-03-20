@@ -54,7 +54,7 @@ export const FaceDetectProvider: ParentComponent = (props) => {
     deviceId: undefined,
     cameraState: "unselected",
     result: undefined,
-    isMirrored: false,
+    isMirrored: true,
   });
 
   let detectResVideoRef: HTMLVideoElement | undefined;
@@ -92,6 +92,7 @@ export const FaceDetectProvider: ParentComponent = (props) => {
         delegate: "GPU",
       },
       outputFaceBlendshapes: true,
+      outputFacialTransformationMatrixes: true,
       runningMode: "VIDEO",
       numFaces: 1,
     });
@@ -266,6 +267,9 @@ export const FaceDetectProvider: ParentComponent = (props) => {
           <video
             ref={detectResVideoRef}
             class="w-full h-auto blur-20 grayscale"
+            classList={{
+              "scale-x-[-1]": state.isMirrored,
+            }}
           />
           <Show when={state.cameraState === "loading"}>
             <div class="absolute w-full h-full top-0">
@@ -283,6 +287,7 @@ export const FaceDetectProvider: ParentComponent = (props) => {
             class="absolute w-full h-auto top-0"
             classList={{
               hidden: !props.showCanvas,
+              "scale-x-[-1]": state.isMirrored,
             }}
           />
         </div>

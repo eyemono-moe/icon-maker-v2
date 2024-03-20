@@ -1,7 +1,9 @@
+import type { FaceLandmarkerResult } from "@mediapipe/tasks-vision";
 import pkg from "lz-string";
-import { useContext } from "solid-js";
+import { createEffect, useContext } from "solid-js";
 import { type ParentComponent, createContext } from "solid-js";
 import { createStore } from "solid-js/store";
+import { useFaceDetect } from "./faceDetect";
 
 const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
   pkg;
@@ -80,12 +82,49 @@ export const parseTransforms = (params: string): IconTransforms => {
   ) as IconTransforms;
 };
 
+const calcHeadTransform = (
+  matrix?: FaceLandmarkerResult["facialTransformationMatrixes"][number],
+  mirror = false,
+): {
+  x: number;
+  y: number;
+  rotate: number;
+} => {
+  if (matrix === undefined || matrix.rows !== 4 || matrix.columns !== 4) {
+    return { x: 0, y: 0, rotate: 0 };
+  }
+  const x = matrix.data[12] / matrix.data[15];
+  const y = matrix.data[13] / matrix.data[15];
+  const rotate = Math.atan2(matrix.data[4], matrix.data[0]) * (180 / Math.PI);
+
+  if (mirror) {
+    return { x: -x, y, rotate: -rotate };
+  }
+
+  return { x, y, rotate };
+};
+
 export const IconTransformsProvider: ParentComponent<{
   params?: IconTransforms;
 }> = (props) => {
   const [state, setState] = createStore<IconTransformsContextState>({
     transform: defaultPlainTransforms(),
     isSyncing: false,
+  });
+
+  const [faceDetect] = useFaceDetect();
+
+  createEffect(() => {
+    if (faceDetect.result) {
+      const headTransform = calcHeadTransform(
+        faceDetect?.result?.facialTransformationMatrixes?.[0],
+        faceDetect.isMirrored,
+      );
+
+      setState("transform", "head", "position", "x", headTransform.x);
+      setState("transform", "head", "position", "y", headTransform.y);
+      setState("transform", "head", "rotation", headTransform.rotate);
+    }
   });
 
   return (
