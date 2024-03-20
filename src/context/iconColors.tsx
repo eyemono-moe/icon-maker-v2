@@ -167,7 +167,7 @@ export const IconColorsProvider: ParentComponent<{
   params?: IconColors;
 }> = (props) => {
   const [state, setState] = createStore<IconColorsContextState>(
-    defaultPlainColors(),
+    props.params ?? defaultPlainColors(),
   );
   const [configs, setConfigs] = createStore<IconColorsContextConfigs>({
     autosave: true,
