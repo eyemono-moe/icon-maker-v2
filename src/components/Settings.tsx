@@ -11,7 +11,7 @@ const Settings: Component = () => {
   return (
     <Tabs.Root
       class="w-full h-full min-w-fit grid grid-rows-[auto_1fr] overflow-hidden"
-      defaultValue="camera"
+      defaultValue="hair"
     >
       <Tabs.List class="relative font-700 flex overflow-x-auto b-b-1 children-[button]:(px-4 py-1 bg-transparent) hover:children-[button]:bg-zinc/20">
         <Tabs.Trigger value="hair">hair</Tabs.Trigger>
