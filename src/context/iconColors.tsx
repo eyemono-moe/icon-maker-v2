@@ -104,33 +104,6 @@ type IconColorsWithoutComputed = {
 export type IconColors = IconColorsWithoutComputed;
 export type ComputedColors = ComputedColor<IconColorsWithoutComputed>;
 
-type IconTransform = {
-  eyes: {
-    position: {
-      /** -1.0 ~ 1.0 */
-      x: number;
-      /** -1.0 ~ 1.0 */
-      y: number;
-    };
-    /** 0.0 ~ 1.0 */
-    open: number;
-  };
-  mouth: {
-    /** 0.0 ~ 1.0 */
-    open: number;
-  };
-  head: {
-    position: {
-      /** 0 mean center */
-      x: number;
-      /** 0 mean center */
-      y: number;
-    };
-    /** 0 mean no rotation */
-    rotation: number;
-  };
-};
-
 export type IconColorsContextState = IconColors;
 
 export type IconColorsContextConfigs = {
@@ -360,6 +333,6 @@ export const IconColorsProvider: ParentComponent<{
 export const useIconColors = () => {
   const c = useContext(IconColorsContext);
   if (!c)
-    throw new Error("useIconParams must be used within a IconParamsProvider");
+    throw new Error("useIconColors must be used within a IconColorsProvider");
   return c;
 };

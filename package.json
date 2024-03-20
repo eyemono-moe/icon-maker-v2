@@ -12,6 +12,8 @@
   "dependencies": {
     "@ark-ui/solid": "^2.2.0",
     "@kobalte/core": "^0.12.4",
+    "@mediapipe/tasks-vision": "^0.10.12",
+    "@solid-primitives/devices": "^1.2.6",
     "@solid-primitives/history": "^0.1.5",
     "@solid-primitives/media": "^2.2.8",
     "@solidjs/meta": "^0.29.2",
