@@ -1,4 +1,5 @@
 import { Splitter } from "@ark-ui/solid";
+import { createBreakpoints } from "@solid-primitives/media";
 import { Link, Meta, Title } from "@solidjs/meta";
 import { Show, createSignal } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
@@ -22,16 +23,23 @@ const getParamsServer = () => {
   }
 };
 
+const breakPoints = {
+  md: "768px",
+};
+
 export default function Home() {
   const serverIconParam = getParamsServer();
   const [state] = useIconColors();
   const [isFull, setIsFull] = createSignal(false);
 
+  const matches = createBreakpoints(breakPoints);
+
   const IconWrapper = () => (
     <div
-      class="relative grid place-items-center w-full h-full children-[svg]:(w-full max-w-100vh aspect-square h-auto)"
+      class="relative grid place-items-center w-full h-full overflow-hidden min-w-0 min-h-0 children-[svg]:(w-[100cqmin] aspect-suqare h-auto)"
       style={{
         background: state.background,
+        "container-type": "size",
       }}
     >
       <Icon />
@@ -76,7 +84,7 @@ export default function Home() {
           <Header />
           <main class="h-full w-full overflow-hidden">
             <Splitter.Root
-              orientation="horizontal"
+              orientation={matches.md ? "horizontal" : "vertical"}
               size={[
                 { id: "icon", size: 50, minSize: 20 },
                 { id: "settings", size: 50, minSize: 20 },
@@ -86,7 +94,7 @@ export default function Home() {
                 <IconWrapper />
               </Splitter.Panel>
               <Splitter.ResizeTrigger
-                class="outline-none min-w-1 bg-zinc-200"
+                class="outline-none min-w-1 min-h-1 bg-zinc-200"
                 id="icon:settings"
               />
               <Splitter.Panel id="settings">
