@@ -6,6 +6,7 @@ import {
   IconColorsProvider,
   useIconColors,
 } from "~/context/iconColors";
+import { IconTransformsProvider } from "~/context/iconTransforms";
 import { SsrPortalProvider } from "~/context/ssrPortal";
 import { optimizeSvg } from "./svg";
 
@@ -27,9 +28,11 @@ export const ssrSvgStr = (params?: IconColors) => {
   const svgText = renderToString(() => {
     return (
       <SsrPortalProvider>
-        <IconColorsProvider>
-          <IconWithParam params={params} />
-        </IconColorsProvider>
+        <IconTransformsProvider>
+          <IconColorsProvider>
+            <IconWithParam params={params} />
+          </IconColorsProvider>
+        </IconTransformsProvider>
       </SsrPortalProvider>
     );
   });
@@ -55,9 +58,11 @@ export const ssrOgpSvgStr = (params?: IconColors) => {
       <g mask="url(#mask)">
         <g transform="translate(81,62.5)">
           <SsrPortalProvider>
-            <IconColorsProvider>
-              <IconWithParam params={params} />
-            </IconColorsProvider>
+            <IconTransformsProvider>
+              <IconColorsProvider>
+                <IconWithParam params={params} />
+              </IconColorsProvider>
+            </IconTransformsProvider>
           </SsrPortalProvider>
         </g>
       </g>

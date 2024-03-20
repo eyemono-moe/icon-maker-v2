@@ -319,7 +319,8 @@ export const FaceDetectProvider: ParentComponent = (props) => {
 
 export const useFaceDetect = () => {
   const c = useContext(FaceDetectContext);
-  if (!c)
-    throw new Error("useFaceDetect must be used within a FaceDetectProvider");
+  if (!c) {
+    console.warn("useFaceDetect must be used within a FaceDetectProvider");
+  }
   return c;
 };
