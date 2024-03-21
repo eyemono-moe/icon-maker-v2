@@ -177,7 +177,6 @@ export const FaceDetectProvider: ParentComponent = (props) => {
     });
 
     detectResVideoRef.srcObject = stream;
-    detectResVideoRef.play();
   };
 
   // 顔認識結果が更新されたらcanvasに結果を描画
@@ -266,6 +265,10 @@ export const FaceDetectProvider: ParentComponent = (props) => {
             classList={{
               "scale-x-[-1]": state.isMirrored,
             }}
+            controls={false}
+            autoplay
+            // @ts-expect-error: need for firefox
+            disablePictureInPicture
           />
           <Show
             when={state.cameraState === "loading"}

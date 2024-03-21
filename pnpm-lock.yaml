@@ -14,9 +14,6 @@ dependencies:
   '@mediapipe/tasks-vision':
     specifier: ^0.10.12
     version: 0.10.12
-  '@solid-primitives/devices':
-    specifier: ^1.2.6
-    version: 1.2.6(solid-js@1.8.15)
   '@solid-primitives/history':
     specifier: ^0.1.5
     version: 0.1.5(solid-js@1.8.15)
@@ -1958,14 +1955,6 @@ packages:
   /@sindresorhus/merge-streams@2.3.0:
     resolution: {integrity: sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==}
     engines: {node: '>=18'}
-    dev: false
-
-  /@solid-primitives/devices@1.2.6(solid-js@1.8.15):
-    resolution: {integrity: sha512-n9S+DnD8th8LlJjmpCACeEO5u0XXVDznIc6b5g3crtZ6ma+ze0rIKcsyO9CoeiYUY5VCaV5c9599OnjYpDkyiQ==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      solid-js: 1.8.15
     dev: false
 
   /@solid-primitives/event-listener@2.3.3(solid-js@1.8.15):

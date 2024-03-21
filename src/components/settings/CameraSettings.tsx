@@ -1,6 +1,6 @@
-import { createCameras } from "@solid-primitives/devices";
 import { type Component, createSignal } from "solid-js";
 import { useFaceDetect } from "~/context/faceDetect";
+import { createCameras } from "~/lib/createCamera";
 import Select from "../UI/Select";
 import Switch from "../UI/Switch";
 
