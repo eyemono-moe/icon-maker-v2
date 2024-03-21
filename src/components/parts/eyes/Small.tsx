@@ -1,10 +1,12 @@
 import { createUniqueId } from "solid-js";
 import type { PartsComponent } from "~/components/Icon";
 import { useIconColors } from "~/context/iconColors";
+import { useIconTransforms } from "~/context/iconTransforms";
 import { SsrPortal } from "~/context/ssrPortal";
 
 const Small: PartsComponent = (props) => {
   const [iconColors, { computeColors }] = useIconColors();
+  const [iconTransform] = useIconTransforms();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
 
@@ -34,32 +36,38 @@ const Small: PartsComponent = (props) => {
           <use href={`#${whiteFillId}`} fill="white" />
         </mask>
         <g mask={`url(#${maskId})`}>
-          <path
-            id="eye-pupil-fill-0"
-            d="M264.066 218.44C266.764 225.457 265.356 231.645 260.299 233.203C255.243 234.76 250.596 230.437 248.879 223.118C247.161 215.799 248.452 209.647 252.646 208.355C256.839 207.063 261.368 211.423 264.066 218.44Z"
-            fill={
-              iconColors.eyes.pupilSecondaryColor ??
-              computeColors.eyes.computedPupilSecondaryColor
-            }
-          />
-          <path
-            id="eye-pupil-fill-1"
-            d="M263.604 218.456C265.495 224.592 264.407 229.845 259.71 231.292C255.014 232.738 251.159 229.008 249.269 222.871C247.037 215.625 249.48 210.377 252.94 209.311C256.4 208.245 261.372 211.209 263.604 218.456Z"
-            fill={iconColors.eyes.pupilBaseColor}
-          />
-          <path
-            id="eye-pupil-fill-2"
-            d="M261.546 217.124C263.492 221.699 262.623 226.209 259.489 227.174C256.355 228.14 253.099 224.901 252.133 220.023C251.156 215.092 252.898 211.94 254.632 211.406C256.365 210.871 259.579 212.498 261.546 217.124Z"
-            fill={
-              iconColors.eyes.pupilSecondaryColor ??
-              computeColors.eyes.computedPupilSecondaryColor
-            }
-          />
-          <path
-            id="eye-pupil-fill-3"
-            d="M261.185 217.496C262.54 221.003 262.033 224.298 258.9 225.263C255.767 226.228 253.494 223.789 252.641 220.128C251.788 216.467 252.664 213.058 254.926 212.361C257.187 211.665 259.83 213.99 261.185 217.496Z"
-            fill={iconColors.eyes.pupilBaseColor}
-          />
+          <g
+            transform={`translate(${
+              iconTransform.transform.eyes.position.x * 10
+            }, ${-iconTransform.transform.eyes.position.y * 10})`}
+          >
+            <path
+              id="eye-pupil-fill-0"
+              d="M264.066 218.44C266.764 225.457 265.356 231.645 260.299 233.203C255.243 234.76 250.596 230.437 248.879 223.118C247.161 215.799 248.452 209.647 252.646 208.355C256.839 207.063 261.368 211.423 264.066 218.44Z"
+              fill={
+                iconColors.eyes.pupilSecondaryColor ??
+                computeColors.eyes.computedPupilSecondaryColor
+              }
+            />
+            <path
+              id="eye-pupil-fill-1"
+              d="M263.604 218.456C265.495 224.592 264.407 229.845 259.71 231.292C255.014 232.738 251.159 229.008 249.269 222.871C247.037 215.625 249.48 210.377 252.94 209.311C256.4 208.245 261.372 211.209 263.604 218.456Z"
+              fill={iconColors.eyes.pupilBaseColor}
+            />
+            <path
+              id="eye-pupil-fill-2"
+              d="M261.546 217.124C263.492 221.699 262.623 226.209 259.489 227.174C256.355 228.14 253.099 224.901 252.133 220.023C251.156 215.092 252.898 211.94 254.632 211.406C256.365 210.871 259.579 212.498 261.546 217.124Z"
+              fill={
+                iconColors.eyes.pupilSecondaryColor ??
+                computeColors.eyes.computedPupilSecondaryColor
+              }
+            />
+            <path
+              id="eye-pupil-fill-3"
+              d="M261.185 217.496C262.54 221.003 262.033 224.298 258.9 225.263C255.767 226.228 253.494 223.789 252.641 220.128C251.788 216.467 252.664 213.058 254.926 212.361C257.187 211.665 259.83 213.99 261.185 217.496Z"
+              fill={iconColors.eyes.pupilBaseColor}
+            />
+          </g>
           <g style="mix-blend-mode:multiply">
             <path
               id="eye-shadow-fill"

@@ -11,13 +11,13 @@ const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
 type IconTransforms = {
   eyes: {
     position: {
-      /** -1.0 ~ 1.0 */
+      /** -1.0 ~ 1.0, positive mean outside */
       x: number;
-      /** -1.0 ~ 1.0 */
+      /** -1.0 ~ 1.0, positive mean upside */
       y: number;
     };
-    /** 0.0 ~ 1.0 */
-    open: number;
+    /** 0.0 ~ 1.0, 1.0 mean close */
+    close: number;
   };
   mouth: {
     /** 0.0 ~ 1.0 */
@@ -25,9 +25,9 @@ type IconTransforms = {
   };
   head: {
     position: {
-      /** 0 mean center */
+      /** 0 mean center, positive mean right */
       x: number;
-      /** 0 mean center */
+      /** 0 mean center, positive mean up */
       y: number;
     };
     /** 0 mean no rotation */
@@ -58,7 +58,7 @@ const defaultIconTransforms: IconTransforms = {
       x: 0,
       y: 0,
     },
-    open: 0,
+    close: 0,
   },
   mouth: {
     open: 0,
@@ -104,6 +104,47 @@ const calcHeadTransform = (
   return { x, y, rotate };
 };
 
+const getBlendShape = (
+  categories: FaceLandmarkerResult["faceBlendshapes"][number]["categories"],
+  name: string,
+) => {
+  return categories.find((category) => category.categoryName === name);
+};
+
+const calcEyesTransform = (
+  categories?: FaceLandmarkerResult["faceBlendshapes"][number]["categories"],
+  mirror = false,
+): {
+  x: number;
+  y: number;
+  close: number;
+} => {
+  if (categories === undefined) {
+    return { x: 0, y: 0, close: 0 };
+  }
+  if (!mirror) {
+    const eil = getBlendShape(categories, "eyeLookInLeft")?.score ?? 0;
+    const eol = getBlendShape(categories, "eyeLookOutLeft")?.score ?? 0;
+    const eul = getBlendShape(categories, "eyeLookUpLeft")?.score ?? 0;
+    const edl = getBlendShape(categories, "eyeLookDownLeft")?.score ?? 0;
+    const x = eol - eil;
+    const y = eul - edl;
+    const close = getBlendShape(categories, "eyeBlinkLeft")?.score ?? 0;
+
+    return { x, y, close };
+  }
+  const eir = getBlendShape(categories, "eyeLookInRight")?.score ?? 0;
+  const eor = getBlendShape(categories, "eyeLookOutRight")?.score ?? 0;
+  const eur = getBlendShape(categories, "eyeLookUpRight")?.score ?? 0;
+  const edr = getBlendShape(categories, "eyeLookDownRight")?.score ?? 0;
+
+  const x = eor - eir;
+  const y = eur - edr;
+  const close = getBlendShape(categories, "eyeBlinkRight")?.score ?? 0;
+
+  return { x, y, close };
+};
+
 export const IconTransformsProvider: ParentComponent<{
   params?: IconTransforms;
 }> = (props) => {
@@ -115,7 +156,7 @@ export const IconTransformsProvider: ParentComponent<{
   const [faceDetect] = useFaceDetect() ?? [];
 
   createEffect(() => {
-    if (faceDetect?.result) {
+    if (faceDetect?.result !== undefined) {
       const headTransform = calcHeadTransform(
         faceDetect.result?.facialTransformationMatrixes?.[0],
         faceDetect.isMirrored,
@@ -124,6 +165,15 @@ export const IconTransformsProvider: ParentComponent<{
       setState("transform", "head", "position", "x", headTransform.x);
       setState("transform", "head", "position", "y", headTransform.y);
       setState("transform", "head", "rotation", headTransform.rotate);
+
+      const eyesTransform = calcEyesTransform(
+        faceDetect.result?.faceBlendshapes[0]?.categories,
+        faceDetect.isMirrored,
+      );
+
+      setState("transform", "eyes", "position", "x", eyesTransform.x);
+      setState("transform", "eyes", "position", "y", eyesTransform.y);
+      setState("transform", "eyes", "close", eyesTransform.close);
     }
   });
 
