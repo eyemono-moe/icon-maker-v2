@@ -8,7 +8,7 @@ import {
   toHex,
 } from "color2k";
 import pkg from "lz-string";
-import { type Setter, createSignal, useContext } from "solid-js";
+import { type Setter, batch, createSignal, useContext } from "solid-js";
 import {
   type ParentComponent,
   createContext,
@@ -293,16 +293,18 @@ export const IconColorsProvider: ParentComponent<{
   };
 
   const randomize = () => {
-    reset();
-    setState("hair", "type", choice(hairOptions).value);
-    setState("hair", "baseColor", randomHSL([0, 360], [0, 1], [0.05, 1]));
-    setState("eyes", "type", choice(eyesOptions).value);
-    setState("eyes", "pupilBaseColor", randomHSL([0, 360], [0, 1], [0, 1]));
-    setState("eyebrows", "type", choice(eyebrowsOptions).value);
-    setState("mouth", "type", choice(mouthOptions).value);
-    setState("head", "type", choice(headOptions).value);
-    setState("head", "baseColor", randomHSL([0, 25], [0.5, 1], [0.6, 0.9]));
-    setState("background", randomHSL([0, 360], [0.2, 1], [0.2, 0.9]));
+    batch(() => {
+      reset();
+      setState("hair", "type", choice(hairOptions).value);
+      setState("hair", "baseColor", randomHSL([0, 360], [0, 1], [0.05, 1]));
+      setState("eyes", "type", choice(eyesOptions).value);
+      setState("eyes", "pupilBaseColor", randomHSL([0, 360], [0, 1], [0, 1]));
+      setState("eyebrows", "type", choice(eyebrowsOptions).value);
+      setState("mouth", "type", choice(mouthOptions).value);
+      setState("head", "type", choice(headOptions).value);
+      setState("head", "baseColor", randomHSL([0, 25], [0.5, 1], [0.6, 0.9]));
+      setState("background", randomHSL([0, 360], [0.2, 1], [0.2, 0.9]));
+    });
   };
 
   onMount(loadFromUrl);

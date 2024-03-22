@@ -1,6 +1,6 @@
 import type { FaceLandmarkerResult } from "@mediapipe/tasks-vision";
 import pkg from "lz-string";
-import { createEffect, useContext } from "solid-js";
+import { batch, createEffect } from "solid-js";
 import { type ParentComponent, createContext } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import { useFaceDetect } from "./faceDetect";
@@ -280,23 +280,25 @@ export const IconTransformsProvider: ParentComponent<{
 
   createEffect(() => {
     if (faceDetect?.result !== undefined) {
-      const headTransformRaw = calcHeadTransform(
-        faceDetect.result?.facialTransformationMatrixes?.[0],
-        faceDetect.isMirrored,
-      );
+      batch(() => {
+        const headTransformRaw = calcHeadTransform(
+          faceDetect.result?.facialTransformationMatrixes?.[0],
+          faceDetect.isMirrored,
+        );
 
-      setState("rawTransform", "head", "position", "x", headTransformRaw.x);
-      setState("rawTransform", "head", "position", "y", headTransformRaw.y);
-      setState("rawTransform", "head", "rotation", headTransformRaw.rotate);
+        setState("rawTransform", "head", "position", "x", headTransformRaw.x);
+        setState("rawTransform", "head", "position", "y", headTransformRaw.y);
+        setState("rawTransform", "head", "rotation", headTransformRaw.rotate);
 
-      const eyesTransformRaw = calcEyesTransform(
-        faceDetect.result?.faceBlendshapes[0]?.categories,
-        faceDetect.isMirrored,
-      );
+        const eyesTransformRaw = calcEyesTransform(
+          faceDetect.result?.faceBlendshapes[0]?.categories,
+          faceDetect.isMirrored,
+        );
 
-      setState("rawTransform", "eyes", "position", "x", eyesTransformRaw.x);
-      setState("rawTransform", "eyes", "position", "y", eyesTransformRaw.y);
-      setState("rawTransform", "eyes", "close", eyesTransformRaw.close);
+        setState("rawTransform", "eyes", "position", "x", eyesTransformRaw.x);
+        setState("rawTransform", "eyes", "position", "y", eyesTransformRaw.y);
+        setState("rawTransform", "eyes", "close", eyesTransformRaw.close);
+      });
     }
   });
 
@@ -318,14 +320,4 @@ export const IconTransformsProvider: ParentComponent<{
       {props.children}
     </IconTransformsContext.Provider>
   );
-};
-
-export const useIconTransforms = () => {
-  const context = useContext(IconTransformsContext);
-  if (!context) {
-    throw new Error(
-      "useIconTransforms must be used within a IconTransformsProvider",
-    );
-  }
-  return context;
 };
