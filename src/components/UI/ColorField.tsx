@@ -63,13 +63,13 @@ const ColorField: Component<Props> = (props) => {
             onChange={setIsAuto}
             class="flex items-center"
           >
-            <Checkbox.Input />
-            <Checkbox.Control>
-              <Checkbox.Indicator class="parent" forceMount>
-                <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple-600) w-6! h-6!" />
+            <Checkbox.Input class="peer" />
+            <Checkbox.Control class="group rounded peer-focus-visible:outline">
+              <Checkbox.Indicator forceMount class="parent">
+                <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple-600) w-6! h-6! cursor-pointer" />
               </Checkbox.Indicator>
             </Checkbox.Control>
-            <Checkbox.Label class="text-nowrap">
+            <Checkbox.Label class="text-nowrap cursor-pointer">
               Set automatically
             </Checkbox.Label>
           </Checkbox.Root>

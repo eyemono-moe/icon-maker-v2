@@ -2,7 +2,7 @@ import type { FaceLandmarkerResult } from "@mediapipe/tasks-vision";
 import pkg from "lz-string";
 import { createEffect, useContext } from "solid-js";
 import { type ParentComponent, createContext } from "solid-js";
-import { createStore } from "solid-js/store";
+import { type SetStoreFunction, createStore } from "solid-js/store";
 import { useFaceDetect } from "./faceDetect";
 
 const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
@@ -35,18 +35,33 @@ type IconTransforms = {
   };
 };
 
+type MinMax = [min: number, max: number];
+
+type RecursivelyApplyMinMax<T> = T extends Record<string, unknown>
+  ? {
+      [P in keyof T]: RecursivelyApplyMinMax<T[P]>;
+    }
+  : T extends number
+    ? MinMax
+    : T;
+
+type IconTransformMinMax = RecursivelyApplyMinMax<IconTransforms>;
+
 export type IconTransformsContextState = {
-  transform: IconTransforms;
+  rawTransform: IconTransforms;
+  minMax: IconTransformMinMax;
   isSyncing: boolean;
 };
 
 export type IconTransformsContextActions = {
+  setTransform: SetStoreFunction<IconTransformsContextState>;
   toggleSyncing: () => void;
 };
 
 export type IconTransformsContextValue = [
   transforms: IconTransformsContextState,
   actions: IconTransformsContextActions,
+  mappedTransforms: IconTransforms,
 ];
 
 export const IconTransformsContext =
@@ -145,36 +160,148 @@ const calcEyesTransform = (
   return { x, y, close };
 };
 
+const mapMinMax = (
+  value: number,
+  input: MinMax,
+  output: MinMax = [0, 1],
+  clump = true,
+): number => {
+  let div = input[1] - input[0];
+  if (div === 0) {
+    div = Number.MIN_VALUE;
+  }
+  const slope = (output[1] - output[0]) / div;
+  const result = output[0] + slope * (value - input[0]);
+  if (clump) {
+    return Math.min(output[1], Math.max(output[0], result));
+  }
+  return result;
+};
+
 export const IconTransformsProvider: ParentComponent<{
   params?: IconTransforms;
 }> = (props) => {
   const [state, setState] = createStore<IconTransformsContextState>({
-    transform: defaultPlainTransforms(),
+    rawTransform: defaultPlainTransforms(),
+    minMax: {
+      eyes: {
+        position: {
+          x: [-0.9, 0.9],
+          y: [-0.9, 0.1],
+        },
+        close: [0.2, 0.55],
+      },
+      mouth: {
+        open: [0, 1],
+      },
+      head: {
+        position: {
+          x: [-1, 1],
+          y: [-1, 1],
+        },
+        rotation: [-180, 180],
+      },
+    },
     isSyncing: false,
   });
 
   const [faceDetect] = useFaceDetect() ?? [];
 
+  const mappedTransforms: IconTransforms = {
+    eyes: {
+      position: {
+        get x() {
+          return state.isSyncing
+            ? mapMinMax(
+                state.rawTransform.eyes.position.x,
+                state.minMax.eyes.position.x,
+                [-1, 1],
+              )
+            : defaultPlainTransforms().eyes.position.x;
+        },
+        get y() {
+          return state.isSyncing
+            ? mapMinMax(
+                state.rawTransform.eyes.position.y,
+                state.minMax.eyes.position.y,
+                [-1, 1],
+              )
+            : defaultPlainTransforms().eyes.position.y;
+        },
+      },
+      get close() {
+        return state.isSyncing
+          ? mapMinMax(state.rawTransform.eyes.close, state.minMax.eyes.close)
+          : defaultPlainTransforms().eyes.close;
+      },
+    },
+    mouth: {
+      get open() {
+        return state.isSyncing
+          ? mapMinMax(state.rawTransform.mouth.open, state.minMax.mouth.open)
+          : defaultPlainTransforms().mouth.open;
+      },
+    },
+    head: {
+      position: {
+        get x() {
+          return state.isSyncing
+            ? mapMinMax(
+                state.rawTransform.head.position.x,
+                state.minMax.head.position.x,
+                [-1, 1],
+                false,
+              )
+            : defaultPlainTransforms().head.position.x;
+        },
+        get y() {
+          return state.isSyncing
+            ? mapMinMax(
+                state.rawTransform.head.position.y,
+                state.minMax.head.position.y,
+                [-1, 1],
+                false,
+              )
+            : defaultPlainTransforms().head.position.x;
+        },
+      },
+      get rotation() {
+        return state.isSyncing
+          ? mapMinMax(
+              state.rawTransform.head.rotation,
+              state.minMax.head.rotation,
+              [-180, 180],
+              false,
+            )
+          : defaultPlainTransforms().head.rotation;
+      },
+    },
+  };
+
   createEffect(() => {
     if (faceDetect?.result !== undefined) {
-      const headTransform = calcHeadTransform(
+      const headTransformRaw = calcHeadTransform(
         faceDetect.result?.facialTransformationMatrixes?.[0],
         faceDetect.isMirrored,
       );
 
-      setState("transform", "head", "position", "x", headTransform.x);
-      setState("transform", "head", "position", "y", headTransform.y);
-      setState("transform", "head", "rotation", headTransform.rotate);
+      setState("rawTransform", "head", "position", "x", headTransformRaw.x);
+      setState("rawTransform", "head", "position", "y", headTransformRaw.y);
+      setState("rawTransform", "head", "rotation", headTransformRaw.rotate);
 
-      const eyesTransform = calcEyesTransform(
+      const eyesTransformRaw = calcEyesTransform(
         faceDetect.result?.faceBlendshapes[0]?.categories,
         faceDetect.isMirrored,
       );
 
-      setState("transform", "eyes", "position", "x", eyesTransform.x);
-      setState("transform", "eyes", "position", "y", eyesTransform.y);
-      setState("transform", "eyes", "close", eyesTransform.close);
+      setState("rawTransform", "eyes", "position", "x", eyesTransformRaw.x);
+      setState("rawTransform", "eyes", "position", "y", eyesTransformRaw.y);
+      setState("rawTransform", "eyes", "close", eyesTransformRaw.close);
     }
+  });
+
+  createEffect(() => {
+    setState("isSyncing", faceDetect?.cameraState === "loaded");
   });
 
   return (
@@ -182,8 +309,10 @@ export const IconTransformsProvider: ParentComponent<{
       value={[
         state,
         {
+          setTransform: setState,
           toggleSyncing: () => setState("isSyncing", (prev) => !prev),
         },
+        mappedTransforms,
       ]}
     >
       {props.children}

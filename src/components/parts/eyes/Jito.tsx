@@ -6,7 +6,7 @@ import { SsrPortal } from "~/context/ssrPortal";
 
 const Jito: PartsComponent = (props) => {
   const [iconColors, { computeColors }] = useIconColors();
-  const [iconTransform] = useIconTransforms();
+  const [_, __, mappedTransforms] = useIconTransforms();
   const whiteFillId = createUniqueId();
   const maskId = createUniqueId();
 
@@ -37,9 +37,9 @@ const Jito: PartsComponent = (props) => {
         </mask>
         <g mask={`url(#${maskId})`}>
           <g
-            transform={`translate(${
-              iconTransform.transform.eyes.position.x * 10
-            }, ${-iconTransform.transform.eyes.position.y * 10})`}
+            transform={`translate(${mappedTransforms.eyes.position.x * 8}, ${
+              -mappedTransforms.eyes.position.y * 8
+            })`}
           >
             <path
               id="eye-pupil-fill-0"

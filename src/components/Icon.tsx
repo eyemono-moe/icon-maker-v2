@@ -81,21 +81,21 @@ const Icon: Component = () => {
       <PortalTarget id="background-target" />
       <g
         id="head-translate"
-        transform={`translate(${transform.transform.head.position.x * 10},${
-          -transform.transform.head.position.y * 10
+        transform={`translate(${transform.rawTransform.head.position.x * 10},${
+          -transform.rawTransform.head.position.y * 10
         })`}
       >
         <PortalTarget id="accessory-bottom-target" />
         <g
           id="neck-rotation-for-hair-back"
           transform={`rotate(${
-            transform.transform.head.rotation / 2
+            transform.rawTransform.head.rotation / 2
           }, 255, 365)`}
         >
           <g
             id="head-rotation-for-hair-back"
             transform={`rotate(${
-              transform.transform.head.rotation / 2
+              transform.rawTransform.head.rotation / 2
             }, 230, 310)`}
           >
             <PortalTarget id="hair-back-target" />
@@ -104,14 +104,14 @@ const Icon: Component = () => {
         <g
           id="neck-rotation"
           transform={`rotate(${
-            transform.transform.head.rotation / 2
+            transform.rawTransform.head.rotation / 2
           }, 255, 365)`}
         >
           <PortalTarget id="neck-target" />
           <g
             id="head-rotation"
             transform={`rotate(${
-              transform.transform.head.rotation / 2
+              transform.rawTransform.head.rotation / 2
             }, 230, 310)`}
           >
             <PortalTarget id="head-target" />
