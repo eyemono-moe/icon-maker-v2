@@ -1,6 +1,6 @@
 import type { FaceLandmarkerResult } from "@mediapipe/tasks-vision";
 import pkg from "lz-string";
-import { batch, createEffect } from "solid-js";
+import { batch, createEffect, useContext } from "solid-js";
 import { type ParentComponent, createContext } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import { useFaceDetect } from "./faceDetect";
@@ -320,4 +320,14 @@ export const IconTransformsProvider: ParentComponent<{
       {props.children}
     </IconTransformsContext.Provider>
   );
+};
+
+export const useIconTransforms = () => {
+  const context = useContext(IconTransformsContext);
+  if (!context) {
+    throw new Error(
+      "useIconTransforms must be used within a IconTransformsProvider",
+    );
+  }
+  return context;
 };
