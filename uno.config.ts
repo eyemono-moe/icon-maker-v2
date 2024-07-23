@@ -1,10 +1,10 @@
-import transformerVariantGroup from "@unocss/transformer-variant-group";
 import {
   defineConfig,
   presetIcons,
   presetTypography,
   presetUno,
   presetWebFonts,
+  transformerVariantGroup
 } from "unocss";
 
 export default defineConfig({
