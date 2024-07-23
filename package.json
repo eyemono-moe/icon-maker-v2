@@ -17,6 +17,7 @@
     "@mediapipe/tasks-vision": "^0.10.14",
     "@solid-primitives/history": "^0.1.5",
     "@solid-primitives/media": "^2.2.9",
+    "@solid-primitives/presence": "^0.0.6",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.6",
