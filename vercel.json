@@ -1,7 +1,9 @@
 {
-  "version": 2,
-  "public": false,
+  "framework": "solidstart-1",
   "github": {
     "enabled": false
-  }
+  },
+  "outputDirectory": ".vercel",
+  "public": false,
+  "version": 2
 }
