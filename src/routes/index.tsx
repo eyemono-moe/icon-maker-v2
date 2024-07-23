@@ -1,10 +1,8 @@
 import { Link, Meta, Title } from "@solidjs/meta";
-import { clientOnly } from "@solidjs/start";
 import { getRequestEvent } from "solid-js/web";
 import { object, optional, string } from "valibot";
+import MainView from "~/components/MainView";
 import { useQuery } from "~/lib/query";
-
-const MainView = clientOnly(() => import("~/components/MainView"));
 
 const querySchema = object({
   p: optional(string()),
