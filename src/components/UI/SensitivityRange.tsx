@@ -1,10 +1,10 @@
-import { Slider } from "@kobalte/core";
-import type { SliderRootProps } from "@kobalte/core/dist/types/slider";
+import { Slider } from "@kobalte/core/slider";
+import type { ComponentProps } from "solid-js";
 import { type Component, splitProps } from "solid-js";
 
 type Props = {
   label: string;
-} & SliderRootProps &
+} & ComponentProps<typeof Slider> &
   (
     | {
         previewValue: number;
@@ -31,7 +31,7 @@ const Range: Component<Props> = (props) => {
       : "-6px";
 
   return (
-    <Slider.Root class="flex flex-col gap-2 w-full" {...sliderProps}>
+    <Slider class="flex flex-col gap-2 w-full" {...sliderProps}>
       <div class="font-700 text-nowrap flex justify-between">
         <Slider.Label>{props.label}</Slider.Label>
         <Slider.ValueLabel />
@@ -54,7 +54,7 @@ const Range: Component<Props> = (props) => {
           />
         </Slider.Track>
       </div>
-    </Slider.Root>
+    </Slider>
   );
 };
 

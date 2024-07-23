@@ -1,5 +1,7 @@
-import { Checkbox, TextField } from "@kobalte/core";
+import { Checkbox } from "@kobalte/core/checkbox";
+import { TextField } from "@kobalte/core/text-field";
 import { type Component, Show, createEffect, createSignal } from "solid-js";
+import type { JSX } from "solid-js";
 import { useIconColors } from "~/context/iconColors";
 import Button from "./Button";
 
@@ -43,7 +45,7 @@ const ColorField: Component<Props> = (props) => {
   };
 
   return (
-    <TextField.Root
+    <TextField
       value={props.canEmpty ? props.color ?? props.fallbackColor : props.color}
       onChange={(v) => {
         setTrackHistory(false);
@@ -58,7 +60,7 @@ const ColorField: Component<Props> = (props) => {
           {props.label}
         </TextField.Label>
         <Show when={props.canEmpty}>
-          <Checkbox.Root
+          <Checkbox
             checked={isAuto()}
             onChange={setIsAuto}
             class="flex items-center"
@@ -72,14 +74,16 @@ const ColorField: Component<Props> = (props) => {
             <Checkbox.Label class="text-nowrap cursor-pointer">
               Set automatically
             </Checkbox.Label>
-          </Checkbox.Root>
+          </Checkbox>
         </Show>
       </div>
       <div class="flex items-center gap-2 overflow-hidden">
         <TextField.Input
           type="color"
           class="w-full h-8 rounded"
-          onChange={(e) => {
+          onChange={(
+            e: Parameters<JSX.ChangeEventHandler<HTMLInputElement, Event>>[0],
+          ) => {
             // historyに一度だけ保存するためにonChangeでsetColorを呼ぶ
             setTrackHistory(true);
             props.setColor(e.currentTarget.value);
@@ -96,7 +100,7 @@ const ColorField: Component<Props> = (props) => {
           </Button>
         </Show>
       </div>
-    </TextField.Root>
+    </TextField>
   );
 };
 

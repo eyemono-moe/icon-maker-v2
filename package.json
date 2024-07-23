@@ -8,7 +8,8 @@
     "version": "vinxi version",
     "check": "biome check .",
     "fix": "biome check --write .",
-    "fix:force": "biome check --write --unsafe ."
+    "fix:force": "biome check --write --unsafe .",
+    "type": "tsc --noEmit"
   },
   "dependencies": {
     "@ark-ui/solid": "^3.5.0",
@@ -35,6 +36,7 @@
     "@biomejs/biome": "1.8.3",
     "@iconify-json/material-symbols": "^1.1.85",
     "@iconify-json/ri": "^1.1.21",
+    "typescript": "^5.5.4",
     "unocss": "^0.61.5"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
