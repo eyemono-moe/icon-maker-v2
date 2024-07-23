@@ -7,7 +7,8 @@
     "start": "vinxi start",
     "version": "vinxi version",
     "check": "biome check .",
-    "check:apply": "biome check --apply ."
+    "fix": "biome check --write .",
+    "fix:force": "biome check --write --unsafe ."
   },
   "dependencies": {
     "@ark-ui/solid": "^2.2.0",
@@ -31,7 +32,7 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.1",
+    "@biomejs/biome": "1.8.3",
     "@iconify-json/material-symbols": "^1.1.85",
     "@iconify-json/ri": "^1.1.21",
     "@unocss/transformer-variant-group": "^0.58.9",
