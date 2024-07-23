@@ -4,6 +4,7 @@ import type { Options } from "~/components/UI/PartsSelect";
 const Short = lazy(() => import("./Short"));
 const PonyTail = lazy(() => import("./Ponytail"));
 const Blunt = lazy(() => import("./Blunt"));
+const BluntPonyTail = lazy(() => import("./BluntPonytail"));
 
 export const hairOptions = [
   {
@@ -20,5 +21,10 @@ export const hairOptions = [
     label: "Blunt",
     value: "blunt",
     component: Blunt,
+  },
+  {
+    label: "Blunt Ponytail",
+    value: "bluntPonytail",
+    component: BluntPonyTail,
   },
 ] as const satisfies Options<string>;
