@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@ark-ui/solid": "^3.5.0",
-    "@kobalte/core": "^0.12.6",
+    "@kobalte/core": "^0.13.4",
     "@mediapipe/tasks-vision": "^0.10.14",
     "@solid-primitives/history": "^0.1.5",
     "@solid-primitives/media": "^2.2.9",
