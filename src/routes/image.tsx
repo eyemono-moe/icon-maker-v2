@@ -1,5 +1,12 @@
 import type { APIEvent } from "@solidjs/start/server";
-import { type Input, literal, object, optional, string, union } from "valibot";
+import {
+  type InferInput,
+  literal,
+  object,
+  optional,
+  string,
+  union,
+} from "valibot";
 import { type IconColors, parseColors } from "~/context/iconColors";
 import { convertFromSvg } from "~/lib/image";
 import { useQuery } from "~/lib/query";
@@ -10,7 +17,7 @@ const imageQuerySchema = object({
   p: optional(string()),
   f: optional(union([literal("png"), literal("svg")]), "svg"),
 });
-export type ImageQuery = Input<typeof imageQuerySchema>;
+export type ImageQuery = InferInput<typeof imageQuerySchema>;
 
 const cache = "public, max-age=31536000";
 

@@ -1,11 +1,11 @@
-import { Button as KButton } from "@kobalte/core";
-import type { ButtonRootProps } from "@kobalte/core/dist/types/button";
+import { Button as KButton } from "@kobalte/core/button";
+import type { ComponentProps } from "solid-js";
 import { type ParentComponent, mergeProps, splitProps } from "solid-js";
 
 type Props = {
   variant?: "primary" | "secondary";
   fill?: boolean;
-} & ButtonRootProps;
+} & ComponentProps<typeof KButton>;
 
 const Button: ParentComponent<Props> = (props) => {
   const mergedProps = mergeProps({ variant: "primary" }, props);
@@ -15,7 +15,7 @@ const Button: ParentComponent<Props> = (props) => {
   ]);
 
   return (
-    <KButton.Root
+    <KButton
       {...kobalteProps}
       class="font-700 py-1 px-2 rounded"
       classList={{
@@ -27,7 +27,7 @@ const Button: ParentComponent<Props> = (props) => {
       }}
     >
       {props.children}
-    </KButton.Root>
+    </KButton>
   );
 };
 

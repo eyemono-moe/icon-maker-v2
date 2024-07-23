@@ -1,6 +1,10 @@
-import { Toast, toaster } from "@kobalte/core";
-import type { ToastRootProps } from "@kobalte/core/dist/types/toast";
-import { type Component, type ParentComponent, splitProps } from "solid-js";
+import { Toast, toaster } from "@kobalte/core/toast";
+import {
+  type Component,
+  type ComponentProps,
+  type ParentComponent,
+  splitProps,
+} from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { Match, Portal, Switch } from "solid-js/web";
 import "../assets/toast.css";
@@ -16,14 +20,14 @@ export const Toaster: Component = () => {
 };
 
 const MyToast: ParentComponent<
-  ToastRootProps & {
+  ComponentProps<typeof Toast> & {
     variant?: "success" | "error" | "pending";
   }
 > = (props) => {
   const [addedProps, kobalteProps] = splitProps(props, ["variant"]);
 
   return (
-    <Toast.Root
+    <Toast
       {...kobalteProps}
       class="relative w-200px max-w-full b-1 rounded bg-white p-2 shadow data-[opened]:(animate-slide-in-right! animate-duration-100!) data-[closed]:(animate-fade-out-right animate-duration-100) data-[swipe=move]:translate-x-[--kb-toast-swipe-move-x] data-[swipe=cancel]:(translate-x-0 transition-transform-200) data-[swipe=end]:(animate-[swipeOut] animate-duration-200)"
     >
@@ -48,7 +52,7 @@ const MyToast: ParentComponent<
         </Switch>
         {props.children}
       </Toast.Description>
-    </Toast.Root>
+    </Toast>
   );
 };
 
@@ -105,7 +109,7 @@ const promise = <T, U>(
 };
 const custom = (jsx: () => JSX.Element) => {
   return toaster.show((props) => (
-    <Toast.Root toastId={props.toastId}>{jsx()}</Toast.Root>
+    <Toast toastId={props.toastId}>{jsx()}</Toast>
   ));
 };
 const dismiss = (id: number) => {
