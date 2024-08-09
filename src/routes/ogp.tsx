@@ -1,23 +1,16 @@
 import type { APIEvent } from "@solidjs/start/server";
-import {
-  type InferInput,
-  literal,
-  object,
-  optional,
-  string,
-  union,
-} from "valibot";
+import * as v from "valibot";
 import { type IconColors, parseColors } from "~/context/iconColors";
 import { convertFromSvg } from "~/lib/image";
 import { useQuery } from "~/lib/query";
 import { retry } from "~/lib/retry";
 import { ssrOgpSvgStr } from "~/lib/ssrSvgStr";
 
-const imageQuerySchema = object({
-  p: optional(string()),
-  f: optional(union([literal("png"), literal("svg")]), "svg"),
+const imageQuerySchema = v.object({
+  p: v.optional(v.string()),
+  f: v.optional(v.union([v.literal("png"), v.literal("svg")]), "svg"),
 });
-export type ImageQuery = InferInput<typeof imageQuerySchema>;
+export type ImageQuery = v.InferInput<typeof imageQuerySchema>;
 
 export async function GET(event: APIEvent) {
   const query = useQuery(imageQuerySchema, event.nativeEvent);

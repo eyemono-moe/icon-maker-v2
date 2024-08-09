@@ -1,23 +1,30 @@
 import type { APIEvent } from "@solidjs/start/server";
-import {
-  type InferInput,
-  literal,
-  object,
-  optional,
-  string,
-  union,
-} from "valibot";
+import * as v from "valibot";
 import { type IconColors, parseColors } from "~/context/iconColors";
 import { convertFromSvg } from "~/lib/image";
 import { useQuery } from "~/lib/query";
 import { retry } from "~/lib/retry";
 import { ssrSvgStr } from "~/lib/ssrSvgStr";
 
-const imageQuerySchema = object({
-  p: optional(string()),
-  f: optional(union([literal("png"), literal("svg")]), "svg"),
+const imageQuerySchema = v.object({
+  p: v.optional(v.string()),
+  f: v.optional(v.union([v.literal("png"), v.literal("svg")]), "svg"),
+  s: v.optional(
+    v.pipe(
+      v.string(),
+      v.regex(/^(\d+)(x(\d+))?$/),
+      v.transform((s) => {
+        const match = s.match(/^(\d+)(x(\d+))?$/);
+        if (!match) {
+          throw new Error("invalid size");
+        }
+        const [_, w, __, h] = match;
+        return { w: Number.parseInt(w), h: h ? Number.parseInt(h) : undefined };
+      }),
+    ),
+  ),
 });
-export type ImageQuery = InferInput<typeof imageQuerySchema>;
+export type ImageQueryOutput = v.InferOutput<typeof imageQuerySchema>;
 
 const cache = "public, max-age=31536000";
 
@@ -42,7 +49,7 @@ export async function GET(event: APIEvent) {
         },
       });
     case "png": {
-      const png = await convertFromSvg(svgText, "png");
+      const png = await convertFromSvg(svgText, "png", query.s);
       return new Response(png, {
         headers: {
           "Content-Type": "image/png",

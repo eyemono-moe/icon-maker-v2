@@ -1,11 +1,11 @@
 import { Link, Meta, Title } from "@solidjs/meta";
 import { getRequestEvent } from "solid-js/web";
-import { object, optional, string } from "valibot";
+import * as v from "valibot";
 import MainView from "~/components/MainView";
 import { useQuery } from "~/lib/query";
 
-const querySchema = object({
-  p: optional(string()),
+const querySchema = v.object({
+  p: v.optional(v.string()),
 });
 
 const getParamsServer = () => {

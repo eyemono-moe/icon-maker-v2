@@ -1,4 +1,4 @@
-import type { ImageQuery } from "~/routes/image";
+import type { ImageQueryOutput } from "~/routes/image";
 import { optimizeSvg } from "./svg";
 
 const imageDataString = (svg: HTMLElement) => {
@@ -62,7 +62,9 @@ export const copyPng = (svg: HTMLElement) => {
   });
 };
 
-export const copyImageUrl = (format: Exclude<ImageQuery["f"], undefined>) => {
+export const copyImageUrl = (
+  format: Exclude<ImageQueryOutput["f"], undefined>,
+) => {
   // 現在開いているURLのクエリパラメータはそのままに、パスを`/image`に変更する
   const url = new URL(window.location.href);
   url.pathname = "/image";
