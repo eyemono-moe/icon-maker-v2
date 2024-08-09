@@ -13,7 +13,10 @@ const getParamsServer = () => {
   const event = getRequestEvent();
   if (event) {
     const query = useQuery(querySchema, event.nativeEvent);
-    return query.p;
+    if (!query.success) {
+      return undefined;
+    }
+    return query.output.p;
   }
 };
 

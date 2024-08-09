@@ -14,9 +14,15 @@ export type ImageQuery = v.InferInput<typeof imageQuerySchema>;
 
 export async function GET(event: APIEvent) {
   const query = useQuery(imageQuerySchema, event.nativeEvent);
+  if (!query.success) {
+    return new Response("bad request", {
+      status: 400,
+    });
+  }
+
   let params: IconColors | undefined;
-  if (query.p) {
-    params = parseColors(query.p);
+  if (query.output.p) {
+    params = parseColors(query.output.p);
   }
 
   const svgText = await retry(() => ssrOgpSvgStr(params), {

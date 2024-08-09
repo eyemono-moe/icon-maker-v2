@@ -6,10 +6,5 @@ export const useQuery = <TInput, TOutput, TIssue extends v.BaseIssue<unknown>>(
   event: HTTPEvent,
 ) => {
   const query = getQuery(event);
-
-  try {
-    return v.parse(schema, query);
-  } catch (e) {
-    throw new Error(`failed to parse query: ${e}`);
-  }
+  return v.safeParse(schema, query);
 };

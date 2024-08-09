@@ -6,6 +6,8 @@ import { useQuery } from "~/lib/query";
 import { retry } from "~/lib/retry";
 import { ssrSvgStr } from "~/lib/ssrSvgStr";
 
+const MAX_SIZE = 1024;
+
 const imageQuerySchema = v.object({
   p: v.optional(v.string()),
   f: v.optional(v.union([v.literal("png"), v.literal("svg")]), "svg"),
@@ -21,6 +23,15 @@ const imageQuerySchema = v.object({
         const [_, w, __, h] = match;
         return { w: Number.parseInt(w), h: h ? Number.parseInt(h) : undefined };
       }),
+      v.check((s) => {
+        if (s.w === 0 || s.h === 0) {
+          return false;
+        }
+        if (s.w > MAX_SIZE || (s.h && s.h > MAX_SIZE)) {
+          return false;
+        }
+        return true;
+      }, "invalid size"),
     ),
   ),
 });
@@ -30,9 +41,15 @@ const cache = "public, max-age=31536000";
 
 export async function GET(event: APIEvent) {
   const query = useQuery(imageQuerySchema, event.nativeEvent);
+  if (!query.success) {
+    return new Response("bad request", {
+      status: 400,
+    });
+  }
+
   let params: IconColors | undefined;
-  if (query.p) {
-    params = parseColors(query.p);
+  if (query.output.p) {
+    params = parseColors(query.output.p);
   }
 
   const svgText = await retry(() => ssrSvgStr(params), {
@@ -40,7 +57,7 @@ export async function GET(event: APIEvent) {
     delay: 100,
   });
 
-  switch (query.f) {
+  switch (query.output.f) {
     case "svg":
       return new Response(svgText, {
         headers: {
@@ -49,7 +66,7 @@ export async function GET(event: APIEvent) {
         },
       });
     case "png": {
-      const png = await convertFromSvg(svgText, "png", query.s);
+      const png = await convertFromSvg(svgText, "png", query.output.s);
       return new Response(png, {
         headers: {
           "Content-Type": "image/png",
