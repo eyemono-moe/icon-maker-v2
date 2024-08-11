@@ -16,10 +16,10 @@ export const convertFromSvg = async (
       return await sharp(Buffer.from(svg))
         .resize(min, min)
         .extend({
-          top: (h - min) / 2,
-          bottom: (h - min) / 2,
-          left: (w - min) / 2,
-          right: (w - min) / 2,
+          top: Math.floor((h - min) / 2),
+          bottom: Math.floor((h - min) / 2),
+          left: Math.floor((w - min) / 2),
+          right: Math.floor((w - min) / 2),
           extendWith: "copy",
         })
         .png()
