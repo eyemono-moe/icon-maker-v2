@@ -7,6 +7,7 @@ import {
   saturate,
   toHex,
 } from "color2k";
+import { replaceState } from "history-throttled";
 import pkg from "lz-string";
 import { type Setter, batch, createSignal, useContext } from "solid-js";
 import {
@@ -272,12 +273,9 @@ export const IconColorsProvider: ParentComponent<{
   };
 
   const saveToUrl = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set(
-      "p",
-      compressToEncodedURIComponent(JSON.stringify(state)),
-    );
-    window.history.replaceState(null, "", url.toString());
+    const searchParams = new URLSearchParams();
+    searchParams.set("p", compressToEncodedURIComponent(JSON.stringify(state)));
+    replaceState("", "", `?${searchParams.toString()}`);
   };
   const loadFromUrl = () => {
     const url = new URL(window.location.href);

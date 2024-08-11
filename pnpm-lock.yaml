@@ -41,6 +41,9 @@ importers:
       color2k:
         specifier: ^2.0.3
         version: 2.0.3
+      history-throttled:
+        specifier: ^1.0.1
+        version: 1.0.1
       lz-string:
         specifier: ^1.5.0
         version: 1.5.0
@@ -2163,6 +2166,9 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  history-throttled@1.0.1:
+    resolution: {integrity: sha512-MPWwkpw8EB+wdN8jcmIESVXn6RCTXI698YWz6qgrYVN/q8YirmXFomrJeEYD8aDEgdS9Rg0n+b9yCW5E+w0GnA==}
 
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
@@ -5743,6 +5749,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  history-throttled@1.0.1: {}
 
   hookable@5.5.3: {}
 
