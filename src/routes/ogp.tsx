@@ -30,7 +30,12 @@ export async function GET(event: APIEvent) {
     delay: 100,
   });
 
-  const png = await convertFromSvg(svgText, "png");
+  const png = await convertFromSvg(svgText, "png", {
+    size: {
+      h: 525,
+      w: 1000,
+    },
+  });
   return new Response(png, {
     headers: {
       "Content-Type": "image/png",

@@ -66,7 +66,10 @@ export async function GET(event: APIEvent) {
         },
       });
     case "png": {
-      const png = await convertFromSvg(svgText, "png", query.output.s);
+      const png = await convertFromSvg(svgText, "png", {
+        size: query.output.s,
+        square: true,
+      });
       return new Response(png, {
         headers: {
           "Content-Type": "image/png",
