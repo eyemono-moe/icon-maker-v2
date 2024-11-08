@@ -1,7 +1,7 @@
-import { Select as KSelect } from "@kobalte/core";
+import { Select as KSelect } from "@kobalte/core/select";
 import { type JSX, Show } from "solid-js";
-import "../../assets/select.css";
 import Button from "./Button";
+import "../../assets/select.css";
 
 type Option<T extends string> = {
   value: T;
@@ -10,7 +10,7 @@ type Option<T extends string> = {
 
 type Props<T extends string> = {
   value?: Option<T>;
-  onChange: (value?: Option<T>) => void;
+  onChange: (value: Option<T> | null) => void;
   options: Option<T>[];
   label: string;
   placeholder?: string;
@@ -20,7 +20,7 @@ type Props<T extends string> = {
 
 const _Select = <T extends string>(props: Props<T>): JSX.Element => {
   return (
-    <KSelect.Root<Option<T>>
+    <KSelect<Option<T>>
       value={props.value}
       onChange={props.onChange}
       options={props.options}
@@ -62,7 +62,7 @@ const _Select = <T extends string>(props: Props<T>): JSX.Element => {
           <KSelect.Listbox class="max-h-360px p-2 overflow-y-auto" />
         </KSelect.Content>
       </KSelect.Portal>
-    </KSelect.Root>
+    </KSelect>
   );
 };
 

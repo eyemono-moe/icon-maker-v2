@@ -24,6 +24,8 @@ const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
   return <Icon />;
 };
 
+const hydrationKeyRegex = /data-hk=[^<>\s]+/g;
+
 export const ssrSvgStr = (params?: IconColors) => {
   const svgText = renderToString(() => {
     return (
@@ -37,7 +39,10 @@ export const ssrSvgStr = (params?: IconColors) => {
     );
   });
 
-  const optimized = optimizeSvg(svgText);
+  // to avoid 'Unquoted attribute value' error
+  const trimmed = svgText.replace(hydrationKeyRegex, "");
+
+  const optimized = optimizeSvg(trimmed);
   return optimized;
 };
 
@@ -77,6 +82,9 @@ export const ssrOgpSvgStr = (params?: IconColors) => {
     </svg>
   ));
 
-  const optimized = optimizeSvg(svgText);
+  // to avoid 'Unquoted attribute value' error
+  const trimmed = svgText.replace(hydrationKeyRegex, "");
+
+  const optimized = optimizeSvg(trimmed);
   return optimized;
 };
