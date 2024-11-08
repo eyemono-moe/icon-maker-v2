@@ -12,35 +12,35 @@
     "type": "tsc --noEmit"
   },
   "dependencies": {
-    "@ark-ui/solid": "^3.5.0",
-    "@kobalte/core": "^0.13.4",
-    "@mediapipe/tasks-vision": "^0.10.14",
-    "@solid-primitives/history": "^0.1.5",
-    "@solid-primitives/media": "^2.2.9",
-    "@solid-primitives/presence": "^0.0.6",
-    "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.14.1",
-    "@solidjs/start": "^1.0.6",
-    "@unocss/reset": "^0.61.5",
-    "color2k": "^2.0.3",
-    "history-throttled": "^1.0.1",
-    "lz-string": "^1.5.0",
-    "sharp": "^0.33.4",
-    "solid-js": "^1.8.18",
-    "svgo": "^3.3.2",
-    "valibot": "^0.37.0",
-    "vinxi": "^0.4.1"
+    "@ark-ui/solid": "4.4.0",
+    "@kobalte/core": "0.13.7",
+    "@mediapipe/tasks-vision": "0.10.18",
+    "@solid-primitives/history": "0.1.5",
+    "@solid-primitives/media": "2.2.9",
+    "@solid-primitives/presence": "0.0.6",
+    "@solidjs/meta": "0.29.4",
+    "@solidjs/router": "0.15.1",
+    "@solidjs/start": "1.0.10",
+    "@unocss/reset": "0.64.0",
+    "color2k": "2.0.3",
+    "history-throttled": "1.0.1",
+    "lz-string": "1.5.0",
+    "sharp": "0.33.5",
+    "solid-js": "1.9.3",
+    "svgo": "3.3.2",
+    "valibot": "1.0.0-beta.3",
+    "vinxi": "0.4.3"
   },
   "engines": {
     "node": ">=18"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
-    "@iconify-json/material-symbols": "^1.1.85",
-    "@iconify-json/ri": "^1.1.21",
-    "rollup-plugin-visualizer": "^5.12.0",
-    "typescript": "^5.5.4",
-    "unocss": "^0.61.5"
+    "@biomejs/biome": "1.9.4",
+    "@iconify-json/material-symbols": "1.2.6",
+    "@iconify-json/ri": "1.2.3",
+    "rollup-plugin-visualizer": "5.12.0",
+    "typescript": "5.6.3",
+    "unocss": "0.64.0"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
 }

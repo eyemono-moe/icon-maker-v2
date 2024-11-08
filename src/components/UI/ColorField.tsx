@@ -26,7 +26,7 @@ const ColorField: Component<Props> = (props) => {
   const [_, { setTrackHistory }] = useIconColors();
   const [isAuto, setIsAuto] = createSignal(props.color === undefined);
   const [selectedColor, setSelectedColor] = createSignal(
-    !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
+    !props.canEmpty ? props.color : (props.color ?? props.fallbackColor),
   );
 
   createEffect(() => {
@@ -40,13 +40,15 @@ const ColorField: Component<Props> = (props) => {
   const handleReset = () => {
     props.onReset?.();
     setSelectedColor(
-      !props.canEmpty ? props.color : props.color ?? props.fallbackColor,
+      !props.canEmpty ? props.color : (props.color ?? props.fallbackColor),
     );
   };
 
   return (
     <TextField
-      value={props.canEmpty ? props.color ?? props.fallbackColor : props.color}
+      value={
+        props.canEmpty ? (props.color ?? props.fallbackColor) : props.color
+      }
       onChange={(v) => {
         setTrackHistory(false);
         props.setColor(v);
