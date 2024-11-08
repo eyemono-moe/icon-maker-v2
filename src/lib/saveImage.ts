@@ -1,4 +1,4 @@
-import type { ImageQueryOutput } from "~/routes/image";
+import type { ImageQueryOutput } from "./imageQuerySchema";
 import { optimizeSvg } from "./svg";
 
 const imageDataString = (svg: HTMLElement) => {
