@@ -1,12 +1,8 @@
 import type { FaceLandmarkerResult } from "@mediapipe/tasks-vision";
-import pkg from "lz-string";
 import { batch, createEffect, useContext } from "solid-js";
 import { type ParentComponent, createContext } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import { useFaceDetect } from "./faceDetect";
-
-const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
-  pkg;
 
 type IconTransforms = {
   eyes: {
@@ -90,12 +86,6 @@ const defaultIconTransforms: IconTransforms = {
 // need to deep clone
 const defaultPlainTransforms = () =>
   JSON.parse(JSON.stringify(defaultIconTransforms)) as IconTransforms;
-
-export const parseTransforms = (params: string): IconTransforms => {
-  return JSON.parse(
-    decompressFromEncodedURIComponent(params),
-  ) as IconTransforms;
-};
 
 const calcHeadTransform = (
   matrix?: FaceLandmarkerResult["facialTransformationMatrixes"][number],
