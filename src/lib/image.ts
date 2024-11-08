@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import type { ImageQueryOutput } from "~/routes/image";
+import type { ImageQueryOutput } from "./imageQuerySchema";
 
 export const convertFromSvg = async (
   svg: string,
