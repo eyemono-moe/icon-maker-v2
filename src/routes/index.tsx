@@ -37,7 +37,9 @@ export default function Home() {
       <Meta property="og:image" content={ogpUrl} />
       <Meta property="twitter:image" content={ogpUrl} />
       <Link rel="icon" type="image/svg+xml" href={iconUrl} />
-      <MainView />
+      <div class="w-screen h-100dvh font-sans">
+        <MainView />
+      </div>
     </>
   );
 }
