@@ -39,7 +39,7 @@
     "@iconify-json/material-symbols": "1.2.14",
     "@iconify-json/ri": "1.2.5",
     "rollup-plugin-visualizer": "5.14.0",
-    "typescript": "5.7.3",
+    "typescript": "5.8.2",
     "unocss": "66.0.0"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
