@@ -30,6 +30,8 @@ SolidStartとVinxiの古い推移依存にも多数の脆弱性が残ってい�
 
 カメラ機能はMediaPipeのWASMをバージョン未固定のURLから読み込み、選択中は各animation frameで顔検出を実行する。
 
+本番環境ではMediaPipeのエラーが発生している可能性があり、原因はまだ確認できていない。
+
 ## 採用する構成
 
 ### UI primitive
@@ -115,7 +117,9 @@ SVGOは通常の初期表示から分離し、保存またはcopy時にだけ読
 
 SVGパーツ自体に対するbuild時の最適化も検証し、実行時SVGOを削除できる場合は削除する。
 
-MediaPipeはカメラを選択した後に読み込み、WASMとmodelのバージョンを固定する。
+MediaPipeの変更前に、本番環境のエラーを再現し、browser console、network response、権限状態、利用端末を記録して原因を特定する。
+
+原因特定後、必要に応じてカメラ選択後の遅延読み込みと、WASMおよびmodelのversion固定または管理対象assetからの配信を実施する。
 
 顔検出はvideo frameの更新に合わせ、処理中の重複呼び出しを防ぐ。
 
@@ -129,11 +133,15 @@ bundle sizeはCIで記録し、主要chunkの予期しない増加を検出で�
 
 SharpとSVGOは修正版へ更新する。
 
-依存関係の監査をCIへ追加し、criticalとhighの新規脆弱性を失敗として扱う。
+既存のDependabot設定を拡張し、version updateを継続的に作成する。
+
+GitHub repositoryでDependabot alertsとsecurity updatesが有効化されていない場合は、repository設定で有効化する。
+
+pull requestではGitHubのDependency Reviewを実行し、追加されるcriticalまたはhighの既知脆弱性を検出した場合にmergeを止める。
 
 画像queryは文字数、展開後サイズ、schema、画像寸法を検証する。
 
-MediaPipeのWASMとmodelは固定したversionまたは管理対象assetから配信する。
+MediaPipeの配信元が原因またはサプライチェーン上のriskになる場合は、WASMとmodelを固定したversionまたは管理対象assetから配信する。
 
 HTMLと画像応答にはContent Security Policy、`X-Content-Type-Options`、Referrer Policy、Permissions Policyを設定する。
 
@@ -169,6 +177,8 @@ UIではキーボード操作、focus移動、選択、reset、undo、redo、URL
 
 カメラmoduleではMediaStreamと顔検出器をadapter越しに差し替え、開始、切替、失敗、停止、cleanupを確認する。
 
+MediaPipeでは本番エラーの再現条件を回帰testとして残し、原因に対応するbrowserまたはintegration testを追加する。
+
 Solid 2の互換性判定では、同じbrowser testをSolid 1.9とSolid 2 RCで実行する。
 
 Cloudflare検証ではWorkersのローカルruntimeとpreview環境に対して画像routeのcontract testを実行する。
@@ -182,15 +192,16 @@ Cloudflare検証ではWorkersのローカルruntimeとpreview環境に対して�
 5. アイコン状態moduleを分離し、入力制限とschema検証を追加する。
 6. SVG生成moduleとPNG adapterのseamを作る。
 7. 画像routeの重複を統合する。
-8. MediaPipeの読み込みとlifecycleを改善する。
-9. SVGOを初期bundleから分離する。
-10. Solid 2 RCとArk UIの互換性を検証する。
-11. 合格した場合はSolid 2 RCへ移行する。
-12. SolidStartとVinxiをstart modeへ置き換える。
-13. Vite+、Oxfmt、Oxlintへ移行する。
-14. Cloudflare Workers上のPNG adapterを検証する。
-15. 合格した場合はCloudflareへdeployする。
-16. CI、依存更新、セキュリティ検査、文書を更新する。
+8. 本番環境のMediaPipeエラーを再現し、原因を特定する。
+9. 原因に応じてMediaPipeの読み込み、配信、lifecycleを改善する。
+10. SVGOを初期bundleから分離する。
+11. Solid 2 RCとArk UIの互換性を検証する。
+12. 合格した場合はSolid 2 RCへ移行する。
+13. SolidStartとVinxiをstart modeへ置き換える。
+14. Vite+、Oxfmt、Oxlintへ移行する。
+15. Cloudflare Workers上のPNG adapterを検証する。
+16. 合格した場合はCloudflareへdeployする。
+17. CI、依存更新、セキュリティ検査、文書を更新する。
 
 各段階は単独でtest、型検査、buildを通し、次の段階へ進める状態で完了させる。
 
