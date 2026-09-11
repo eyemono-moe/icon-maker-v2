@@ -1,4 +1,4 @@
-import { RadioGroup } from "@kobalte/core";
+import { RadioGroup } from "@ark-ui/solid/radio-group";
 import { For, type JSX, Suspense, createUniqueId } from "solid-js";
 import type { PartsComponent } from "../Icon";
 import Button from "./Button";
@@ -23,7 +23,7 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
   return (
     <RadioGroup.Root
       value={props.value}
-      onChange={(value) => props.onChange(value as T)}
+      onValueChange={(details) => props.onChange(details.value as T)}
       class="flex flex-col gap-1"
     >
       <div class="flex gap-2 items-center">
@@ -40,9 +40,12 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
             const id = createUniqueId();
             return (
               <RadioGroup.Item value={option.value}>
-                <RadioGroup.ItemInput class="peer" />
-                <RadioGroup.ItemControl class="b-2 rounded data-[checked]:b-purple-600 peer-focus-visible:(outline outline-offset-1)">
-                  <RadioGroup.ItemLabel class="cursor-pointer w-full h-auto aspect-square block">
+                <RadioGroup.ItemHiddenInput
+                  class="peer"
+                  aria-label={option.label}
+                />
+                <RadioGroup.ItemControl class="b-2 rounded data-[state=checked]:b-purple-600 peer-focus-visible:(outline outline-offset-1)">
+                  <RadioGroup.ItemText class="cursor-pointer w-full h-auto aspect-square block">
                     <Suspense fallback={<LoadingSpinner />}>
                       <svg viewBox={props.previewViewBox} class="w-full h-auto">
                         <title>{option.label}</title>
@@ -52,7 +55,7 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
                         />
                       </svg>
                     </Suspense>
-                  </RadioGroup.ItemLabel>
+                  </RadioGroup.ItemText>
                 </RadioGroup.ItemControl>
               </RadioGroup.Item>
             );

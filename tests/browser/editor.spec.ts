@@ -37,6 +37,61 @@ test("renders the editor and switches settings tabs", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("supports keyboard navigation for settings tabs", async ({ page }) => {
+  await page.goto("/");
+  const hairTab = page.getByRole("tab", { name: "hair" });
+  const skinTab = page.getByRole("tab", { name: "skin" });
+
+  await hairTab.focus();
+  await page.keyboard.press("ArrowRight");
+
+  await expect(skinTab).toBeFocused();
+  await expect(skinTab).toHaveAttribute("aria-selected", "true");
+});
+
+test("opens and closes the file menu with the keyboard", async ({ page }) => {
+  await page.goto("/");
+  const fileMenu = page.getByRole("button", { name: "File" });
+
+  await fileMenu.focus();
+  await page.keyboard.press("Enter");
+  const firstItem = page.getByRole("menuitem", { name: /Copy as SVG/ });
+  const menu = page.getByRole("menu");
+  await expect(firstItem).toBeVisible();
+  await expect(menu).toBeFocused();
+  await expect(firstItem).toHaveAttribute("data-highlighted", "");
+
+  await page.keyboard.press("Escape");
+  await expect(firstItem).toBeHidden();
+  await expect(fileMenu).toBeFocused();
+});
+
+test("shows a success toast after copying SVG", async ({ context, page }) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "File" }).click();
+  await page.getByRole("menuitem", { name: /Copy as SVG/ }).click();
+
+  await expect(page.getByText("copied as SVG!", { exact: true })).toBeVisible();
+});
+
+test("runs an action selected from a nested file menu", async ({
+  context,
+  page,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "File" }).click();
+  await page.getByRole("menuitem", { name: "Share" }).hover();
+  await page.getByRole("menuitem", { name: /Copy SVG url/ }).click();
+
+  await expect(
+    page.getByText("copied SVG url!", { exact: true }),
+  ).toBeVisible();
+});
+
 test("selects an icon part and records the state in the URL", async ({
   page,
 }) => {
@@ -58,6 +113,48 @@ test("selects an icon part and records the state in the URL", async ({
   await page.reload();
 
   await expect(ponytail).toBeChecked();
+});
+
+test("enables a derived color field when automatic color is disabled", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const automaticColor = page
+    .getByRole("checkbox", {
+      name: "Set automatically",
+    })
+    .first();
+  const colorInput = page.locator('input[type="color"]').nth(1);
+
+  await expect(automaticColor).toBeEnabled();
+  await expect(automaticColor).toBeChecked();
+  await expect(colorInput).toBeDisabled();
+
+  await automaticColor.focus();
+  await page.keyboard.press("Space");
+
+  await expect(automaticColor).not.toBeChecked();
+  await expect(colorInput).toBeEnabled();
+});
+
+test("operates camera controls with the keyboard", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("tab", { name: "camera" }).click();
+
+  const cameraSelect = page.getByRole("combobox", { name: "camera input" });
+  await expect(cameraSelect).toBeEnabled();
+
+  const mirrorSwitch = page.getByRole("checkbox", { name: "mirror video" });
+  const wasMirrored = await mirrorSwitch.isChecked();
+  await mirrorSwitch.focus();
+  await page.keyboard.press("Space");
+  await expect(mirrorSwitch).toBeChecked({ checked: !wasMirrored });
+
+  const slider = page.getByRole("slider").first();
+  const initialValue = await slider.getAttribute("aria-valuenow");
+  await slider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(slider).not.toHaveAttribute("aria-valuenow", initialValue ?? "");
 });
 
 test("undoes and redoes a color change", async ({ page }) => {

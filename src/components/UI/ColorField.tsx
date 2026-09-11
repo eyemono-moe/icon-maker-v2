@@ -1,6 +1,12 @@
-import { Checkbox } from "@kobalte/core/checkbox";
-import { TextField } from "@kobalte/core/text-field";
-import { type Component, Show, createEffect, createSignal } from "solid-js";
+import { Checkbox } from "@ark-ui/solid/checkbox";
+import { Field } from "@ark-ui/solid/field";
+import {
+  type Component,
+  Show,
+  createEffect,
+  createSignal,
+  createUniqueId,
+} from "solid-js";
 import type { JSX } from "solid-js";
 import { useIconColors } from "~/context/iconColors";
 import Button from "./Button";
@@ -24,6 +30,7 @@ type Props = (
 
 const ColorField: Component<Props> = (props) => {
   const [_, { setTrackHistory }] = useIconColors();
+  const inputId = createUniqueId();
   const [isAuto, setIsAuto] = createSignal(props.color === undefined);
   const [selectedColor, setSelectedColor] = createSignal(
     !props.canEmpty ? props.color : (props.color ?? props.fallbackColor),
@@ -45,64 +52,75 @@ const ColorField: Component<Props> = (props) => {
   };
 
   return (
-    <TextField
-      value={
-        props.canEmpty ? (props.color ?? props.fallbackColor) : props.color
-      }
-      onChange={(v) => {
-        setTrackHistory(false);
-        props.setColor(v);
-        setSelectedColor(v);
+    <div
+      class="parent grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 transition-all-100 w-full"
+      classList={{
+        "grid-rows-[max-content_0fr]": isAuto(),
+        "grid-rows-[max-content_1fr]": !isAuto(),
       }}
-      disabled={isAuto()}
-      class="parent grid gap-1 data-[disabled]:grid-rows-[max-content_0fr] grid-rows-[max-content_1fr] transition-all-100 w-full"
     >
-      <div class="flex items-center gap-4">
-        <TextField.Label class="font-700 text-nowrap">
+      <Field.Root class="contents">
+        <Field.Label
+          for={inputId}
+          class="font-700 text-nowrap row-start-1 col-start-1"
+        >
           {props.label}
-        </TextField.Label>
-        <Show when={props.canEmpty}>
-          <Checkbox
-            checked={isAuto()}
-            onChange={setIsAuto}
-            class="flex items-center"
-          >
-            <Checkbox.Input class="peer" />
-            <Checkbox.Control class="group rounded peer-focus-visible:outline">
-              <Checkbox.Indicator forceMount class="parent">
-                <div class="parent-not-[[data-checked]]:i-material-symbols:check-box-outline-blank parent-[[data-checked]]:(i-material-symbols:check-box c-purple-600) w-6! h-6! cursor-pointer" />
-              </Checkbox.Indicator>
-            </Checkbox.Control>
-            <Checkbox.Label class="text-nowrap cursor-pointer">
-              Set automatically
-            </Checkbox.Label>
-          </Checkbox>
-        </Show>
-      </div>
-      <div class="flex items-center gap-2 overflow-hidden">
-        <TextField.Input
-          type="color"
-          class="w-full h-8 rounded"
-          onChange={(
-            e: Parameters<JSX.ChangeEventHandler<HTMLInputElement, Event>>[0],
-          ) => {
-            // historyに一度だけ保存するためにonChangeでsetColorを呼ぶ
-            setTrackHistory(true);
-            props.setColor(e.currentTarget.value);
-          }}
-        />
-        <Show when={props.onReset}>
-          <Button
-            variant="secondary"
-            onClick={handleReset}
-            type="button"
+        </Field.Label>
+        <div class="flex items-center gap-2 overflow-hidden row-start-2 col-span-2">
+          <Field.Input
+            id={inputId}
+            type="color"
             disabled={isAuto()}
-          >
-            Reset
-          </Button>
-        </Show>
-      </div>
-    </TextField>
+            value={
+              props.canEmpty
+                ? (props.color ?? props.fallbackColor)
+                : props.color
+            }
+            class="w-full h-8 rounded"
+            onInput={(e) => {
+              const color = e.currentTarget.value;
+              setTrackHistory(false);
+              props.setColor(color);
+              setSelectedColor(color);
+            }}
+            onChange={(
+              e: Parameters<JSX.ChangeEventHandler<HTMLInputElement, Event>>[0],
+            ) => {
+              // historyに一度だけ保存するためにonChangeでsetColorを呼ぶ
+              setTrackHistory(true);
+              props.setColor(e.currentTarget.value);
+            }}
+          />
+          <Show when={props.onReset}>
+            <Button
+              variant="secondary"
+              onClick={handleReset}
+              type="button"
+              disabled={isAuto()}
+            >
+              Reset
+            </Button>
+          </Show>
+        </div>
+      </Field.Root>
+      <Show when={props.canEmpty}>
+        <Checkbox.Root
+          checked={isAuto()}
+          onCheckedChange={(details) => setIsAuto(details.checked === true)}
+          class="flex items-center row-start-1 col-start-2"
+        >
+          <Checkbox.HiddenInput class="peer" />
+          <Checkbox.Control class="inline-flex items-center justify-center w-6 h-6 b-2 rounded peer-focus-visible:outline data-[state=checked]:(bg-purple-600 b-purple-600 c-white)">
+            <Checkbox.Indicator>
+              <div class="i-material-symbols:check-small-rounded w-5 h-5" />
+            </Checkbox.Indicator>
+          </Checkbox.Control>
+          <Checkbox.Label class="text-nowrap cursor-pointer">
+            Set automatically
+          </Checkbox.Label>
+        </Checkbox.Root>
+      </Show>
+    </div>
   );
 };
 

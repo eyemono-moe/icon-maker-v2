@@ -58,10 +58,7 @@ const CameraSettings: Component = () => {
       <Range
         label="eye X axis sensitivity"
         value={transforms.minMax.eyes.position.x}
-        // @ts-expect-error
-        onChange={(v: [number, number]) =>
-          setTransform("minMax", "eyes", "position", "x", v)
-        }
+        onChange={(v) => setTransform("minMax", "eyes", "position", "x", v)}
         getValueLabel={(v) => {
           return `left: ${v.values[0]} - right: ${v.values[1]}`;
         }}
@@ -74,10 +71,7 @@ const CameraSettings: Component = () => {
       <Range
         label="eye Y axis sensitivity"
         value={transforms.minMax.eyes.position.y}
-        // @ts-expect-error
-        onChange={(v: [number, number]) =>
-          setTransform("minMax", "eyes", "position", "y", v)
-        }
+        onChange={(v) => setTransform("minMax", "eyes", "position", "y", v)}
         getValueLabel={(v) => {
           return `down: ${v.values[0]} - up: ${v.values[1]}`;
         }}
@@ -90,10 +84,7 @@ const CameraSettings: Component = () => {
       <Range
         label="eye close sensitivity"
         value={transforms.minMax.eyes.close}
-        // @ts-expect-error
-        onChange={(v: [number, number]) =>
-          setTransform("minMax", "eyes", "close", v)
-        }
+        onChange={(v) => setTransform("minMax", "eyes", "close", v)}
         getValueLabel={(v) => {
           return `open: ${v.values[0]} - close: ${v.values[1]}`;
         }}

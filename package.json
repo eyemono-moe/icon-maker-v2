@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@ark-ui/solid": "4.10.2",
-    "@kobalte/core": "0.13.9",
     "@mediapipe/tasks-vision": "0.10.21",
     "@solid-primitives/history": "0.2.0",
     "@solid-primitives/media": "2.3.0",

@@ -1,49 +1,54 @@
-import { Slider } from "@kobalte/core/slider";
-import type { ComponentProps } from "solid-js";
-import { type Component, splitProps } from "solid-js";
+import { Slider } from "@ark-ui/solid/slider";
+import type { Component } from "solid-js";
+
+type MinMax = [min: number, max: number];
 
 type Props = {
   label: string;
-} & ComponentProps<typeof Slider> &
-  (
-    | {
-        previewValue: number;
-        minValue: number;
-        maxValue: number;
-      }
-    | {
-        previewValue: undefined;
-      }
-  );
+  value: MinMax;
+  onChange: (value: MinMax) => void;
+  getValueLabel?: (details: { values: MinMax }) => string;
+  minValue: number;
+  maxValue: number;
+  step: number;
+  minStepsBetweenThumbs?: number;
+  previewValue?: number;
+};
 
 const thumbClass =
   "block cursor-pointer w-16px h-16px bg-purple-600 rounded-full top--4px";
 
 const Range: Component<Props> = (props) => {
-  const [_, sliderProps] = splitProps(props, ["label", "previewValue"]);
   const previewPosition = () =>
-    props.previewValue
-      ? `calc(${
-          ((props.previewValue - props.minValue) /
-            (props.maxValue - props.minValue)) *
-          100
-        }% - 6px)`
+    props.previewValue !== undefined
+      ? `calc(${((props.previewValue - props.minValue) / (props.maxValue - props.minValue)) * 100}% - 6px)`
       : "-6px";
 
   return (
-    <Slider class="flex flex-col gap-2 w-full" {...sliderProps}>
+    <Slider.Root
+      class="flex flex-col gap-2 w-full"
+      value={[...props.value] as MinMax}
+      onValueChange={(details) => props.onChange(details.value as MinMax)}
+      min={props.minValue}
+      max={props.maxValue}
+      step={props.step}
+      minStepsBetweenThumbs={props.minStepsBetweenThumbs}
+    >
       <div class="font-700 text-nowrap flex justify-between">
         <Slider.Label>{props.label}</Slider.Label>
-        <Slider.ValueLabel />
+        <Slider.ValueText>
+          {props.getValueLabel?.({ values: props.value }) ??
+            props.value.join(" - ")}
+        </Slider.ValueText>
       </div>
-      <div class="w-full px-2">
+      <Slider.Control class="w-full px-2">
         <Slider.Track class="relative rounded-full h-8px w-full bg-zinc">
-          <Slider.Fill class="absolute bg-purple-600 h-full cursor-pointer" />
-          <Slider.Thumb class={thumbClass}>
-            <Slider.Input />
+          <Slider.Range class="absolute bg-purple-600 h-full cursor-pointer" />
+          <Slider.Thumb index={0} class={thumbClass}>
+            <Slider.HiddenInput />
           </Slider.Thumb>
-          <Slider.Thumb class={thumbClass}>
-            <Slider.Input />
+          <Slider.Thumb index={1} class={thumbClass}>
+            <Slider.HiddenInput />
           </Slider.Thumb>
           <div
             class="absolute w-12px h-10px bg-zinc top-8px"
@@ -53,8 +58,8 @@ const Range: Component<Props> = (props) => {
             }}
           />
         </Slider.Track>
-      </div>
-    </Slider>
+      </Slider.Control>
+    </Slider.Root>
   );
 };
 

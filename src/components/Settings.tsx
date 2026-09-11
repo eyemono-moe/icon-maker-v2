@@ -1,4 +1,4 @@
-import { Tabs } from "@kobalte/core";
+import { Tabs } from "@ark-ui/solid/tabs";
 import type { Component } from "solid-js";
 import CameraSettings from "./settings/CameraSettings";
 import EyesSettings from "./settings/EyesSettings";
@@ -12,6 +12,8 @@ const Settings: Component = () => {
     <Tabs.Root
       class="w-full h-full min-w-fit grid grid-rows-[auto_1fr] overflow-hidden"
       defaultValue="hair"
+      lazyMount={false}
+      unmountOnExit={false}
     >
       <Tabs.List class="relative font-700 flex overflow-x-auto b-b-1 children-[button]:(px-4 py-1 bg-transparent) hover:children-[button]:bg-zinc/20">
         <Tabs.Trigger value="hair">hair</Tabs.Trigger>
@@ -39,12 +41,8 @@ const Settings: Component = () => {
           <Tabs.Content value="other">
             <OtherSettings />
           </Tabs.Content>
-          {/* カメラ使用時に常にVideo要素がマウントされている必要があるためforceMountする  */}
-          <Tabs.Content
-            value="camera"
-            forceMount
-            class="not-[[data-selected]]:hidden"
-          >
+          {/* カメラ利用中は Video 要素を維持するため、全パネルをマウントしたまま非表示にする */}
+          <Tabs.Content value="camera" class="not-[[data-selected]]:hidden">
             <CameraSettings />
           </Tabs.Content>
         </div>

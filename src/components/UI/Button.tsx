@@ -1,22 +1,21 @@
-import { Button as KButton } from "@kobalte/core/button";
-import type { ComponentProps } from "solid-js";
-import { type ParentComponent, mergeProps, splitProps } from "solid-js";
+import type { JSX, ParentComponent } from "solid-js";
+import { mergeProps, splitProps } from "solid-js";
 
 type Props = {
   variant?: "primary" | "secondary";
   fill?: boolean;
-} & ComponentProps<typeof KButton>;
+} & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Button: ParentComponent<Props> = (props) => {
   const mergedProps = mergeProps({ variant: "primary" }, props);
-  const [addedProps, kobalteProps] = splitProps(mergedProps, [
+  const [addedProps, buttonProps] = splitProps(mergedProps, [
     "variant",
     "fill",
   ]);
 
   return (
-    <KButton
-      {...kobalteProps}
+    <button
+      {...buttonProps}
       class="font-700 py-1 px-2 rounded"
       classList={{
         "bg-purple-600 enabled:hover:bg-purple-500 text-white":
@@ -27,7 +26,7 @@ const Button: ParentComponent<Props> = (props) => {
       }}
     >
       {props.children}
-    </KButton>
+    </button>
   );
 };
 

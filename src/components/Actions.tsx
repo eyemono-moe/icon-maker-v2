@@ -1,6 +1,6 @@
-import { Menubar } from "@kobalte/core";
+import { Menu } from "@ark-ui/solid/menu";
 import { type Component, onCleanup, onMount } from "solid-js";
-import { isServer } from "solid-js/web";
+import { Portal, isServer } from "solid-js/web";
 import { useIconColors } from "~/context/iconColors";
 import {
   copyImageUrl,
@@ -13,10 +13,12 @@ import { toast } from "~/lib/toast";
 import "../assets/menubar.css";
 import { iconSvgId } from "./Icon";
 
+const triggerClass =
+  "rounded inline-flex items-center justify-center px-2 outline-none bg-transparent enabled:hover:bg-zinc-300/50 data-[state=open]:bg-zinc-300/50";
 const contentClass =
-  "min-w-200px outline-none p-1 bg-white rounded border-1 shadow origin-[--kb-menu-content-transform-origin] animate-[contentHide] animate-duration-200 data-[expanded]:(animate-[contentShow] animate-duration-200)";
+  "min-w-200px outline-none p-1 bg-white rounded border-1 shadow origin-[--transform-origin] animate-[contentHide] animate-duration-200 data-[state=open]:(animate-[contentShow] animate-duration-200)";
 const itemClass =
-  "parent outline-none rounded flex items-center pr-2 py-0.5 pl-6 relative select-none data-[expanded]:(bg-purple c-purple-200) data-[disabled]:(opacity-50 pointer-events-none) data-[highlighted]:(bg-purple-600! c-white!)";
+  "parent outline-none rounded flex items-center pr-2 py-0.5 pl-6 relative select-none data-[state=open]:(bg-purple c-purple-200) data-[disabled]:(opacity-50 pointer-events-none) data-[highlighted]:(bg-purple-600! c-white!)";
 const itemRightSlot = "text-xs ml-a pl-4";
 const separatorClass = "h-px m-2";
 const indicatorClass = "absolute left-1";
@@ -28,34 +30,27 @@ const Actions: Component = () => {
     configs,
   ] = useIconColors();
 
-  const handleDownloadSvg = () => {
-    const svgEl = document.getElementById(iconSvgId);
-    if (svgEl === null) return;
-    downloadSvg(svgEl);
+  const withIcon = (action: (svg: HTMLElement) => void) => () => {
+    const svg = document.getElementById(iconSvgId);
+    if (svg) action(svg);
   };
-  const handleDownloadPng = () => {
-    const svgEl = document.getElementById(iconSvgId);
-    if (svgEl === null) return;
-    downloadPng(svgEl);
-  };
-  const handleCopySvg = () => {
-    const svgEl = document.getElementById(iconSvgId);
-    if (svgEl === null) return;
-    toast.promise(copySvg(svgEl), {
+
+  const handleDownloadSvg = withIcon(downloadSvg);
+  const handleDownloadPng = withIcon(downloadPng);
+  const handleCopySvg = withIcon((svg) => {
+    toast.promise(copySvg(svg), {
       loading: "copying...",
       success: () => "copied as SVG!",
       error: () => "failed to copy",
     });
-  };
-  const handleCopyPng = () => {
-    const svgEl = document.getElementById(iconSvgId);
-    if (svgEl === null) return;
-    toast.promise(copyPng(svgEl), {
+  });
+  const handleCopyPng = withIcon((svg) => {
+    toast.promise(copyPng(svg), {
       loading: "copying...",
       success: () => "copied as PNG!",
       error: () => "failed to copy",
     });
-  };
+  });
   const handleCopySvgUrl = () => {
     toast.promise(copyImageUrl("svg"), {
       loading: "copying...",
@@ -71,159 +66,189 @@ const Actions: Component = () => {
     });
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.ctrlKey && e.shiftKey && e.key === "C") {
-      e.preventDefault();
+  const fileActions: Record<string, () => void> = {
+    "copy-svg": handleCopySvg,
+    "copy-png": handleCopyPng,
+    "download-svg": handleDownloadSvg,
+    "download-png": handleDownloadPng,
+    "copy-svg-url": handleCopySvgUrl,
+    "copy-png-url": handleCopyPngUrl,
+  };
+  const editActions: Record<string, () => void> = {
+    undo,
+    redo,
+    save: saveToUrl,
+    randomize,
+    reset,
+  };
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.ctrlKey && event.shiftKey && event.key === "C") {
+      event.preventDefault();
       handleCopySvg();
     }
-    if (e.ctrlKey && e.altKey && e.key === "c") {
-      e.preventDefault();
+    if (event.ctrlKey && event.altKey && event.key === "c") {
+      event.preventDefault();
       handleCopySvgUrl();
     }
-    if (e.ctrlKey && e.shiftKey && e.key === "S") {
-      e.preventDefault();
+    if (event.ctrlKey && event.shiftKey && event.key === "S") {
+      event.preventDefault();
       handleDownloadSvg();
     }
-
-    if (e.ctrlKey && e.key === "z") {
-      e.preventDefault();
+    if (event.ctrlKey && event.key === "z") {
+      event.preventDefault();
       undo();
     }
-    if (e.ctrlKey && e.shiftKey && e.key === "Z") {
-      e.preventDefault();
+    if (event.ctrlKey && event.shiftKey && event.key === "Z") {
+      event.preventDefault();
       redo();
     }
   };
 
   onMount(() => {
-    if (!isServer) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
+    if (!isServer) document.addEventListener("keydown", handleKeyDown);
   });
   onCleanup(() => {
-    if (!isServer) {
-      document.removeEventListener("keydown", handleKeyDown);
-    }
+    if (!isServer) document.removeEventListener("keydown", handleKeyDown);
   });
 
   return (
-    <>
-      <Menubar.Root class="w-full flex items-center children:(rounded inline-flex items-center justify-center px-2 outline-none bg-transparent) enabled:hover:children:bg-zinc-300/50 data-[expanded]:children:bg-zinc-300/50">
-        <Menubar.Menu>
-          <Menubar.Trigger>File</Menubar.Trigger>
-          <Menubar.Portal>
-            <Menubar.Content class={contentClass}>
-              <Menubar.Item class={itemClass} onSelect={handleCopySvg}>
+    <div class="w-full flex items-center">
+      <Menu.Root
+        positioning={{ placement: "bottom-start" }}
+        onSelect={(details) => fileActions[details.value]?.()}
+      >
+        <Menu.Trigger class={triggerClass}>File</Menu.Trigger>
+        <Portal>
+          <Menu.Positioner>
+            <Menu.Content class={contentClass}>
+              <Menu.Item class={itemClass} value="copy-svg">
                 Copy as SVG
                 <div class={itemRightSlot}>Ctrl + Shift + C</div>
-              </Menubar.Item>
-              <Menubar.Sub overlap gutter={4} shift={-5}>
-                <Menubar.SubTrigger class={itemClass}>
+              </Menu.Item>
+              <Menu.Root
+                positioning={{ placement: "right-start", gutter: 4 }}
+                onSelect={(details) => fileActions[details.value]?.()}
+              >
+                <Menu.TriggerItem class={itemClass}>
                   Copy as...
                   <div class={itemRightSlot}>
                     <div class="i-material-symbols:chevron-right-rounded w-4 h-4" />
                   </div>
-                </Menubar.SubTrigger>
-                <Menubar.Portal>
-                  <Menubar.SubContent class={contentClass}>
-                    <Menubar.Item class={itemClass} onSelect={handleCopyPng}>
-                      Copy as PNG
-                    </Menubar.Item>
-                  </Menubar.SubContent>
-                </Menubar.Portal>
-              </Menubar.Sub>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.Sub overlap gutter={4} shift={-5}>
-                <Menubar.SubTrigger class={itemClass}>
+                </Menu.TriggerItem>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content class={contentClass}>
+                      <Menu.Item class={itemClass} value="copy-png">
+                        Copy as PNG
+                      </Menu.Item>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+              <Menu.Separator class={separatorClass} />
+              <Menu.Root
+                positioning={{ placement: "right-start", gutter: 4 }}
+                onSelect={(details) => fileActions[details.value]?.()}
+              >
+                <Menu.TriggerItem class={itemClass}>
                   Download as...
                   <div class={itemRightSlot}>
                     <div class="i-material-symbols:chevron-right-rounded w-4 h-4" />
                   </div>
-                </Menubar.SubTrigger>
-                <Menubar.Portal>
-                  <Menubar.SubContent class={contentClass}>
-                    <Menubar.Item
-                      class={itemClass}
-                      onSelect={handleDownloadSvg}
-                    >
-                      Download as SVG
-                      <div class={itemRightSlot}>Ctrl + Shift + S</div>
-                    </Menubar.Item>
-                    <Menubar.Item
-                      class={itemClass}
-                      onSelect={handleDownloadPng}
-                    >
-                      Download as PNG
-                    </Menubar.Item>
-                  </Menubar.SubContent>
-                </Menubar.Portal>
-              </Menubar.Sub>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.Sub overlap gutter={4} shift={-5}>
-                <Menubar.SubTrigger class={itemClass}>
+                </Menu.TriggerItem>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content class={contentClass}>
+                      <Menu.Item class={itemClass} value="download-svg">
+                        Download as SVG
+                        <div class={itemRightSlot}>Ctrl + Shift + S</div>
+                      </Menu.Item>
+                      <Menu.Item class={itemClass} value="download-png">
+                        Download as PNG
+                      </Menu.Item>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+              <Menu.Separator class={separatorClass} />
+              <Menu.Root
+                positioning={{ placement: "right-start", gutter: 4 }}
+                onSelect={(details) => fileActions[details.value]?.()}
+              >
+                <Menu.TriggerItem class={itemClass}>
                   Share
                   <div class={itemRightSlot}>
                     <div class="i-material-symbols:chevron-right-rounded w-4 h-4" />
                   </div>
-                </Menubar.SubTrigger>
-                <Menubar.Portal>
-                  <Menubar.SubContent class={contentClass}>
-                    <Menubar.Item class={itemClass} onSelect={handleCopySvgUrl}>
-                      Copy SVG url
-                      <div class={itemRightSlot}>Ctrl + Alt + C</div>
-                    </Menubar.Item>
-                    <Menubar.Item class={itemClass} onSelect={handleCopyPngUrl}>
-                      Copy PNG url
-                    </Menubar.Item>
-                  </Menubar.SubContent>
-                </Menubar.Portal>
-              </Menubar.Sub>
-            </Menubar.Content>
-          </Menubar.Portal>
-        </Menubar.Menu>
-        <Menubar.Menu>
-          <Menubar.Trigger>Edit</Menubar.Trigger>
-          <Menubar.Portal>
-            <Menubar.Content class={contentClass}>
-              <Menubar.Item class={itemClass} onSelect={undo}>
+                </Menu.TriggerItem>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content class={contentClass}>
+                      <Menu.Item class={itemClass} value="copy-svg-url">
+                        Copy SVG url
+                        <div class={itemRightSlot}>Ctrl + Alt + C</div>
+                      </Menu.Item>
+                      <Menu.Item class={itemClass} value="copy-png-url">
+                        Copy PNG url
+                      </Menu.Item>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Portal>
+      </Menu.Root>
+
+      <Menu.Root
+        positioning={{ placement: "bottom-start" }}
+        onSelect={(details) => editActions[details.value]?.()}
+      >
+        <Menu.Trigger class={triggerClass}>Edit</Menu.Trigger>
+        <Portal>
+          <Menu.Positioner>
+            <Menu.Content class={contentClass}>
+              <Menu.Item class={itemClass} value="undo">
                 Undo
                 <div class={itemRightSlot}>Ctrl + Z</div>
-              </Menubar.Item>
-              <Menubar.Item class={itemClass} onSelect={redo}>
+              </Menu.Item>
+              <Menu.Item class={itemClass} value="redo">
                 Redo
                 <div class={itemRightSlot}>Ctrl + Shift + Z</div>
-              </Menubar.Item>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.Item
+              </Menu.Item>
+              <Menu.Separator class={separatorClass} />
+              <Menu.Item
                 class={itemClass}
-                onSelect={saveToUrl}
+                value="save"
                 title="Save current state to URL search params"
               >
                 Save
-              </Menubar.Item>
-              <Menubar.CheckboxItem
+              </Menu.Item>
+              <Menu.CheckboxItem
                 class={itemClass}
+                value="autosave"
                 checked={configs.autosave}
-                onChange={toggleAutosave}
+                onCheckedChange={() => toggleAutosave()}
               >
-                <Menubar.ItemIndicator class={indicatorClass}>
+                <Menu.ItemIndicator class={indicatorClass}>
                   <div class="i-material-symbols:check-small-rounded w-4 h-4" />
-                </Menubar.ItemIndicator>
+                </Menu.ItemIndicator>
                 Auto save
-              </Menubar.CheckboxItem>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.Item class={itemClass} onSelect={randomize}>
+              </Menu.CheckboxItem>
+              <Menu.Separator class={separatorClass} />
+              <Menu.Item class={itemClass} value="randomize">
                 Randomize
-              </Menubar.Item>
-              <Menubar.Separator class={separatorClass} />
-              <Menubar.Item class={itemClass} onSelect={reset}>
+              </Menu.Item>
+              <Menu.Separator class={separatorClass} />
+              <Menu.Item class={itemClass} value="reset">
                 Reset all
-              </Menubar.Item>
-            </Menubar.Content>
-          </Menubar.Portal>
-        </Menubar.Menu>
-      </Menubar.Root>
-    </>
+              </Menu.Item>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Portal>
+      </Menu.Root>
+    </div>
   );
 };
 
