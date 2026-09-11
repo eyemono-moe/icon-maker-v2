@@ -85,6 +85,19 @@ test("moves between top-level menus with arrow keys", async ({ page }) => {
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("menuitem", { name: /Undo/ })).toBeVisible();
   await expect(page.getByRole("menu", { name: "Edit" })).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(
+    page.getByRole("menuitem", { name: /Copy as SVG/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("menu", { name: "File" })).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(page.getByRole("menuitem", { name: "Share" })).toHaveAttribute(
+    "data-highlighted",
+    "",
+  );
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByRole("menuitem", { name: /Undo/ })).toBeVisible();
+  await expect(page.getByRole("menu", { name: "Edit" })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(editMenu).toBeFocused();
 });

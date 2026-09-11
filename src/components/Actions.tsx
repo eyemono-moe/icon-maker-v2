@@ -104,9 +104,13 @@ const Actions: Component = () => {
         ? document.getElementById(activeItemId)
         : null;
 
-      // ArrowRight opens a submenu when its trigger is highlighted.
-      if (currentMenu && activeItem?.dataset.part !== "trigger-item") {
+      const opensSubmenu =
+        event.key === "ArrowRight" &&
+        activeItem?.dataset.part === "trigger-item";
+
+      if (currentMenu && !opensSubmenu) {
         event.preventDefault();
+        event.stopPropagation();
         const nextMenu = currentMenu === "file" ? "edit" : "file";
         const wasOpen = openMenu() !== null;
         setActiveMenu(nextMenu);
@@ -139,10 +143,10 @@ const Actions: Component = () => {
   };
 
   onMount(() => {
-    if (!isServer) document.addEventListener("keydown", handleKeyDown);
+    if (!isServer) document.addEventListener("keydown", handleKeyDown, true);
   });
   onCleanup(() => {
-    if (!isServer) document.removeEventListener("keydown", handleKeyDown);
+    if (!isServer) document.removeEventListener("keydown", handleKeyDown, true);
   });
 
   return (
