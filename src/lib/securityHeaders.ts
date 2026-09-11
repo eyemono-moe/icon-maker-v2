@@ -9,7 +9,7 @@ export function createSecurityHeaders(nonce: string) {
       "img-src 'self' data: blob:",
       "media-src 'self' blob:",
       "object-src 'none'",
-      `script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval'`,
+      `script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' https://cdn.jsdelivr.net`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "worker-src 'self' blob:",
     ].join("; "),

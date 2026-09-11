@@ -20,5 +20,8 @@ describe("securityHeaders", () => {
     expect(securityHeaders["Content-Security-Policy"]).toContain(
       "'nonce-test-nonce'",
     );
+    expect(securityHeaders["Content-Security-Policy"]).toContain(
+      "script-src 'self' 'nonce-test-nonce' 'wasm-unsafe-eval' https://cdn.jsdelivr.net",
+    );
   });
 });
