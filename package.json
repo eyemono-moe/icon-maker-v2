@@ -28,9 +28,9 @@
     "color2k": "2.0.3",
     "history-throttled": "1.0.1",
     "lz-string": "1.5.0",
-    "sharp": "0.33.5",
+    "sharp": "0.35.4",
     "solid-js": "1.9.5",
-    "svgo": "3.3.2",
+    "svgo": "3.3.5",
     "valibot": "1.0.0-rc.1",
     "vinxi": "0.5.3"
   },

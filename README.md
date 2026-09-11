@@ -7,3 +7,13 @@
 icon generator for [eyemono.moe](https://eyemono.moe)
 
 powered by [`solid-start`](https://start.solidjs.com)
+
+## Dependency security
+
+Dependabot checks npm dependencies every Tuesday and groups security updates.
+Pull requests that introduce a dependency with a new high or critical
+vulnerability are rejected by GitHub's Dependency Review action. Existing
+advisories are tracked separately while the SolidStart/Vinxi stack is removed.
+
+Dependabot alerts and security updates must be enabled in the repository's
+Code security settings for automated security pull requests to be created.
