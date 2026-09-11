@@ -1,5 +1,5 @@
 import { Menu } from "@ark-ui/solid/menu";
-import { type Component, onCleanup, onMount } from "solid-js";
+import { type Component, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, isServer } from "solid-js/web";
 import { useIconColors } from "~/context/iconColors";
 import {
@@ -29,6 +29,12 @@ const Actions: Component = () => {
     { reset, toggleAutosave, saveToUrl, randomize, undo, redo },
     configs,
   ] = useIconColors();
+  const [activeMenu, setActiveMenu] = createSignal<"file" | "edit">("file");
+  const [openMenu, setOpenMenu] = createSignal<"file" | "edit" | null>(null);
+  let fileTrigger!: HTMLButtonElement;
+  let editTrigger!: HTMLButtonElement;
+  let fileContent!: HTMLDivElement;
+  let editContent!: HTMLDivElement;
 
   const withIcon = (action: (svg: HTMLElement) => void) => () => {
     const svg = document.getElementById(iconSvgId);
@@ -83,6 +89,33 @@ const Actions: Component = () => {
   };
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      const focusedElement = document.activeElement;
+      const currentMenu =
+        focusedElement === fileTrigger || focusedElement === fileContent
+          ? "file"
+          : focusedElement === editTrigger || focusedElement === editContent
+            ? "edit"
+            : null;
+      const activeItemId = focusedElement?.getAttribute(
+        "aria-activedescendant",
+      );
+      const activeItem = activeItemId
+        ? document.getElementById(activeItemId)
+        : null;
+
+      // ArrowRight opens a submenu when its trigger is highlighted.
+      if (currentMenu && activeItem?.dataset.part !== "trigger-item") {
+        event.preventDefault();
+        const nextMenu = currentMenu === "file" ? "edit" : "file";
+        const wasOpen = openMenu() !== null;
+        setActiveMenu(nextMenu);
+        (nextMenu === "file" ? fileTrigger : editTrigger).focus();
+        if (wasOpen) setOpenMenu(nextMenu);
+        return;
+      }
+    }
+
     if (event.ctrlKey && event.shiftKey && event.key === "C") {
       event.preventDefault();
       handleCopySvg();
@@ -113,15 +146,29 @@ const Actions: Component = () => {
   });
 
   return (
-    <div class="w-full flex items-center">
+    <div class="w-full flex items-center" role="menubar">
       <Menu.Root
+        open={openMenu() === "file"}
+        onOpenChange={(details) =>
+          setOpenMenu((current) =>
+            details.open ? "file" : current === "file" ? null : current,
+          )
+        }
         positioning={{ placement: "bottom-start" }}
         onSelect={(details) => fileActions[details.value]?.()}
       >
-        <Menu.Trigger class={triggerClass}>File</Menu.Trigger>
+        <Menu.Trigger
+          ref={fileTrigger}
+          role="menuitem"
+          tabIndex={activeMenu() === "file" ? 0 : -1}
+          onFocus={() => setActiveMenu("file")}
+          class={triggerClass}
+        >
+          File
+        </Menu.Trigger>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content class={contentClass}>
+            <Menu.Content ref={fileContent} class={contentClass}>
               <Menu.Item class={itemClass} value="copy-svg">
                 Copy as SVG
                 <div class={itemRightSlot}>Ctrl + Shift + C</div>
@@ -202,13 +249,27 @@ const Actions: Component = () => {
       </Menu.Root>
 
       <Menu.Root
+        open={openMenu() === "edit"}
+        onOpenChange={(details) =>
+          setOpenMenu((current) =>
+            details.open ? "edit" : current === "edit" ? null : current,
+          )
+        }
         positioning={{ placement: "bottom-start" }}
         onSelect={(details) => editActions[details.value]?.()}
       >
-        <Menu.Trigger class={triggerClass}>Edit</Menu.Trigger>
+        <Menu.Trigger
+          ref={editTrigger}
+          role="menuitem"
+          tabIndex={activeMenu() === "edit" ? 0 : -1}
+          onFocus={() => setActiveMenu("edit")}
+          class={triggerClass}
+        >
+          Edit
+        </Menu.Trigger>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content class={contentClass}>
+            <Menu.Content ref={editContent} class={contentClass}>
               <Menu.Item class={itemClass} value="undo">
                 Undo
                 <div class={itemRightSlot}>Ctrl + Z</div>

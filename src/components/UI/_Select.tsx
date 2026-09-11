@@ -27,11 +27,14 @@ const _Select = <T extends string>(props: Props<T>): JSX.Element => {
       itemToValue: (item) => item.value,
     }),
   );
+  const controlledValue = createMemo(() =>
+    props.value === undefined ? {} : { value: [props.value.value] },
+  );
 
   return (
     <Select.Root
+      {...controlledValue()}
       collection={collection()}
-      value={props.value ? [props.value.value] : []}
       onValueChange={(details) => props.onChange(details.items[0] ?? null)}
       deselectable={!props.disallowEmptySelection}
       positioning={{ sameWidth: true }}
