@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
+    "build:test": "vinxi build --preset node-server",
     "start": "vinxi start",
     "version": "vinxi version",
     "test": "vitest run",
@@ -34,7 +35,7 @@
     "vinxi": "0.5.3"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24.11.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

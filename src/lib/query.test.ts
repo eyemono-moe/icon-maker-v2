@@ -1,5 +1,6 @@
 import * as v from "valibot";
 import { describe, expect, test } from "vitest";
+import { decodeIconColors, encodeIconColors } from "./iconColorsQuery";
 import { imageQuerySchema } from "./imageQuerySchema";
 
 describe("image query", () => {
@@ -28,4 +29,23 @@ describe("image query", () => {
       expect(result.success).toBe(false);
     },
   );
+});
+
+describe("icon color query", () => {
+  test("round trips a representative icon color state", () => {
+    const state = {
+      hair: { type: "ponytail", baseColor: "#123456" },
+      eyes: { type: "default", pupilBaseColor: "#654321" },
+      eyebrows: { type: "default" },
+      mouth: { type: "smile" },
+      accessories: [],
+      head: { type: "default", baseColor: "#fedcba" },
+      background: "#abcdef",
+    };
+
+    const encoded = encodeIconColors(state);
+    const decoded = decodeIconColors(encoded);
+
+    expect(decoded).toEqual(state);
+  });
 });

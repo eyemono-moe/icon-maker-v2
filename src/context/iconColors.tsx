@@ -8,7 +8,6 @@ import {
   toHex,
 } from "color2k";
 import { replaceState } from "history-throttled";
-import pkg from "lz-string";
 import { type Setter, batch, createSignal, useContext } from "solid-js";
 import {
   type ParentComponent,
@@ -23,6 +22,7 @@ import { hairOptions } from "~/components/parts/hair";
 import { headOptions } from "~/components/parts/head";
 import { mouthOptions } from "~/components/parts/mouth";
 import type { Color } from "~/lib/color";
+import { decodeIconColors, encodeIconColors } from "~/lib/iconColorsQuery";
 import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
@@ -32,9 +32,6 @@ import type {
   Prettify,
   ResetStore,
 } from "~/lib/utilityTypes";
-const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
-  pkg;
-
 type Accessory =
   | {
       type: "glasses";
@@ -162,7 +159,7 @@ const defaultPlainColors = () =>
 
 export const parseColors = (params: string): IconColors => {
   try {
-    return JSON.parse(decompressFromEncodedURIComponent(params)) as IconColors;
+    return decodeIconColors<IconColors>(params);
   } catch (e) {
     return defaultPlainColors();
   }
@@ -274,7 +271,7 @@ export const IconColorsProvider: ParentComponent<{
 
   const saveToUrl = () => {
     const searchParams = new URLSearchParams();
-    searchParams.set("p", compressToEncodedURIComponent(JSON.stringify(state)));
+    searchParams.set("p", encodeIconColors(state));
     replaceState("", "", `?${searchParams.toString()}`);
   };
   const loadFromUrl = () => {

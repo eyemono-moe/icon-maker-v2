@@ -17,7 +17,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm run build && pnpm exec vinxi start --port 4173",
+    command: "pnpm run build:test && pnpm exec vinxi start --port 4173",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
