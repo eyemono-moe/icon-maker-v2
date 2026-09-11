@@ -1,5 +1,23 @@
 import { expect, test } from "@playwright/test";
 
+test("serves HTML and generated images with security headers", async ({
+  request,
+}) => {
+  for (const path of ["/", "/image?f=svg"]) {
+    const response = await request.get(path);
+
+    expect(response.ok()).toBe(true);
+    expect(response.headers()["x-content-type-options"]).toBe("nosniff");
+    expect(response.headers()["referrer-policy"]).toBe(
+      "strict-origin-when-cross-origin",
+    );
+    expect(response.headers()["permissions-policy"]).toBe("camera=(self)");
+    expect(response.headers()["content-security-policy"]).toContain(
+      "default-src 'self'",
+    );
+  }
+});
+
 test("renders the editor and switches settings tabs", async ({ page }) => {
   await page.goto("/");
 
