@@ -4,12 +4,10 @@ import { type Component, createSignal, onMount } from "solid-js";
 import Header from "~/components/Header";
 import Settings from "~/components/Settings";
 import { FaceDetectProvider } from "~/context/faceDetect";
-import {
-  type IconColors,
-  IconColorsProvider,
-  parseColors,
-} from "~/context/iconColors";
+import { IconColorsProvider } from "~/context/iconColors";
 import { IconTransformsProvider } from "~/context/iconTransforms";
+import type { IconState } from "~/domain/icon-state";
+import { decodeIconState } from "~/domain/icon-state-codec";
 import IconWrapper from "./IconWrapper";
 import ShowOnMount from "./ShowOnMount";
 
@@ -19,14 +17,16 @@ const breakPoints = {
 
 const MainView: Component = () => {
   const [isFull, setIsFull] = createSignal(false);
-  const [param, setParam] = createSignal<IconColors>();
+  const [param, setParam] = createSignal<IconState>();
 
   const matches = createBreakpoints(breakPoints);
 
   const getParam = () => {
     const search = new URLSearchParams(window.location.search);
     const param = search.get("p");
-    return param ? parseColors(param) : undefined;
+    if (!param) return undefined;
+    const result = decodeIconState(param);
+    return result.ok ? result.value : undefined;
   };
 
   onMount(() => {

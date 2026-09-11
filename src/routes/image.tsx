@@ -1,5 +1,6 @@
 import type { APIEvent } from "@solidjs/start/server";
-import { type IconColors, parseColors } from "~/context/iconColors";
+import type { IconState } from "~/domain/icon-state";
+import { decodeIconState } from "~/domain/icon-state-codec";
 import { cache } from "~/lib/constants";
 import { convertFromSvg } from "~/lib/image";
 import { imageQuerySchema } from "~/lib/imageQuerySchema";
@@ -15,9 +16,13 @@ export async function GET(event: APIEvent) {
     });
   }
 
-  let params: IconColors | undefined;
+  let params: IconState | undefined;
   if (query.output.p) {
-    params = parseColors(query.output.p);
+    const result = decodeIconState(query.output.p);
+    if (!result.ok) {
+      return new Response("bad request", { status: 400 });
+    }
+    params = result.value;
   }
 
   const svgText = await retry(() => ssrSvgStr(params), {

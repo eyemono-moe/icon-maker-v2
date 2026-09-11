@@ -18,6 +18,20 @@ test("serves HTML and generated images with security headers", async ({
   }
 });
 
+test("rejects an invalid encoded icon state on image routes", async ({
+  request,
+}) => {
+  for (const path of [
+    "/image?f=svg&p=invalid",
+    "/image.svg?p=invalid",
+    "/ogp?p=invalid",
+  ]) {
+    const response = await request.get(path);
+
+    expect(response.status()).toBe(400);
+  }
+});
+
 test("renders the editor and switches settings tabs", async ({ page }) => {
   await page.goto("/");
 

@@ -1,16 +1,13 @@
 import { type ParentComponent, createRenderEffect } from "solid-js";
 import { renderToString } from "solid-js/web";
 import Icon from "~/components/Icon";
-import {
-  type IconColors,
-  IconColorsProvider,
-  useIconColors,
-} from "~/context/iconColors";
+import { IconColorsProvider, useIconColors } from "~/context/iconColors";
 import { IconTransformsProvider } from "~/context/iconTransforms";
 import { SsrPortalProvider } from "~/context/ssrPortal";
+import type { IconState } from "~/domain/icon-state";
 import { optimizeSvg } from "./svg";
 
-const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
+const IconWithParam: ParentComponent<{ params?: IconState }> = (props) => {
   const [_, { setColors, reset }] = useIconColors();
 
   createRenderEffect(() => {
@@ -26,7 +23,7 @@ const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
 
 const hydrationKeyRegex = /data-hk=[^<>\s]+/g;
 
-export const ssrSvgStr = (params?: IconColors) => {
+export const ssrSvgStr = (params?: IconState) => {
   const svgText = renderToString(() => {
     return (
       <SsrPortalProvider>
@@ -46,7 +43,7 @@ export const ssrSvgStr = (params?: IconColors) => {
   return optimized;
 };
 
-export const ssrOgpSvgStr = (params?: IconColors) => {
+export const ssrOgpSvgStr = (params?: IconState) => {
   const svgText = renderToString(() => (
     // biome-ignore lint/a11y/noSvgWithoutTitle: pngに変換するので必要ない
     <svg
