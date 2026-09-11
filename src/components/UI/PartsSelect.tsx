@@ -44,7 +44,7 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
                   class="peer"
                   aria-label={option.label}
                 />
-                <RadioGroup.ItemControl class="b-2 rounded data-[state=checked]:b-purple-600 peer-focus-visible:(outline outline-offset-1)">
+                <RadioGroup.ItemControl class="b-2 rounded data-[state=checked]:b-purple-600 peer-focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2)">
                   <RadioGroup.ItemText class="cursor-pointer w-full h-auto aspect-square block">
                     <Suspense fallback={<LoadingSpinner />}>
                       <svg viewBox={props.previewViewBox} class="w-full h-auto">

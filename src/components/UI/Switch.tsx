@@ -18,7 +18,7 @@ const Switch: Component<Props> = (props) => {
         {props.label}
       </ArkSwitch.Label>
       <ArkSwitch.HiddenInput class="peer" />
-      <ArkSwitch.Control class="inline-flex items-center w-54px b-1 rounded-full p-2px peer-focus-visible:(outline outline-offset-2) bg-zinc data-[state=checked]:bg-purple-600 transition-background-color-100 cursor-pointer">
+      <ArkSwitch.Control class="inline-flex items-center w-54px b-1 rounded-full p-2px peer-focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2) bg-zinc data-[state=checked]:bg-purple-600 transition-background-color-100 cursor-pointer">
         <ArkSwitch.Thumb class="w-24px aspect-square rounded-full bg-white transition-transform-100 data-[state=checked]:translate-x-full" />
       </ArkSwitch.Control>
     </ArkSwitch.Root>

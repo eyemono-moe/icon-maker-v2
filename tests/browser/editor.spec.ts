@@ -29,12 +29,21 @@ test("renders the editor and switches settings tabs", async ({ page }) => {
     "aria-selected",
     "true",
   );
+  const tabIndicator = page.locator(
+    '[data-scope="tabs"][data-part="indicator"]',
+  );
+  await expect(tabIndicator).toBeVisible();
+  const initialIndicatorBox = await tabIndicator.boundingBox();
+  expect(initialIndicatorBox?.width).toBeGreaterThan(0);
 
   await page.getByRole("tab", { name: "eye" }).click();
 
   await expect(
     page.getByRole("radiogroup", { name: "eyebrow type" }),
   ).toBeVisible();
+  await expect
+    .poll(async () => (await tabIndicator.boundingBox())?.x)
+    .not.toBe(initialIndicatorBox?.x);
 });
 
 test("supports keyboard navigation for settings tabs", async ({ page }) => {
@@ -102,6 +111,24 @@ test("moves between top-level menus with arrow keys", async ({ page }) => {
   await expect(editMenu).toBeFocused();
 });
 
+test("switches an open top-level menu on hover", async ({ page }) => {
+  await page.goto("/");
+  const fileMenu = page.getByRole("menuitem", { name: "File", exact: true });
+  const editMenu = page.getByRole("menuitem", { name: "Edit", exact: true });
+
+  await fileMenu.click();
+  await expect(
+    page.getByRole("menuitem", { name: /Copy as SVG/ }),
+  ).toBeVisible();
+
+  await editMenu.hover();
+
+  await expect(page.getByRole("menuitem", { name: /Undo/ })).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: /Copy as SVG/ }),
+  ).toBeHidden();
+});
+
 test("shows a success toast after copying SVG", async ({ context, page }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
@@ -167,6 +194,12 @@ test("enables a derived color field when automatic color is disabled", async ({
   await expect(colorInput).toBeDisabled();
 
   await automaticColor.focus();
+  const checkboxControl = automaticColor
+    .locator("..")
+    .locator('[data-part="control"]');
+  await expect(checkboxControl).toHaveCSS("outline-style", "solid");
+  await expect(checkboxControl).toHaveCSS("outline-width", "2px");
+
   await page.keyboard.press("Space");
 
   await expect(automaticColor).not.toBeChecked();

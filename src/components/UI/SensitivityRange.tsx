@@ -16,7 +16,7 @@ type Props = {
 };
 
 const thumbClass =
-  "block cursor-pointer w-16px h-16px bg-purple-600 rounded-full top--4px";
+  "block cursor-pointer w-16px h-16px bg-purple-600 rounded-full top--4px focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2)";
 
 const Range: Component<Props> = (props) => {
   const previewPosition = () =>

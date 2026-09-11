@@ -14,7 +14,7 @@ import "../assets/menubar.css";
 import { iconSvgId } from "./Icon";
 
 const triggerClass =
-  "rounded inline-flex items-center justify-center px-2 outline-none bg-transparent enabled:hover:bg-zinc-300/50 data-[state=open]:bg-zinc-300/50";
+  "rounded inline-flex items-center justify-center px-2 outline-none bg-transparent enabled:hover:bg-zinc-300/50 data-[state=open]:bg-zinc-300/50 focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-1)";
 const contentClass =
   "min-w-200px outline-none p-1 bg-white rounded border-1 shadow origin-[--transform-origin] animate-[contentHide] animate-duration-200 data-[state=open]:(animate-[contentShow] animate-duration-200)";
 const itemClass =
@@ -166,6 +166,12 @@ const Actions: Component = () => {
           role="menuitem"
           tabIndex={activeMenu() === "file" ? 0 : -1}
           onFocus={() => setActiveMenu("file")}
+          onPointerEnter={() => {
+            if (openMenu() && openMenu() !== "file") {
+              setActiveMenu("file");
+              setOpenMenu("file");
+            }
+          }}
           class={triggerClass}
         >
           File
@@ -267,6 +273,12 @@ const Actions: Component = () => {
           role="menuitem"
           tabIndex={activeMenu() === "edit" ? 0 : -1}
           onFocus={() => setActiveMenu("edit")}
+          onPointerEnter={() => {
+            if (openMenu() && openMenu() !== "edit") {
+              setActiveMenu("edit");
+              setOpenMenu("edit");
+            }
+          }}
           class={triggerClass}
         >
           Edit

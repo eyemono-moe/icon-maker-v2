@@ -110,7 +110,7 @@ const ColorField: Component<Props> = (props) => {
           class="flex items-center row-start-1 col-start-2"
         >
           <Checkbox.HiddenInput class="peer" />
-          <Checkbox.Control class="inline-flex items-center justify-center w-6 h-6 b-2 rounded peer-focus-visible:outline data-[state=checked]:(bg-purple-600 b-purple-600 c-white)">
+          <Checkbox.Control class="inline-flex items-center justify-center w-6 h-6 b-2 rounded peer-focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2) data-[state=checked]:(bg-purple-600 b-purple-600 c-white)">
             <Checkbox.Indicator>
               <div class="i-material-symbols:check-small-rounded w-5 h-5" />
             </Checkbox.Indicator>

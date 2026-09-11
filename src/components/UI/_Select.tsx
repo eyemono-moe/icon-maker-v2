@@ -43,7 +43,7 @@ const _Select = <T extends string>(props: Props<T>): JSX.Element => {
       <Select.Label class="font-700 text-nowrap">{props.label}</Select.Label>
       <div class="flex items-center gap-2 overflow-hidden">
         <Select.Control class="w-full">
-          <Select.Trigger class="inline-flex items-center justify-between w-full rounded p-2 b-2 bg-white">
+          <Select.Trigger class="inline-flex items-center justify-between w-full rounded p-2 b-2 bg-white focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2)">
             <Select.ValueText
               placeholder={props.placeholder}
               class="data-[placeholder-shown]:c-zinc"
