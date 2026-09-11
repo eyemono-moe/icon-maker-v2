@@ -59,6 +59,23 @@ const ColorField: Component<Props> = (props) => {
         "grid-rows-[max-content_1fr]": !isAuto(),
       }}
     >
+      <Show when={props.canEmpty}>
+        <Checkbox.Root
+          checked={isAuto()}
+          onCheckedChange={(details) => setIsAuto(details.checked === true)}
+          class="flex items-center row-start-1 col-start-2"
+        >
+          <Checkbox.HiddenInput class="peer" />
+          <Checkbox.Control class="inline-flex items-center justify-center w-6 h-6 b-2 rounded peer-focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2) data-[state=checked]:(bg-purple-600 b-purple-600 c-white)">
+            <Checkbox.Indicator>
+              <div class="i-material-symbols:check-small-rounded w-5 h-5" />
+            </Checkbox.Indicator>
+          </Checkbox.Control>
+          <Checkbox.Label class="text-nowrap cursor-pointer">
+            Set automatically
+          </Checkbox.Label>
+        </Checkbox.Root>
+      </Show>
       <Field.Root class="contents">
         <Field.Label
           for={inputId}
@@ -103,23 +120,6 @@ const ColorField: Component<Props> = (props) => {
           </Show>
         </div>
       </Field.Root>
-      <Show when={props.canEmpty}>
-        <Checkbox.Root
-          checked={isAuto()}
-          onCheckedChange={(details) => setIsAuto(details.checked === true)}
-          class="flex items-center row-start-1 col-start-2"
-        >
-          <Checkbox.HiddenInput class="peer" />
-          <Checkbox.Control class="inline-flex items-center justify-center w-6 h-6 b-2 rounded peer-focus-visible:(outline-2 outline-solid outline-purple-600 outline-offset-2) data-[state=checked]:(bg-purple-600 b-purple-600 c-white)">
-            <Checkbox.Indicator>
-              <div class="i-material-symbols:check-small-rounded w-5 h-5" />
-            </Checkbox.Indicator>
-          </Checkbox.Control>
-          <Checkbox.Label class="text-nowrap cursor-pointer">
-            Set automatically
-          </Checkbox.Label>
-        </Checkbox.Root>
-      </Show>
     </div>
   );
 };

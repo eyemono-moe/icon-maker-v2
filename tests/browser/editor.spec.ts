@@ -204,6 +204,12 @@ test("enables a derived color field when automatic color is disabled", async ({
 
   await expect(automaticColor).not.toBeChecked();
   await expect(colorInput).toBeEnabled();
+  await page.keyboard.press("Tab");
+  await expect(colorInput).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    colorInput.locator("..").getByRole("button", { name: "Reset" }),
+  ).toBeFocused();
 });
 
 test("operates camera controls with the keyboard", async ({ page }) => {
