@@ -283,6 +283,120 @@ test("operates camera controls with the keyboard", async ({ page }) => {
   await expect(slider).not.toHaveAttribute("aria-valuenow", initialValue ?? "");
 });
 
+test("requests permission when the first camera enumeration resolves after mount", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    let resolveInitialEnumeration: (devices: MediaDeviceInfo[]) => void =
+      () => {};
+    const initialEnumeration = new Promise<MediaDeviceInfo[]>((resolve) => {
+      resolveInitialEnumeration = resolve;
+    });
+    let enumerationCount = 0;
+    let permissionRequestCount = 0;
+    const createCamera = (deviceId: string, label: string) =>
+      ({
+        deviceId,
+        groupId: deviceId ? "test-group" : "",
+        kind: "videoinput",
+        label,
+        toJSON: () => ({}),
+      }) satisfies MediaDeviceInfo;
+
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        addEventListener: () => {},
+        enumerateDevices: () => {
+          enumerationCount += 1;
+          if (enumerationCount === 1) return initialEnumeration;
+          return Promise.resolve([createCamera("test-camera", "Test Camera")]);
+        },
+        getUserMedia: async () => {
+          permissionRequestCount += 1;
+          return {
+            getTracks: () => [{ stop: () => {} }],
+          } as unknown as MediaStream;
+        },
+        removeEventListener: () => {},
+      },
+    });
+    Object.assign(window, {
+      cameraTest: {
+        permissionRequestCount: () => permissionRequestCount,
+        resolveInitialEnumeration: () =>
+          resolveInitialEnumeration([createCamera("", "")]),
+      },
+    });
+  });
+
+  await page.goto("/");
+  await page.getByRole("tab", { name: "camera" }).click();
+  await expect(
+    page.getByRole("combobox", { name: "camera input" }),
+  ).toBeVisible();
+
+  await page.evaluate(() => {
+    const cameraTest = (
+      window as typeof window & {
+        cameraTest: { resolveInitialEnumeration: () => void };
+      }
+    ).cameraTest;
+    cameraTest.resolveInitialEnumeration();
+  });
+
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        (
+          window as typeof window & {
+            cameraTest: { permissionRequestCount: () => number };
+          }
+        ).cameraTest.permissionRequestCount(),
+      ),
+    )
+    .toBe(1);
+  const cameraSelect = page.getByRole("combobox", { name: "camera input" });
+  await cameraSelect.click();
+  await page.getByRole("option", { name: "Test Camera" }).click();
+  await expect(cameraSelect).toContainText("Test Camera");
+  await expect(page.locator("video[playsinline][muted]")).toBeAttached();
+});
+
+test("shows a retryable error when camera permission is denied", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const hiddenCamera = {
+      deviceId: "",
+      groupId: "",
+      kind: "videoinput",
+      label: "",
+      toJSON: () => ({}),
+    } satisfies MediaDeviceInfo;
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        addEventListener: () => {},
+        enumerateDevices: async () => [hiddenCamera],
+        getUserMedia: async () => {
+          throw new DOMException("Permission denied", "NotAllowedError");
+        },
+        removeEventListener: () => {},
+      },
+    });
+  });
+
+  await page.goto("/");
+  await page.getByRole("tab", { name: "camera" }).click();
+
+  const alert = page.getByRole("alert");
+  await expect(alert).toContainText("camera denied: Permission denied");
+  await expect(
+    page.getByRole("button", { name: "retry camera access" }),
+  ).toBeVisible();
+});
+
 test("undoes and redoes a color change", async ({ page }) => {
   await page.goto("/");
   const color = page.locator('input[type="color"]').first();

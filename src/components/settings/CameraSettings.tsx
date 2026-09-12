@@ -2,6 +2,7 @@ import { type Component, createSignal } from "solid-js";
 import { useFaceDetect } from "~/context/faceDetect";
 import { useIconTransforms } from "~/context/iconTransforms";
 import { createCameras } from "~/lib/createCamera";
+import Button from "../UI/Button";
 import Select from "../UI/Select";
 import Range from "../UI/SensitivityRange";
 import Switch from "../UI/Switch";
@@ -22,11 +23,11 @@ const CameraSettings: Component = () => {
   const [showVideo, setShowVideo] = createSignal(false);
   const [showCanvas, setShowCanvas] = createSignal(false);
 
-  const cameras = createCameras();
+  const cameraDevices = createCameras();
   const cameraOptions = () =>
-    cameras().map((camera) => ({
+    cameraDevices.cameras().map((camera, index) => ({
       value: camera.deviceId,
-      label: camera.label,
+      label: camera.label || `Camera ${index + 1}`,
     }));
 
   return (
@@ -39,6 +40,24 @@ const CameraSettings: Component = () => {
         label="camera input"
         placeholder="select camera"
       />
+      {(cameraDevices.state().status === "denied" ||
+        cameraDevices.state().status === "error" ||
+        cameraDevices.state().status === "unsupported") && (
+        <div class="rounded b-1 b-red-600 p-2 c-red-800" role="alert">
+          <div>
+            camera {cameraDevices.state().status}: {cameraDevices.state().error}
+          </div>
+          {cameraDevices.state().status !== "unsupported" && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={cameraDevices.retry}
+            >
+              retry camera access
+            </Button>
+          )}
+        </div>
+      )}
       <DetectResultPreview showVideo={showVideo()} showCanvas={showCanvas()} />
       <Switch
         label="show video input"
