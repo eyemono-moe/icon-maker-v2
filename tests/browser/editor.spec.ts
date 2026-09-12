@@ -1,5 +1,40 @@
 import { expect, test } from "@playwright/test";
 
+test("server renders and hydrates without hydration mismatch", async ({
+  page,
+  request,
+}) => {
+  const response = await request.get("/");
+  expect(response.ok()).toBe(true);
+  expect(await response.text()).toContain("eyemono.svg");
+
+  const browserErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      const { columnNumber, lineNumber, url } = message.location();
+      browserErrors.push(
+        `${message.text()} (${url}:${lineNumber}:${columnNumber})`,
+      );
+    }
+  });
+  page.on("pageerror", (error) => browserErrors.push(error.message));
+
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "eyemono.svg" }),
+  ).toBeVisible();
+  await page.getByRole("tab", { name: "eye" }).click();
+  await expect(
+    page.getByRole("radiogroup", { name: "eyebrow type" }),
+  ).toBeVisible();
+
+  expect(
+    browserErrors.filter((message) =>
+      /hydration|hydrating|mismatch/i.test(message),
+    ),
+  ).toEqual([]);
+});
+
 test("serves HTML and generated images with security headers", async ({
   request,
 }) => {

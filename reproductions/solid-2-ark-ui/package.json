@@ -1,0 +1,26 @@
+{
+  "name": "solid-2-ark-ui-reproduction",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "type": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ark-ui/solid": "5.39.1",
+    "@solidjs/meta": "1.0.0-next.2",
+    "@solidjs/router": "2.0.0-next.24",
+    "@solidjs/web": "2.0.0-rc.8",
+    "solid-js": "2.0.0-rc.8"
+  },
+  "devDependencies": {
+    "@solidjs/vite-plugin": "3.0.0-next.43",
+    "@types/node": "24.10.1",
+    "typescript": "6.0.3",
+    "vite": "8.2.1"
+  },
+  "engines": {
+    "node": ">=24.11.0"
+  },
+  "packageManager": "pnpm@9.6.0"
+}

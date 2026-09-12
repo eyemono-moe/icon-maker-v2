@@ -16,5 +16,6 @@
       "~/*": ["./src/*"]
     },
     "skipLibCheck": true
-  }
+  },
+  "exclude": ["reproductions"]
 }
