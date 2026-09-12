@@ -4,7 +4,7 @@ import { IconColorsProvider, useIconColors } from "~/context/iconColors";
 import { IconTransformsProvider } from "~/context/iconTransforms";
 import { SsrPortalProvider } from "~/context/ssrPortal";
 import type { IconState } from "~/domain/icon-state";
-import { optimizeSvg } from "../lib/svg";
+import { optimizeSvg } from "../lib/svg-optimize";
 import ServerIcon from "./server-icon";
 
 const IconWithParam: ParentComponent<{ params?: IconState }> = (props) => {

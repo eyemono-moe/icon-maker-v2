@@ -1,9 +1,12 @@
 import type { ImageQueryOutput } from "./imageQuerySchema";
-import { optimizeSvg } from "./svg";
+const optimizeSvgOnDemand = async (svgText: string) => {
+  const { optimizeSvg } = await import("./svg-optimize");
+  return optimizeSvg(svgText);
+};
 
-const imageDataString = (svg: HTMLElement) => {
+const imageDataString = async (svg: HTMLElement) => {
   const svgData = new XMLSerializer().serializeToString(svg);
-  const optimized = optimizeSvg(svgData);
+  const optimized = await optimizeSvgOnDemand(svgData);
   return `data:image/svg+xml;base64,${btoa(optimized)}`;
 };
 
@@ -14,12 +17,12 @@ const saveWithAnchor = (data: string, filename: string) => {
   a.dispatchEvent(new MouseEvent("click"));
 };
 
-export const downloadSvg = (svg: HTMLElement, filename?: string) => {
-  const downloadHref = imageDataString(svg);
+export const downloadSvg = async (svg: HTMLElement, filename?: string) => {
+  const downloadHref = await imageDataString(svg);
   saveWithAnchor(downloadHref, filename ?? "icon.svg");
 };
 
-export const downloadPng = (svg: HTMLElement, filename?: string) => {
+export const downloadPng = async (svg: HTMLElement, filename?: string) => {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const img = new Image();
@@ -31,16 +34,16 @@ export const downloadPng = (svg: HTMLElement, filename?: string) => {
     const downloadHref = canvas.toDataURL("image/png");
     saveWithAnchor(downloadHref, filename ?? "icon.png");
   };
-  img.src = imageDataString(svg);
+  img.src = await imageDataString(svg);
 };
 
-export const copySvg = (svg: HTMLElement) => {
+export const copySvg = async (svg: HTMLElement) => {
   const stringSvg = new XMLSerializer().serializeToString(svg);
-  const optimized = optimizeSvg(stringSvg);
+  const optimized = await optimizeSvgOnDemand(stringSvg);
   return navigator.clipboard.writeText(optimized);
 };
 
-export const copyPng = (svg: HTMLElement) => {
+export const copyPng = async (svg: HTMLElement) => {
   return new Promise<void>((resolve) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -58,7 +61,9 @@ export const copyPng = (svg: HTMLElement) => {
         );
       }, "image/png");
     };
-    img.src = imageDataString(svg);
+    void imageDataString(svg).then((dataUrl) => {
+      img.src = dataUrl;
+    });
   });
 };
 
