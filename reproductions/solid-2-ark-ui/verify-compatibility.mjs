@@ -2,6 +2,12 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 
 const reproduction = resolve(import.meta.dirname);
+const pnpmCli = process.env.npm_execpath;
+
+if (!pnpmCli) {
+  console.error("Run this verifier through pnpm so npm_execpath is available.");
+  process.exit(1);
+}
 
 function run(command, args) {
   return spawnSync(command, args, {
@@ -13,6 +19,10 @@ function run(command, args) {
 
 function output(result) {
   return `${result.stdout}${result.stderr}`;
+}
+
+function runPnpm(args) {
+  return run(process.execPath, [pnpmCli, ...args]);
 }
 
 function requirePass(label, result) {
@@ -57,19 +67,19 @@ function requireExpectedFailure(label, result, patterns) {
 
 requirePass(
   "nested frozen install",
-  run("pnpm", ["install", "--frozen-lockfile", "--ignore-workspace"]),
+  runPnpm(["install", "--frozen-lockfile", "--ignore-workspace"]),
 );
 requirePass(
   "Router/Meta Solid 2 type probe",
-  run("pnpm", ["exec", "tsc", "--project", "tsconfig.router-meta.json"]),
+  runPnpm(["exec", "tsc", "--project", "tsconfig.router-meta.json"]),
 );
 requireExpectedFailure(
   "Ark type probe",
-  run("pnpm", ["exec", "tsc", "--project", "tsconfig.json"]),
+  runPnpm(["exec", "tsc", "--project", "tsconfig.json"]),
   [/Namespace '.*solid-js.*' has no exported member 'JSX'/],
 );
 requireExpectedFailure(
   "Ark production build",
-  run("pnpm", ["exec", "vite", "build"]),
+  runPnpm(["exec", "vite", "build"]),
   [/(?:solid-js|@solidjs\/web).*web|["']\.\/web["'].*not exported/],
 );
