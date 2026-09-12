@@ -8,31 +8,64 @@ test("server renders and hydrates without hydration mismatch", async ({
   expect(response.ok()).toBe(true);
   expect(await response.text()).toContain("eyemono.svg");
 
-  const browserErrors: string[] = [];
+  await page.addInitScript(() => {
+    const capture = () => {
+      const heading = document.querySelector("h1");
+      const state = window as typeof window & { __ssrHeading?: Element };
+      if (heading && !state.__ssrHeading) state.__ssrHeading = heading;
+    };
+    new MutationObserver(capture).observe(document, {
+      childList: true,
+      subtree: true,
+    });
+    capture();
+  });
+
+  const browserDiagnostics: string[] = [];
   page.on("console", (message) => {
-    if (message.type() === "error") {
+    if (message.type() === "warning" || message.type() === "error") {
       const { columnNumber, lineNumber, url } = message.location();
-      browserErrors.push(
+      browserDiagnostics.push(
         `${message.text()} (${url}:${lineNumber}:${columnNumber})`,
       );
     }
   });
-  page.on("pageerror", (error) => browserErrors.push(error.message));
+  page.on("pageerror", (error) => browserDiagnostics.push(error.message));
 
   await page.goto("/");
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const state = window as typeof window & { __ssrHeading?: Element };
+        return Boolean(state.__ssrHeading);
+      }),
+    )
+    .toBe(true);
+  const ssrHeading = await page.evaluateHandle(() => {
+    const state = window as typeof window & { __ssrHeading?: Element };
+    return state.__ssrHeading;
+  });
   await expect(
     page.getByRole("heading", { name: "eyemono.svg" }),
   ).toBeVisible();
+  expect(
+    await page.evaluate(
+      (heading) => document.querySelector("h1") === heading,
+      ssrHeading,
+    ),
+  ).toBe(true);
   await page.getByRole("tab", { name: "eye" }).click();
   await expect(
     page.getByRole("radiogroup", { name: "eyebrow type" }),
   ).toBeVisible();
 
   expect(
-    browserErrors.filter((message) =>
-      /hydration|hydrating|mismatch/i.test(message),
+    browserDiagnostics.map((message) => message.trim()).filter(Boolean),
+  ).toEqual([
+    expect.stringMatching(
+      /^Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'nonce-[a-f0-9]+' 'wasm-unsafe-eval' https:\/\/cdn\.jsdelivr\.net"\.$/,
     ),
-  ).toEqual([]);
+  ]);
 });
 
 test("serves HTML and generated images with security headers", async ({

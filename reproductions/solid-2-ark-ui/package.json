@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "type": "tsc --noEmit"
+    "type": "tsc --noEmit",
+    "verify": "node verify-compatibility.mjs"
   },
   "dependencies": {
     "@ark-ui/solid": "5.39.1",

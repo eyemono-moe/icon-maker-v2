@@ -37,11 +37,11 @@ Solid 2では`solid-js/web`が独立packageの`@solidjs/web`へ移ったため�
 
 アプリケーション固有の移行箇所とSolidStartを除外し、Ark UIのMenu、Portal、ToastだけをSolid 2のcompilerでbuildする構成である。
 
-`pnpm install --ignore-workspace`は、Ark UIが依存する`@solid-primitives/keyed@1.5.3`について`solid-js@^1.6.12`のpeer dependency不一致を報告した。
+lockfileを生成した初回のunlocked resolutionでは、Ark UIが依存する`@solid-primitives/keyed@1.5.3`について`solid-js@^1.6.12`のpeer dependency不一致が報告された。コミット済みlockfileを使うfrozen installの結果を、この初回警告と混同してはならない。
 
-`pnpm type`は、`@ark-ui/solid@5.39.1`と`@zag-js/solid@1.43.3`がSolid 2で削除された`solid-js`の`JSX` exportを参照するため失敗した。
+`pnpm verify`は、Router 2とMeta 1だけの独立したprobeを先に型検査し、成功を確認する。その後のArk UI reproductionの`pnpm type`は、`@ark-ui/solid@5.39.1`と`@zag-js/solid@1.43.3`がSolid 2で削除された`solid-js`の`JSX` exportを参照するため、期待どおり失敗する。
 
-`pnpm build`は次の解決errorで失敗した。
+`pnpm verify`内のArk UI production buildは次の解決errorで失敗する。
 
 ```text
 "./web" is not exported ... from package solid-js

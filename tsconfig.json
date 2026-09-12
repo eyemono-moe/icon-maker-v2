@@ -17,5 +17,9 @@
     },
     "skipLibCheck": true
   },
-  "exclude": ["reproductions"]
+  "exclude": [
+    "reproductions/solid-2-ark-ui/src.tsx",
+    "reproductions/solid-2-ark-ui/src-router-meta.tsx",
+    "reproductions/solid-2-ark-ui/vite.config.ts"
+  ]
 }

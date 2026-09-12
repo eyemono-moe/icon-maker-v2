@@ -12,7 +12,12 @@ function App() {
         <Portal>
           <Menu.Positioner>
             <Menu.Content>
-              <Menu.Item value="show-toast">Show toast</Menu.Item>
+              <Menu.Item
+                value="show-toast"
+                onSelect={() => toaster.create({ title: "Menu toast" })}
+              >
+                Show toast
+              </Menu.Item>
             </Menu.Content>
           </Menu.Positioner>
         </Portal>
