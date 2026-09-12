@@ -194,6 +194,7 @@ export const IconColorsProvider: ParentComponent<{
     replaceState("", "", `?${searchParams.toString()}`);
   };
   const loadFromUrl = () => {
+    if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
     const p = url.searchParams.get("p");
     if (p) {
@@ -225,7 +226,7 @@ export const IconColorsProvider: ParentComponent<{
 
   onMount(loadFromUrl);
   createEffect(() => {
-    if (configs.autosave) saveToUrl();
+    if (configs.autosave && typeof window !== "undefined") saveToUrl();
   });
 
   return (

@@ -127,6 +127,28 @@ test("rejects an invalid encoded icon state on image routes", async ({
   }
 });
 
+test("rejects repeated image query parameters", async ({ request }) => {
+  for (const path of [
+    "/image?f=invalid&f=svg",
+    "/image?p=invalid&p=",
+    "/image?s=invalid&s=120",
+  ]) {
+    const response = await request.get(path);
+
+    expect(response.status()).toBe(400);
+  }
+});
+
+test("does not treat near-match image paths as image routes", async ({
+  request,
+}) => {
+  for (const path of ["/image.pngx", "/image.svg/extra"]) {
+    const response = await request.get(path);
+
+    expect(response.status()).toBe(404);
+  }
+});
+
 test("renders the editor and switches settings tabs", async ({ page }) => {
   await page.goto("/");
 

@@ -9,9 +9,9 @@ export class SharpPngEncoder implements PngEncoder {
       const min = Math.min(dimensions.w, dimensions.h);
       image.resize(min, min).extend({
         top: Math.floor((dimensions.h - min) / 2),
-        bottom: Math.floor((dimensions.h - min) / 2),
+        bottom: Math.ceil((dimensions.h - min) / 2),
         left: Math.floor((dimensions.w - min) / 2),
-        right: Math.floor((dimensions.w - min) / 2),
+        right: Math.ceil((dimensions.w - min) / 2),
         extendWith: "copy",
       });
     } else {

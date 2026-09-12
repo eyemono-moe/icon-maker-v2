@@ -5,7 +5,7 @@ import type { APIEvent } from "@solidjs/start/server";
 import { createImageResponse } from "~/image/image-response";
 import { sharpPngEncoder } from "~/image/sharp-png-encoder";
 
-const imageRegex = /^image\.(png|svg)/;
+const imageRegex = /^image\.(png|svg)$/;
 
 export async function GET(event: APIEvent) {
   const match = event.params["404"].match(imageRegex);

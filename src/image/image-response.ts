@@ -38,6 +38,9 @@ export async function createImageResponse(
   options: ImageResponseOptions = {},
 ): Promise<Response> {
   const url = new URL(request.url);
+  if (["f", "p", "s"].some((key) => url.searchParams.getAll(key).length > 1)) {
+    return badRequest();
+  }
   const rawQuery = Object.fromEntries(url.searchParams.entries());
   const isOgp = options.renderer?.variant === "ogp" || url.pathname === "/ogp";
   const queryInput = isOgp ? { p: rawQuery.p, f: rawQuery.f } : rawQuery;

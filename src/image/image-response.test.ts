@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
+import { createDefaultIconState } from "../domain/icon-state";
+import { encodeIconState } from "../domain/icon-state-codec";
 import { createImageResponse } from "./image-response";
+import { sharpPngEncoder } from "./sharp-png-encoder";
 
 const encoder = {
   encode: async (_svg: string, dimensions: { w: number; h: number }) =>
@@ -7,6 +10,18 @@ const encoder = {
 };
 
 describe("createImageResponse", () => {
+  test.each(["f=invalid&f=svg", "p=invalid&p=", "s=invalid&s=120"])(
+    "rejects repeated query parameter: %s",
+    async (query) => {
+      const response = await createImageResponse(
+        new Request(`http://localhost/image?${query}`),
+        encoder,
+      );
+
+      expect(response.status).toBe(400);
+    },
+  );
+
   test("returns SVG with the existing image response contract", async () => {
     const response = await createImageResponse(
       new Request("http://localhost/image?f=svg"),
@@ -61,5 +76,42 @@ describe("createImageResponse", () => {
 
     expect(response.status).toBe(400);
     expect(called).toBe(false);
+  });
+
+  test("renders an encoded non-default state color in SVG and PNG output", async () => {
+    const state = createDefaultIconState();
+    state.hair.type = "ponytail";
+    state.hair.baseColor = "#123456";
+    state.eyes.type = "jito";
+    state.eyes.pupilBaseColor = "#654321";
+    state.background = "#abcdef";
+    const encoded = encodeIconState(state);
+
+    const defaultSvg = await createImageResponse(
+      new Request("http://localhost/image?f=svg"),
+      sharpPngEncoder,
+    );
+    const customSvg = await createImageResponse(
+      new Request(`http://localhost/image?f=svg&p=${encoded}`),
+      sharpPngEncoder,
+    );
+    const defaultPng = await createImageResponse(
+      new Request("http://localhost/image?f=png"),
+      sharpPngEncoder,
+    );
+    const customPng = await createImageResponse(
+      new Request(`http://localhost/image?f=png&p=${encoded}`),
+      sharpPngEncoder,
+    );
+
+    const defaultSvgText = await defaultSvg.text();
+    const customSvgText = await customSvg.text();
+    expect(customSvgText).toContain("#123456");
+    expect(customSvgText).toContain("#654321");
+    expect(customSvgText).toContain("#abcdef");
+    expect(customSvgText).not.toBe(defaultSvgText);
+    expect(Buffer.from(await customPng.arrayBuffer())).not.toEqual(
+      Buffer.from(await defaultPng.arrayBuffer()),
+    );
   });
 });
