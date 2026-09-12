@@ -36,13 +36,28 @@ const Actions: Component = () => {
   let fileContent!: HTMLDivElement;
   let editContent!: HTMLDivElement;
 
-  const withIcon = (action: (svg: HTMLElement) => void) => () => {
-    const svg = document.getElementById(iconSvgId);
-    if (svg) action(svg);
-  };
+  const withIcon =
+    (
+      action: (svg: HTMLElement) => void | Promise<void>,
+      onError?: () => void,
+    ) =>
+    () => {
+      const svg = document.getElementById(iconSvgId);
+      if (!svg) return;
+      try {
+        const result = action(svg);
+        if (result) void result.catch(() => onError?.());
+      } catch {
+        onError?.();
+      }
+    };
 
-  const handleDownloadSvg = withIcon(downloadSvg);
-  const handleDownloadPng = withIcon(downloadPng);
+  const handleDownloadSvg = withIcon(downloadSvg, () =>
+    toast.error("failed to download"),
+  );
+  const handleDownloadPng = withIcon(downloadPng, () =>
+    toast.error("failed to download"),
+  );
   const handleCopySvg = withIcon((svg) => {
     toast.promise(copySvg(svg), {
       loading: "copying...",

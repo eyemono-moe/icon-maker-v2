@@ -17,24 +17,95 @@ const saveWithAnchor = (data: string, filename: string) => {
   a.dispatchEvent(new MouseEvent("click"));
 };
 
+type PngCanvas = {
+  width: number;
+  height: number;
+  getContext: (contextId: "2d") => {
+    drawImage: (image: CanvasImageSource, x: number, y: number) => void;
+  } | null;
+  toBlob: (callback: (blob: Blob | null) => void, type?: string) => void;
+  toDataURL: (type?: string) => string;
+};
+type PngImage = {
+  onload: ((event?: unknown) => void) | null;
+  onerror: ((event: unknown) => void) | null;
+  src: string;
+  width: number;
+  height: number;
+};
+
+export type PngPrimitives = {
+  createCanvas: () => PngCanvas;
+  createImage: () => PngImage;
+  imageDataString: (svg: HTMLElement) => Promise<string>;
+};
+
+const browserPngPrimitives: PngPrimitives = {
+  createCanvas: () => document.createElement("canvas"),
+  createImage: () => new Image() as unknown as PngImage,
+  imageDataString,
+};
+
+export const createPngCanvas = async (
+  svg: HTMLElement,
+  primitives: PngPrimitives = browserPngPrimitives,
+) => {
+  const canvas = primitives.createCanvas();
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("2D canvas context unavailable");
+
+  const image = primitives.createImage();
+  await new Promise<void>((resolve, reject) => {
+    image.onload = () => {
+      try {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image as unknown as CanvasImageSource, 0, 0);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    };
+    image.onerror = (event) => {
+      reject(
+        event instanceof Error ? event : new Error("PNG image failed to load"),
+      );
+    };
+    void primitives
+      .imageDataString(svg)
+      .then((dataUrl) => {
+        image.src = dataUrl;
+      })
+      .catch(reject);
+  });
+
+  return canvas;
+};
+
+const createPngBlob = async (canvas: PngCanvas): Promise<Blob> =>
+  new Promise((resolve, reject) => {
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("PNG encoding failed"));
+          return;
+        }
+        resolve(blob);
+      }, "image/png");
+    } catch (error) {
+      reject(error);
+    }
+  });
+
 export const downloadSvg = async (svg: HTMLElement, filename?: string) => {
   const downloadHref = await imageDataString(svg);
   saveWithAnchor(downloadHref, filename ?? "icon.svg");
 };
 
 export const downloadPng = async (svg: HTMLElement, filename?: string) => {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  const img = new Image();
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx?.drawImage(img, 0, 0);
-
-    const downloadHref = canvas.toDataURL("image/png");
-    saveWithAnchor(downloadHref, filename ?? "icon.png");
-  };
-  img.src = await imageDataString(svg);
+  const canvas = await createPngCanvas(svg);
+  const downloadHref = canvas.toDataURL("image/png");
+  saveWithAnchor(downloadHref, filename ?? "icon.png");
 };
 
 export const copySvg = async (svg: HTMLElement) => {
@@ -44,27 +115,11 @@ export const copySvg = async (svg: HTMLElement) => {
 };
 
 export const copyPng = async (svg: HTMLElement) => {
-  return new Promise<void>((resolve) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        // todo: add toast
-        resolve(
-          navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]),
-        );
-      }, "image/png");
-    };
-    void imageDataString(svg).then((dataUrl) => {
-      img.src = dataUrl;
-    });
-  });
+  const canvas = await createPngCanvas(svg);
+  const blob = await createPngBlob(canvas);
+  await navigator.clipboard.write([
+    new globalThis.ClipboardItem({ [blob.type]: blob }),
+  ]);
 };
 
 export const copyImageUrl = (
