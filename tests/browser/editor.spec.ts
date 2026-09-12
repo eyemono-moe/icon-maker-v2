@@ -86,6 +86,33 @@ test("serves HTML and generated images with security headers", async ({
   }
 });
 
+test("preserves generated image URL response contracts", async ({
+  request,
+}) => {
+  const routes = [
+    { path: "/image?f=svg", type: "image/svg+xml" },
+    { path: "/image.png?s=120x240", type: "image/png", dimensions: [120, 240] },
+    { path: "/image.svg", type: "image/svg+xml" },
+    { path: "/ogp", type: "image/png", dimensions: [1000, 525] },
+  ] as const;
+
+  for (const route of routes) {
+    const response = await request.get(route.path);
+
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain(route.type);
+    expect(response.headers()["cache-control"]).toBe(
+      "public, max-age=31536000",
+    );
+
+    if ("dimensions" in route) {
+      const body = await response.body();
+      expect(body.readUInt32BE(16)).toBe(route.dimensions[0]);
+      expect(body.readUInt32BE(20)).toBe(route.dimensions[1]);
+    }
+  }
+});
+
 test("rejects an invalid encoded icon state on image routes", async ({
   request,
 }) => {

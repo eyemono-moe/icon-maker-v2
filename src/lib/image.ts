@@ -1,4 +1,4 @@
-import sharp from "sharp";
+import { sharpPngEncoder } from "../image/sharp-png-encoder";
 import type { ImageQueryOutput } from "./imageQuerySchema";
 
 export const convertFromSvg = async (
@@ -9,28 +9,11 @@ export const convertFromSvg = async (
     square?: boolean;
   },
 ) => {
-  const image = sharp(Buffer.from(svg));
-
-  if (options?.square) {
-    const w = options?.size?.w ?? 400;
-    const h = options?.size?.h ?? w;
-    const min = Math.min(w, h);
-    image.resize(min, min).extend({
-      top: Math.floor((h - min) / 2),
-      bottom: Math.floor((h - min) / 2),
-      left: Math.floor((w - min) / 2),
-      right: Math.floor((w - min) / 2),
-      extendWith: "copy",
-    });
-  } else {
-    if (options?.size) {
-      image.resize(options?.size?.w, options?.size?.h);
-    }
-  }
-
   switch (format) {
     case "png": {
-      return await image.png().toBuffer();
+      const w = options?.size?.w ?? 400;
+      const h = options?.size?.h ?? w;
+      return sharpPngEncoder.encode(svg, { w, h, square: options?.square });
     }
     default:
       return svg;

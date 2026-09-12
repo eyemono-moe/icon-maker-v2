@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renderIconSvg > renders the normal icon as an optimized 400px SVG 2`] = `"<svg viewBox="0 0 400 400" width="400" height="400" xmlns="http://www.w3.org/2000/svg" fill="none" class="overflow-visible"><title>eyemono.moe icon</title><rect width="400" height="400" fill="#BBEE66"/><g transform="translate(0,0) rotate(0, 255, 365) rotate(0, 230, 310)"/></svg>"`;
