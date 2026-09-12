@@ -309,6 +309,52 @@ test("selects an icon part and records the state in the URL", async ({
   await expect(ponytail).toBeChecked();
 });
 
+test("saves the latest state with autosave disabled and explicit Save", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect.poll(() => page.url()).toContain("?p=");
+  const savedUrl = page.url();
+
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await page.getByRole("menuitemcheckbox", { name: "Auto save" }).click();
+  await page.getByRole("radio", { name: "Ponytail", exact: true }).check({
+    force: true,
+  });
+  await expect(page).toHaveURL(savedUrl);
+
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Save", exact: true }).click();
+  await expect.poll(() => page.url()).not.toBe(savedUrl);
+  await page.reload();
+  await expect(
+    page.getByRole("radio", { name: "Ponytail", exact: true }),
+  ).toBeChecked();
+});
+
+test("resumes autosave with the latest state after it is turned back on", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect.poll(() => page.url()).toContain("?p=");
+  const savedUrl = page.url();
+
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await page.getByRole("menuitemcheckbox", { name: "Auto save" }).click();
+  await page.getByRole("radio", { name: "Ponytail", exact: true }).check({
+    force: true,
+  });
+  await expect(page).toHaveURL(savedUrl);
+
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await page.getByRole("menuitemcheckbox", { name: "Auto save" }).click();
+  await expect.poll(() => page.url()).not.toBe(savedUrl);
+  await page.reload();
+  await expect(
+    page.getByRole("radio", { name: "Ponytail", exact: true }),
+  ).toBeChecked();
+});
+
 test("enables a derived color field when automatic color is disabled", async ({
   page,
 }) => {

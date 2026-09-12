@@ -4,6 +4,15 @@ type UrlPersistence = {
   cancel: () => void;
 };
 
+/** Read every store node so Solid tracks nested changes without encoding them. */
+export const trackStore = (value: unknown): void => {
+  if (value === null || typeof value !== "object") return;
+
+  for (const key of Object.keys(value)) {
+    trackStore((value as Record<string, unknown>)[key]);
+  }
+};
+
 export const createDebouncedUrlPersistence = (
   serialize: () => string,
   replaceUrl: (serialized: string) => void,

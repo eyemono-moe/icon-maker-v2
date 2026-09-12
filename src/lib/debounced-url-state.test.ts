@@ -1,5 +1,10 @@
+import { createRenderEffect, createRoot } from "solid-js";
+import { createStore } from "solid-js/store";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { createDebouncedUrlPersistence } from "./debounced-url-state";
+import {
+  createDebouncedUrlPersistence,
+  trackStore,
+} from "./debounced-url-state";
 
 describe("createDebouncedUrlPersistence", () => {
   beforeEach(() => {
@@ -47,5 +52,41 @@ describe("createDebouncedUrlPersistence", () => {
 
     expect(serialize).toHaveBeenCalledTimes(2);
     expect(replaceUrl).toHaveBeenCalledOnce();
+  });
+
+  test("tracks real nested store changes but encodes once with the latest state", () => {
+    const [state, setState] = createStore({
+      hair: { type: "short", baseColor: "#9940BB" },
+      background: "#BBEE66",
+    });
+    const encode = vi.fn((current: typeof state) => JSON.stringify(current));
+    const replaceUrl = vi.fn();
+    const persistence = createDebouncedUrlPersistence(
+      () => encode(state),
+      replaceUrl,
+      100,
+    );
+
+    createRoot((dispose) => {
+      createRenderEffect(() => {
+        trackStore(state);
+        persistence.schedule();
+      });
+      setState("hair", "type", "ponytail");
+      setState("hair", "baseColor", "#123456");
+      setState("background", "#abcdef");
+      vi.advanceTimersByTime(99);
+      expect(encode).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      dispose();
+    });
+
+    expect(encode).toHaveBeenCalledOnce();
+    expect(replaceUrl).toHaveBeenCalledWith(
+      JSON.stringify({
+        hair: { type: "ponytail", baseColor: "#123456" },
+        background: "#abcdef",
+      }),
+    );
   });
 });

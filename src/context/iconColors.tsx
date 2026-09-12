@@ -11,7 +11,6 @@ import { replaceState } from "history-throttled";
 import {
   type Setter,
   batch,
-  createMemo,
   createSignal,
   onCleanup,
   useContext,
@@ -31,7 +30,10 @@ import { mouthOptions } from "~/components/parts/mouth";
 import { type IconState, createDefaultIconState } from "~/domain/icon-state";
 import { decodeIconState, encodeIconState } from "~/domain/icon-state-codec";
 import type { Color } from "~/lib/color";
-import { createDebouncedUrlPersistence } from "~/lib/debounced-url-state";
+import {
+  createDebouncedUrlPersistence,
+  trackStore,
+} from "~/lib/debounced-url-state";
 import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
@@ -196,14 +198,13 @@ export const IconColorsProvider: ParentComponent<{
     }
   };
 
-  const serializedState = createMemo(() => encodeIconState(state));
   const replaceUrl = (serialized: string) => {
     const searchParams = new URLSearchParams();
     searchParams.set("p", serialized);
     replaceState("", "", `?${searchParams.toString()}`);
   };
   const urlPersistence = createDebouncedUrlPersistence(
-    () => serializedState(),
+    () => encodeIconState(state),
     replaceUrl,
     150,
   );
@@ -246,7 +247,7 @@ export const IconColorsProvider: ParentComponent<{
       urlPersistence.cancel();
       return;
     }
-    serializedState();
+    trackStore(state);
     urlPersistence.schedule();
   });
 
