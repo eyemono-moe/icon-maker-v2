@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
-    "build": "vinxi build",
+    "build": "vinxi build && pnpm check:bundle",
     "build:test": "vinxi build --preset node-server",
     "start": "vinxi start",
     "version": "vinxi version",
@@ -12,7 +12,8 @@
     "check": "biome check .",
     "fix": "biome check --write .",
     "fix:force": "biome check --write --unsafe .",
-    "type": "tsc --noEmit"
+    "type": "tsc --noEmit",
+    "check:bundle": "node scripts/check-bundle-size.mjs"
   },
   "dependencies": {
     "@ark-ui/solid": "4.10.2",

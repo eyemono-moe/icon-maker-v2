@@ -8,7 +8,14 @@ import {
   toHex,
 } from "color2k";
 import { replaceState } from "history-throttled";
-import { type Setter, batch, createSignal, useContext } from "solid-js";
+import {
+  type Setter,
+  batch,
+  createMemo,
+  createSignal,
+  onCleanup,
+  useContext,
+} from "solid-js";
 import {
   type ParentComponent,
   createContext,
@@ -24,6 +31,7 @@ import { mouthOptions } from "~/components/parts/mouth";
 import { type IconState, createDefaultIconState } from "~/domain/icon-state";
 import { decodeIconState, encodeIconState } from "~/domain/icon-state-codec";
 import type { Color } from "~/lib/color";
+import { createDebouncedUrlPersistence } from "~/lib/debounced-url-state";
 import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
@@ -188,11 +196,18 @@ export const IconColorsProvider: ParentComponent<{
     }
   };
 
-  const saveToUrl = () => {
+  const serializedState = createMemo(() => encodeIconState(state));
+  const replaceUrl = (serialized: string) => {
     const searchParams = new URLSearchParams();
-    searchParams.set("p", encodeIconState(state));
+    searchParams.set("p", serialized);
     replaceState("", "", `?${searchParams.toString()}`);
   };
+  const urlPersistence = createDebouncedUrlPersistence(
+    () => serializedState(),
+    replaceUrl,
+    150,
+  );
+  const saveToUrl = () => urlPersistence.saveNow();
   const loadFromUrl = () => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
@@ -225,8 +240,14 @@ export const IconColorsProvider: ParentComponent<{
   };
 
   onMount(loadFromUrl);
+  onCleanup(urlPersistence.cancel);
   createEffect(() => {
-    if (configs.autosave && typeof window !== "undefined") saveToUrl();
+    if (typeof window === "undefined" || !configs.autosave) {
+      urlPersistence.cancel();
+      return;
+    }
+    serializedState();
+    urlPersistence.schedule();
   });
 
   return (
