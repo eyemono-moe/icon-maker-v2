@@ -3,15 +3,18 @@
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
-    "build": "vinxi build && pnpm check:bundle",
+    "build": "vinxi build",
     "build:test": "vinxi build --preset node-server",
     "start": "vinxi start",
     "version": "vinxi version",
     "test": "vitest run",
     "test:browser": "playwright test",
-    "check": "biome check .",
-    "fix": "biome check --write .",
-    "fix:force": "biome check --write --unsafe .",
+    "check": "pnpm format:check && pnpm lint",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint . --deny-warnings",
+    "fix": "oxfmt . && oxlint . --fix --deny-warnings",
+    "fix:force": "oxfmt . && oxlint . --fix-dangerously --deny-warnings",
     "type": "tsc --noEmit",
     "check:bundle": "node scripts/check-bundle-size.mjs"
   },
@@ -35,19 +38,20 @@
     "valibot": "1.0.0-rc.1",
     "vinxi": "0.5.3"
   },
-  "engines": {
-    "node": ">=24.11.0"
-  },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
     "@iconify-json/material-symbols": "1.2.14",
     "@iconify-json/ri": "1.2.5",
     "@playwright/test": "1.63.0",
+    "oxfmt": "0.67.0",
+    "oxlint": "1.82.0",
     "rollup-plugin-visualizer": "5.14.0",
     "typescript": "5.7.3",
     "unocss": "66.0.0",
     "vite-plugin-solid": "2.11.2",
     "vitest": "4.1.11"
+  },
+  "engines": {
+    "node": ">=24.11.0"
   },
   "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
 }

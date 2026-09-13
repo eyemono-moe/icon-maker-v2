@@ -33,13 +33,14 @@ type IconTransforms = {
 
 type MinMax = [min: number, max: number];
 
-type RecursivelyApplyMinMax<T> = T extends Record<string, unknown>
-  ? {
-      [P in keyof T]: RecursivelyApplyMinMax<T[P]>;
-    }
-  : T extends number
-    ? MinMax
-    : T;
+type RecursivelyApplyMinMax<T> =
+  T extends Record<string, unknown>
+    ? {
+        [P in keyof T]: RecursivelyApplyMinMax<T[P]>;
+      }
+    : T extends number
+      ? MinMax
+      : T;
 
 type IconTransformMinMax = RecursivelyApplyMinMax<IconTransforms>;
 

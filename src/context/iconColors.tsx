@@ -48,9 +48,11 @@ type ComputedColor<T extends Record<string, unknown>> = Prettify<
     OmitUndefined<
       OmitNever<
         {
-          readonly [O in keyof OptionalProps<T> as `computed${Capitalize<
-            Extract<O, string>
-          >}`]-?: Color;
+          readonly [
+            O in keyof OptionalProps<T> as `computed${Capitalize<
+              Extract<O, string>
+            >}`
+          ]-?: Color;
         } & {
           [P in keyof T]: T[P] extends Record<string, unknown>
             ? ComputedColor<T[P]>

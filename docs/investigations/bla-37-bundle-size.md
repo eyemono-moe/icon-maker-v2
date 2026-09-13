@@ -4,16 +4,16 @@ Measurements use the production client build emitted by `pnpm build`. JavaScript
 sizes below are the minified, uncompressed sizes reported by Vite; the budget
 script measures the same files from the manifest in bytes.
 
-| Client graph | Before | After |
-| --- | ---: | ---: |
-| Editor entry (`index-*.js`) | 217.43 kB | 217.78 kB |
-| Shared runtime (`index-*.js`) | 30.53 kB | 30.53 kB |
-| Toast chunk | 68.03 kB | 68.03 kB |
-| Bootstrap-only JavaScript (`client-*.js` + HTTP status) | — | 21.21 kB |
-| SVGO chunk | 294.90 kB (initial) | — |
-| css-tree chunk | 358.70 kB (initial) | — |
-| Initial client JavaScript graph | 969.59 kB | 337,666 bytes |
-| Lazy SVG optimizer (SVGO + css-tree) | — | 664,905 bytes |
+| Client graph                                            |              Before |         After |
+| ------------------------------------------------------- | ------------------: | ------------: |
+| Editor entry (`index-*.js`)                             |           217.43 kB |     217.78 kB |
+| Shared runtime (`index-*.js`)                           |            30.53 kB |      30.53 kB |
+| Toast chunk                                             |            68.03 kB |      68.03 kB |
+| Bootstrap-only JavaScript (`client-*.js` + HTTP status) |                   — |      21.21 kB |
+| SVGO chunk                                              | 294.90 kB (initial) |             — |
+| css-tree chunk                                          | 358.70 kB (initial) |             — |
+| Initial client JavaScript graph                         |           969.59 kB | 337,666 bytes |
+| Lazy SVG optimizer (SVGO + css-tree)                    |                   — | 664,905 bytes |
 
 The initial graph no longer imports either `svgo` or `css-tree`; the optimizer
 is loaded only when SVG or PNG save/copy actions run. The remaining Vite

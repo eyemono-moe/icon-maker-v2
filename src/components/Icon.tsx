@@ -16,11 +16,13 @@ import { mouthOptions } from "./parts/mouth";
 export const iconSvgId = "icon-svg";
 
 export type SelectOptions = {
-  [K in keyof IconColorsContextState as IconColorsContextState[K] extends {
-    type: string;
-  }
-    ? K
-    : never]: IconColorsContextState[K] extends {
+  [
+    K in keyof IconColorsContextState as IconColorsContextState[K] extends {
+      type: string;
+    }
+      ? K
+      : never
+  ]: IconColorsContextState[K] extends {
     type: string;
   }
     ? IconColorsContextState[K]["type"]

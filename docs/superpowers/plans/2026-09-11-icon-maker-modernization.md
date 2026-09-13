@@ -24,6 +24,7 @@
 ### Task 1: 現行動作を固定するtest基盤
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 - Create: `vitest.config.ts`
@@ -32,6 +33,7 @@
 - Create: `tests/browser/editor.spec.ts`
 
 **Interfaces:**
+
 - Produces: `pnpm test`、`pnpm test:browser`、既存URLと編集操作のcharacterization test
 
 - [ ] Vitestでqueryのencode/decode round tripを固定するtestを書き、現状の境界条件で失敗することを確認する。
@@ -43,6 +45,7 @@
 ### Task 2: 直接依存の脆弱性と依存更新automation
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 - Modify: `.github/dependabot.yml`
@@ -54,6 +57,7 @@
 - Modify: `README.md`
 
 **Interfaces:**
+
 - Consumes: Task 1のtest commands
 - Produces: 修正版SharpとSVGO、Dependabot version updates、critical/high追加を拒否するDependency Review、HTMLと画像のsecurity headers
 
@@ -67,6 +71,7 @@
 ### Task 3: UI primitiveをArk UIへ統一
 
 **Files:**
+
 - Modify: `src/components/Settings.tsx`
 - Modify: `src/components/Header.tsx`
 - Modify: `src/components/Actions.tsx`
@@ -85,6 +90,7 @@
 - Modify: `tests/browser/editor.spec.ts`
 
 **Interfaces:**
+
 - Consumes: Task 1のbrowser test
 - Produces: Ark UIだけを使うTabs、Menu、Select、Radio Group、Checkbox、Field、Slider、Switch、Toast、Splitter
 
@@ -97,6 +103,7 @@
 ### Task 4: アイコン状態codecを分離して入力を制限
 
 **Files:**
+
 - Create: `src/domain/icon-state.ts`
 - Create: `src/domain/icon-state-codec.ts`
 - Create: `src/domain/icon-state-codec.test.ts`
@@ -109,6 +116,7 @@
 - Modify: `src/routes/ogp.tsx`
 
 **Interfaces:**
+
 - Produces: `type Result<T, E> = { ok: true; value: T } | { ok: false; error: E }`、`decodeIconState(input: string): Result<IconState, IconStateDecodeError>`、`encodeIconState(state: IconState): string`
 
 - [ ] 既定値、round trip、旧URL、不正schema、圧縮入力上限、展開後上限の失敗testを書く。
@@ -120,6 +128,7 @@
 ### Task 5: SVG rendererとPNG adapterを分離して画像routeを統合
 
 **Files:**
+
 - Create: `src/image/render-svg.tsx`
 - Create: `src/image/render-svg.test.tsx`
 - Create: `src/image/png-encoder.ts`
@@ -133,6 +142,7 @@
 - Modify: `src/routes/ogp.tsx`
 
 **Interfaces:**
+
 - Consumes: `IconState`
 - Produces: `renderIconSvg(state, options): string`、`PngEncoder.encode(svg, dimensions): Promise<Uint8Array>`、`createImageResponse(request, encoder): Promise<Response>`
 
@@ -145,10 +155,12 @@
 ### Task 6: 本番MediaPipeエラーを調査
 
 **Files:**
+
 - Create: `docs/investigations/mediapipe-production-error.md`
 - Modify: `src/context/faceDetect.tsx` only when diagnostic logging is required
 
 **Interfaces:**
+
 - Produces: 再現条件、browser console、network response、権限状態、端末情報、root cause、Task 7の決定済み修正方針
 
 - [ ] 本番URLでcamera起動を再現し、consoleとnetworkを記録する。
@@ -160,6 +172,7 @@
 ### Task 7: MediaPipe runtimeを修正してcleanupを保証
 
 **Files:**
+
 - Create: `src/camera/face-landmarker.ts`
 - Create: `src/camera/face-landmarker.test.ts`
 - Modify: `src/context/faceDetect.tsx`
@@ -169,6 +182,7 @@
 - Modify: `pnpm-lock.yaml`
 
 **Interfaces:**
+
 - Consumes: Task 6のroot cause
 - Produces: `FaceLandmarkerAdapter`、`CameraSession.start()`、`CameraSession.stop()`
 
@@ -181,6 +195,7 @@
 ### Task 8: 初期bundleと状態保存処理を軽量化
 
 **Files:**
+
 - Modify: `src/lib/saveImage.ts`
 - Modify: `src/lib/svg.ts`
 - Modify: `src/context/iconColors.tsx`
@@ -189,6 +204,7 @@
 - Create: `scripts/check-bundle-size.mjs`
 
 **Interfaces:**
+
 - Consumes: Task 4のcodec、Task 5のrenderer
 - Produces: 遅延読込されるSVG最適化、debounceされたURL保存、bundle budget check
 
@@ -201,12 +217,14 @@
 ### Task 9: Solid 2 RCとArk UIの互換性gate
 
 **Files:**
+
 - Create: `docs/investigations/solid-2-ark-ui-compatibility.md`
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 - Modify: `tests/browser/editor.spec.ts`
 
 **Interfaces:**
+
 - Consumes: Task 3のArk UI画面、Task 1のbrowser test
 - Produces: Solid 2採用可否、失敗時の最小reproduction、確定したversion matrix
 
@@ -219,10 +237,12 @@
 ### Task 10: Solid 2 RCとstart modeを保留
 
 **Files:**
+
 - Modify: `docs/superpowers/specs/2026-09-11-icon-maker-modernization-design.md`
 - Modify: `docs/superpowers/plans/2026-09-11-icon-maker-modernization.md`
 
 **Interfaces:**
+
 - Consumes: Task 9の不合格判定とSolid 1.9 fallback matrix
 - Produces: Solid 1.9とSolidStartを維持する判断、Solid 2再判定条件、残作業の更新済み依存関係
 
@@ -235,6 +255,7 @@
 ### Task 11: Vite+、Oxfmt、OxlintとCIへ移行
 
 **Files:**
+
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
 - Modify: `app.config.ts`
@@ -244,6 +265,7 @@
 - Modify: `README.md`
 
 **Interfaces:**
+
 - Consumes: Task 9のSolid 1.9維持判断と現行のSolidStart、Vinxi構成
 - Produces: Vite+の適合性判定、固定Node version、Oxfmt、Oxlint、共有installを使うCI、previewとproductionを分けたdeploy gate
 
@@ -256,6 +278,7 @@
 ### Task 12: Cloudflare Workers適合性を検証
 
 **Files:**
+
 - Create: `src/image/workers-png-encoder.ts`
 - Create: `tests/worker/image-contract.test.ts`
 - Create: `docs/investigations/cloudflare-workers-deployment.md`
@@ -264,6 +287,7 @@
 - Modify: `pnpm-lock.yaml`
 
 **Interfaces:**
+
 - Consumes: Task 5の`PngEncoder`とFetch response image handler、Task 10のSolid 1.9維持判断
 - Produces: 現行構成に対するCloudflare適合性、Workers用PNG adapter候補、CPU、memory、cold start測定、Cloudflare採用可否
 
@@ -277,6 +301,7 @@
 ### Task 13: 合格時だけCloudflareへ移行
 
 **Files:**
+
 - Modify: `vite.config.ts`
 - Create: `wrangler.jsonc`
 - Modify: `.github/workflows/*.yml`
@@ -284,6 +309,7 @@
 - Modify: `vercel.json`
 
 **Interfaces:**
+
 - Consumes: Task 12の合格判断とWorkers PNG adapter
 - Produces: Cloudflare previewとproduction deployment、Vercel rollback手順
 

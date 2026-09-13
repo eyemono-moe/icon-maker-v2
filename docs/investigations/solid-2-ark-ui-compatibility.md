@@ -12,24 +12,24 @@ Solid 1.9の構成を維持し、Ark UIがSolid 2を正式にサポートしたr
 
 Solid 2候補は、npm registryの`next` tagと各packageのpeer dependencyが一致する次の組み合わせに固定した。
 
-| package | 検証version | 根拠 |
-| --- | --- | --- |
-| `solid-js` | `2.0.0-rc.8` | npmの`next` tag |
-| `@solidjs/web` | `2.0.0-rc.8` | `solid-js`と同じRC |
+| package           | 検証version     | 根拠                                                                        |
+| ----------------- | --------------- | --------------------------------------------------------------------------- |
+| `solid-js`        | `2.0.0-rc.8`    | npmの`next` tag                                                             |
+| `@solidjs/web`    | `2.0.0-rc.8`    | `solid-js`と同じRC                                                          |
 | `@solidjs/router` | `2.0.0-next.24` | npmの`next` tag。peer dependencyは`solid-js`と`@solidjs/web`の`^2.0.0-rc.8` |
-| `@solidjs/meta` | `1.0.0-next.2` | npmの`next` tag。peer dependencyは`solid-js`と`@solidjs/web`の`^2.0.0-rc.0` |
-| `@ark-ui/solid` | `5.39.1` | npmの`latest` tag |
+| `@solidjs/meta`   | `1.0.0-next.2`  | npmの`next` tag。peer dependencyは`solid-js`と`@solidjs/web`の`^2.0.0-rc.0` |
+| `@ark-ui/solid`   | `5.39.1`        | npmの`latest` tag                                                           |
 
 Solid 2では`solid-js/web`が独立packageの`@solidjs/web`へ移ったため、両者を別項目としている。
 
 採用を見送ったため、productionは次の実動作確認済みmatrixを維持する。
 
-| package | production version |
-| --- | --- |
-| `solid-js`および`solid-js/web` subpath | `1.9.5` |
-| `@solidjs/router` | `0.15.3` |
-| `@solidjs/meta` | `0.29.4` |
-| `@ark-ui/solid` | `4.10.2` |
+| package                                | production version |
+| -------------------------------------- | ------------------ |
+| `solid-js`および`solid-js/web` subpath | `1.9.5`            |
+| `@solidjs/router`                      | `0.15.3`           |
+| `@solidjs/meta`                        | `0.29.4`           |
+| `@ark-ui/solid`                        | `4.10.2`           |
 
 ## Ark UIで再現した不互換
 
@@ -63,14 +63,14 @@ Solid 2候補はproduction buildに到達しないため、SSR、hydration、Por
 
 代わりにSolid 1.9のproduction buildに対して既存browser suiteを実行し、次を確認した。
 
-| 項目 | 結果 |
-| --- | --- |
-| SSR | response HTMLに`eyemono.svg`を確認 |
-| hydration mismatch | 0件 |
-| PortalおよびMenu | keyboard、hover、nested menuのtestが成功 |
-| Toast | SVG copy後のsuccess Toastが成功 |
-| history | URL保存、reload、undo、redoが成功 |
-| camera | device選択、permission、keyboard操作、error表示が成功 |
+| 項目               | 結果                                                  |
+| ------------------ | ----------------------------------------------------- |
+| SSR                | response HTMLに`eyemono.svg`を確認                    |
+| hydration mismatch | 0件                                                   |
+| PortalおよびMenu   | keyboard、hover、nested menuのtestが成功              |
+| Toast              | SVG copy後のsuccess Toastが成功                       |
+| history            | URL保存、reload、undo、redoが成功                     |
+| camera             | device選択、permission、keyboard操作、error表示が成功 |
 
 browser consoleではhydration mismatchは0件だったが、初期load時にCSPが`unsafe-eval`を拒否したerrorを1件記録した。
 

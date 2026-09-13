@@ -450,8 +450,9 @@ test("requests permission when the first camera enumeration resolves after mount
   page,
 }) => {
   await page.addInitScript(() => {
-    let resolveInitialEnumeration: (devices: MediaDeviceInfo[]) => void =
-      () => {};
+    let resolveInitialEnumeration: (
+      devices: MediaDeviceInfo[],
+    ) => void = () => {};
     const initialEnumeration = new Promise<MediaDeviceInfo[]>((resolve) => {
       resolveInitialEnumeration = resolve;
     });

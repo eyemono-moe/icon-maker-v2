@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/no-unassigned-vars": "off",
+    "eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "ignorePatterns": [
+    ".output/**",
+    ".solid/**",
+    ".vercel/**",
+    ".vinxi/**",
+    "dist/**",
+    "netlify/**",
+    "node_modules/**",
+    "playwright-report/**",
+    "stats.html",
+    "test-results/**"
+  ]
+}

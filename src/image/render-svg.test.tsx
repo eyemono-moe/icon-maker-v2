@@ -7,7 +7,7 @@ describe("renderIconSvg", () => {
     const svg = await renderIconSvg(createDefaultIconState());
 
     expect(svg.match(/^<svg [^>]+>/)?.[0]).toMatchInlineSnapshot(
-      `"<svg viewBox=\"0 0 400 400\" width=\"400\" height=\"400\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" class=\"overflow-visible\">"`,
+      `"<svg viewBox="0 0 400 400" width="400" height="400" xmlns="http://www.w3.org/2000/svg" fill="none" class="overflow-visible">"`,
     );
     expect(svg.match(/rotate\(0, 230, 310\)/g)).toHaveLength(2);
     expect(svg).toMatchSnapshot();
