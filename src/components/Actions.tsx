@@ -1,4 +1,5 @@
 import { Menu } from "@ark-ui/solid/menu";
+import { createHotkeys, detectPlatform } from "@tanstack/solid-hotkeys";
 import { type Component, createSignal, onCleanup, onMount } from "solid-js";
 import { Portal, isServer } from "solid-js/web";
 import { useIconColors } from "~/context/iconColors";
@@ -9,6 +10,11 @@ import {
   downloadPng,
   downloadSvg,
 } from "~/lib/saveImage";
+import {
+  type ShortcutPlatform,
+  commandShortcuts,
+  formatCommandShortcut,
+} from "~/lib/shortcuts";
 import { toast } from "~/lib/toast";
 import "../assets/menubar.css";
 import { iconSvgId } from "./Icon";
@@ -31,6 +37,8 @@ const Actions: Component = () => {
   ] = useIconColors();
   const [activeMenu, setActiveMenu] = createSignal<"file" | "edit">("file");
   const [openMenu, setOpenMenu] = createSignal<"file" | "edit" | null>(null);
+  const [shortcutPlatform, setShortcutPlatform] =
+    createSignal<ShortcutPlatform>("linux");
   let fileTrigger!: HTMLButtonElement;
   let editTrigger!: HTMLButtonElement;
   let fileContent!: HTMLDivElement;
@@ -103,7 +111,19 @@ const Actions: Component = () => {
     reset,
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
+  createHotkeys(
+    [
+      { hotkey: commandShortcuts.copySvg, callback: handleCopySvg },
+      { hotkey: commandShortcuts.copySvgUrl, callback: handleCopySvgUrl },
+      { hotkey: commandShortcuts.downloadSvg, callback: handleDownloadSvg },
+      { hotkey: commandShortcuts.undo, callback: undo },
+      { hotkey: commandShortcuts.redo, callback: redo },
+      { hotkey: commandShortcuts.randomize, callback: randomize },
+    ],
+    { ignoreInputs: true },
+  );
+
+  const handleMenuKeyDown = (event: KeyboardEvent) => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       const focusedElement = document.activeElement;
       const currentMenu =
@@ -134,34 +154,16 @@ const Actions: Component = () => {
         return;
       }
     }
-
-    if (event.ctrlKey && event.shiftKey && event.key === "C") {
-      event.preventDefault();
-      handleCopySvg();
-    }
-    if (event.ctrlKey && event.altKey && event.key === "c") {
-      event.preventDefault();
-      handleCopySvgUrl();
-    }
-    if (event.ctrlKey && event.shiftKey && event.key === "S") {
-      event.preventDefault();
-      handleDownloadSvg();
-    }
-    if (event.ctrlKey && event.key === "z") {
-      event.preventDefault();
-      undo();
-    }
-    if (event.ctrlKey && event.shiftKey && event.key === "Z") {
-      event.preventDefault();
-      redo();
-    }
   };
 
   onMount(() => {
-    if (!isServer) document.addEventListener("keydown", handleKeyDown, true);
+    setShortcutPlatform(detectPlatform());
+    if (!isServer)
+      document.addEventListener("keydown", handleMenuKeyDown, true);
   });
   onCleanup(() => {
-    if (!isServer) document.removeEventListener("keydown", handleKeyDown, true);
+    if (!isServer)
+      document.removeEventListener("keydown", handleMenuKeyDown, true);
   });
 
   return (
@@ -196,7 +198,9 @@ const Actions: Component = () => {
             <Menu.Content ref={fileContent} class={contentClass}>
               <Menu.Item class={itemClass} value="copy-svg">
                 Copy as SVG
-                <div class={itemRightSlot}>Ctrl + Shift + C</div>
+                <div class={itemRightSlot}>
+                  {formatCommandShortcut("copySvg", shortcutPlatform())}
+                </div>
               </Menu.Item>
               <Menu.Root
                 positioning={{ placement: "right-start", gutter: 4 }}
@@ -234,7 +238,12 @@ const Actions: Component = () => {
                     <Menu.Content class={contentClass}>
                       <Menu.Item class={itemClass} value="download-svg">
                         Download as SVG
-                        <div class={itemRightSlot}>Ctrl + Shift + S</div>
+                        <div class={itemRightSlot}>
+                          {formatCommandShortcut(
+                            "downloadSvg",
+                            shortcutPlatform(),
+                          )}
+                        </div>
                       </Menu.Item>
                       <Menu.Item class={itemClass} value="download-png">
                         Download as PNG
@@ -259,7 +268,12 @@ const Actions: Component = () => {
                     <Menu.Content class={contentClass}>
                       <Menu.Item class={itemClass} value="copy-svg-url">
                         Copy SVG url
-                        <div class={itemRightSlot}>Ctrl + Alt + C</div>
+                        <div class={itemRightSlot}>
+                          {formatCommandShortcut(
+                            "copySvgUrl",
+                            shortcutPlatform(),
+                          )}
+                        </div>
                       </Menu.Item>
                       <Menu.Item class={itemClass} value="copy-png-url">
                         Copy PNG url
@@ -303,11 +317,15 @@ const Actions: Component = () => {
             <Menu.Content ref={editContent} class={contentClass}>
               <Menu.Item class={itemClass} value="undo">
                 Undo
-                <div class={itemRightSlot}>Ctrl + Z</div>
+                <div class={itemRightSlot}>
+                  {formatCommandShortcut("undo", shortcutPlatform())}
+                </div>
               </Menu.Item>
               <Menu.Item class={itemClass} value="redo">
                 Redo
-                <div class={itemRightSlot}>Ctrl + Shift + Z</div>
+                <div class={itemRightSlot}>
+                  {formatCommandShortcut("redo", shortcutPlatform())}
+                </div>
               </Menu.Item>
               <Menu.Separator class={separatorClass} />
               <Menu.Item
@@ -331,6 +349,9 @@ const Actions: Component = () => {
               <Menu.Separator class={separatorClass} />
               <Menu.Item class={itemClass} value="randomize">
                 Randomize
+                <div class={itemRightSlot}>
+                  {formatCommandShortcut("randomize", shortcutPlatform())}
+                </div>
               </Menu.Item>
               <Menu.Separator class={separatorClass} />
               <Menu.Item class={itemClass} value="reset">

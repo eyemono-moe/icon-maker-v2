@@ -32,6 +32,9 @@ importers:
       '@solidjs/start':
         specifier: 1.1.1
         version: 1.1.1(solid-js@1.9.5)(vinxi@0.5.3(@types/node@22.13.5)(db0@0.2.4)(ioredis@5.5.0)(jiti@2.4.2)(terser@5.39.0)(tsx@4.19.3)(typescript@5.7.3))(vite@6.1.1(@types/node@22.13.5)(jiti@2.4.2)(terser@5.39.0)(tsx@4.19.3))
+      '@tanstack/solid-hotkeys':
+        specifier: 0.10.0
+        version: 0.10.0(solid-js@1.9.5)
       '@unocss/reset':
         specifier: 66.0.0
         version: 66.0.0
@@ -1304,6 +1307,10 @@ packages:
     resolution: {integrity: sha512-eAK+8tGl+ZZimROdnuHoAc1MVKvmQWh7WTQbh531607NQAuD/7TgbTAiSBfTJYW8qeGovrSp/qq+dnhjqTy3xQ==}
     engines: {node: '>=12'}
 
+  '@tanstack/hotkeys@0.8.0':
+    resolution: {integrity: sha512-vqH7X9nb0MTJ/O08++dB5bP9jgj4+BIPOUu/U+6myG86lDsirZSVSobpq5UQpE7nBuk62i8eIYeOhd+OMl/UrA==}
+    engines: {node: '>=18'}
+
   '@tanstack/router-utils@1.102.2':
     resolution: {integrity: sha512-Uwl2nbrxhCzviaHHBLNPhSC/OMpZLdOTxTJndUSsXTzWUP4IoQcVmngaIsxi9iriE3ArC1VXuanUAkfGmimNOQ==}
     engines: {node: '>=12'}
@@ -1311,6 +1318,20 @@ packages:
   '@tanstack/server-functions-plugin@1.106.0':
     resolution: {integrity: sha512-uFqiICV0b9t7jluQLroUt9/2PayEKu4hWTS5nezWsW8kNaK0Pw4avdLK+8mYjYuJLBhuQrQZ/mSEMqdJYgYv0Q==}
     engines: {node: '>=12'}
+
+  '@tanstack/solid-hotkeys@0.10.0':
+    resolution: {integrity: sha512-jThxkZMt1ShaQ/ynvyzHfwdbl15gTxJWXnQtbHuRHrzYFvuBB5fx4+D0jKQJ3sSq6XN3HwB3f9cVI0na5rN+Bw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      solid-js: '>=1.7.0'
+
+  '@tanstack/solid-store@0.11.1':
+    resolution: {integrity: sha512-wzJsiqqLHyQacqbYPT8dKNfhR00NNu743vGeWz2lEpOyE/R+6AYIfFLhXsCIT/Kb+KKiT1KDkB2/35DhLEGx8g==}
+    peerDependencies:
+      solid-js: ^1.6.0
+
+  '@tanstack/store@0.11.1':
+    resolution: {integrity: sha512-mzTOBhypOuDJAy/D8n2MfUZ1HFkXnmSETviRyhqEC8LUE7/IZQExOTxMANj3KjTofYTkFNpBY67qaVrT41YccA==}
 
   '@types/babel__code-frame@7.0.6':
     resolution: {integrity: sha512-Anitqkl3+KrzcW2k77lRlg/GfLZLWXBuNgbEcIOU6M92yw42vsd3xV/Z/yAHEj8m+KUjL6bWOVOFqX8PFPJ4LA==}
@@ -4779,6 +4800,10 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
+  '@tanstack/hotkeys@0.8.0':
+    dependencies:
+      '@tanstack/store': 0.11.1
+
   '@tanstack/router-utils@1.102.2':
     dependencies:
       '@babel/generator': 7.26.9
@@ -4806,6 +4831,19 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
+
+  '@tanstack/solid-hotkeys@0.10.0(solid-js@1.9.5)':
+    dependencies:
+      '@tanstack/hotkeys': 0.8.0
+      '@tanstack/solid-store': 0.11.1(solid-js@1.9.5)
+      solid-js: 1.9.5
+
+  '@tanstack/solid-store@0.11.1(solid-js@1.9.5)':
+    dependencies:
+      '@tanstack/store': 0.11.1
+      solid-js: 1.9.5
+
+  '@tanstack/store@0.11.1': {}
 
   '@types/babel__code-frame@7.0.6': {}
 

@@ -560,17 +560,186 @@ test("shows a retryable error when camera permission is denied", async ({
   ).toBeVisible();
 });
 
-test("undoes and redoes a color change", async ({ page }) => {
+test("does not intercept native undo in a color input", async ({ page }) => {
   await page.goto("/");
   const color = page.locator('input[type="color"]').first();
-  const initialColor = await color.inputValue();
 
   await color.fill("#123456");
   await expect(color).toHaveValue("#123456");
+  await color.evaluate((input) => {
+    input.addEventListener("keydown", (event) => {
+      input.dataset.undoDefaultPrevented = String(event.defaultPrevented);
+    });
+  });
 
-  await page.keyboard.press("Control+z");
-  await expect(color).toHaveValue(initialColor);
+  await page.keyboard.press("Control+Z");
+
+  await expect(color).toHaveAttribute("data-undo-default-prevented", "false");
+  await expect(color).toHaveValue("#123456");
+});
+
+test("runs Undo and Redo from their application shortcuts", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const initialHair = page.getByRole("radio", {
+    name: "Default",
+    exact: true,
+  });
+  const ponytail = page.getByRole("radio", {
+    name: "Ponytail",
+    exact: true,
+  });
+
+  await ponytail.check({ force: true });
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).focus();
+  await page.keyboard.press("Control+Z");
+  await expect(initialHair).toBeChecked();
 
   await page.keyboard.press("Control+Shift+Z");
-  await expect(color).toHaveValue("#123456");
+  await expect(ponytail).toBeChecked();
+});
+
+test("runs file commands from their application shortcuts", async ({
+  context,
+  page,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+
+  await page.keyboard.press("Control+Shift+C");
+  await expect(page.getByText("copied as SVG!", { exact: true })).toBeVisible();
+
+  await page.keyboard.press("Control+Alt+C");
+  await expect(
+    page.getByText("copied SVG url!", { exact: true }),
+  ).toBeVisible();
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.keyboard.press("Control+Shift+S");
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("icon.svg");
+});
+
+test("randomizes the icon with a non-reload shortcut", async ({ page }) => {
+  await page.goto("/");
+  const icon = page.locator("#icon-svg");
+  const initialIcon = await icon.innerHTML();
+
+  await page.keyboard.press("Control+Shift+L");
+
+  await expect.poll(() => icon.innerHTML()).not.toBe(initialIcon);
+});
+
+test("shows centralized platform shortcut labels in the menus", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page.getByRole("menuitem", { name: "File", exact: true }).click();
+  await expect(
+    page.getByRole("menuitem", { name: "Copy as SVG Ctrl + Shift + C" }),
+  ).toBeVisible();
+  await page.getByRole("menuitem", { name: "Download as..." }).hover();
+  await expect(
+    page.getByRole("menuitem", {
+      name: "Download as SVG Ctrl + Shift + S",
+    }),
+  ).toBeVisible();
+  await page.getByRole("menuitem", { name: "Share" }).hover();
+  await expect(
+    page.getByRole("menuitem", { name: "Copy SVG url Ctrl + Alt + C" }),
+  ).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await expect(
+    page.getByRole("menuitem", { name: "Undo Ctrl + Z" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: "Redo Ctrl + Shift + Z" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("menuitem", { name: "Randomize Ctrl + Shift + L" }),
+  ).toBeVisible();
+});
+
+test("does not run application shortcuts from editable elements", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const ponytail = page.getByRole("radio", {
+    name: "Ponytail",
+    exact: true,
+  });
+  await ponytail.check({ force: true });
+  await page.evaluate(() => {
+    const container = document.createElement("div");
+    container.innerHTML = [
+      '<input data-editable="text" type="text" value="editable">',
+      '<textarea data-editable="textarea">editable</textarea>',
+      '<select data-editable="select"><option>editable</option></select>',
+      '<div data-editable="contenteditable" contenteditable="true">editable</div>',
+      '<input data-editable="color" type="color" value="#123456">',
+    ].join("");
+    document.body.append(container);
+  });
+  const icon = page.locator("#icon-svg");
+  const initialIcon = await icon.innerHTML();
+
+  for (const editable of [
+    "text",
+    "textarea",
+    "select",
+    "contenteditable",
+    "color",
+  ]) {
+    await page.locator(`[data-editable="${editable}"]`).focus();
+    await page.keyboard.press("Control+Z");
+    await expect(ponytail).toBeChecked();
+    await page.keyboard.press("Control+Shift+L");
+    expect(await icon.innerHTML()).toBe(initialIcon);
+  }
+});
+
+test("preserves native text undo", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.setAttribute("aria-label", "native undo field");
+    input.value = "editable";
+    document.body.append(input);
+  });
+  const input = page.getByRole("textbox", { name: "native undo field" });
+
+  await input.focus();
+  await page.keyboard.press("End");
+  await page.keyboard.type(" updated");
+  await expect(input).toHaveValue("editable updated");
+
+  await page.keyboard.press("Control+Z");
+  await expect(input).toHaveValue("editable");
+});
+
+test("uses Command shortcuts and labels on macOS", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "platform", {
+      configurable: true,
+      value: "MacIntel",
+    });
+  });
+  await page.goto("/");
+  const icon = page.locator("#icon-svg");
+  const initialIcon = await icon.innerHTML();
+
+  await page.keyboard.press("Meta+Shift+L");
+  await expect.poll(() => icon.innerHTML()).not.toBe(initialIcon);
+
+  await page.getByRole("menuitem", { name: "Edit", exact: true }).click();
+  await expect(
+    page.getByRole("menuitem", {
+      name: "Randomize Command + Shift + L",
+    }),
+  ).toBeVisible();
 });
