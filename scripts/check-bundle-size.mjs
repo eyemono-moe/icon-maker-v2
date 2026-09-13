@@ -4,6 +4,7 @@ import { pathToFileURL } from "node:url";
 
 const INITIAL_JS_BUDGET = 400_000;
 const LAZY_SVG_OPTIMIZER_BUDGET = 700_000;
+const BOOTSTRAP_KEY = "virtual:$vinxi/handler/client";
 const ROUTE_ENTRY_PREFIX = "src/routes/index.tsx?";
 const SVG_OPTIMIZER_KEY = "src/lib/svg-optimize.ts";
 const FORBIDDEN_INITIAL_MODULE = /(?:^|\/)(?:svgo|css-tree)(?:@|\/|$)/i;
@@ -39,12 +40,24 @@ export const analyzeBundle = async (clientBuildDir) => {
   const entries = Object.entries(manifest);
   const metadataByKey = new Map(entries);
 
+  const bootstrapEntry = findUniqueEntry(
+    entries,
+    (key) => key === BOOTSTRAP_KEY,
+    "client bootstrap manifest entry",
+  );
+  const [bootstrapKey, bootstrapMetadata] = bootstrapEntry;
+
   const routeEntry = findUniqueEntry(
     entries,
     (_key, value) => value.isEntry && value.src?.startsWith(ROUTE_ENTRY_PREFIX),
     "client route entry",
   );
   const [entryKey] = routeEntry;
+  if (!bootstrapMetadata.dynamicImports?.includes(entryKey)) {
+    throw new Error(
+      "Client index route is not reachable from bootstrap dynamic imports",
+    );
+  }
 
   const optimizerEntry = findUniqueEntry(
     entries,
@@ -69,6 +82,7 @@ export const analyzeBundle = async (clientBuildDir) => {
     initialKeys.add(key);
     for (const importedKey of metadata.imports ?? []) visit(importedKey);
   };
+  visit(bootstrapKey);
   visit(entryKey);
 
   const sizes = await Promise.all(
@@ -108,6 +122,7 @@ export const analyzeBundle = async (clientBuildDir) => {
   }
 
   return {
+    bootstrapKey,
     entryKey,
     initialJs,
     initialJsBytes,
