@@ -84,9 +84,21 @@ Ark UIで回避不能な不具合を確認した場合はSolid 1.9を維持し�
 
 Solid 2へ進めない場合も、UI統一、状態moduleの分離、脆弱性修正、性能改善は完了させる。
 
+2026年9月13日の互換性gateでは、`@ark-ui/solid@5.39.1`がSolid 2で削除された`solid-js`の`JSX` exportと`solid-js/web` subpathに依存していた。
+
+型検査とproduction buildが失敗したため、productionは`solid-js@1.9.5`と`@ark-ui/solid@4.10.2`を維持する。
+
+Solid 2とArk UIの互換性を再判定するまで、Solid 1.9上で実行できる残作業を継続する。
+
 ### start mode
 
 Solid 2の互換性確認後にSolidStartとVinxiを削除し、`@solidjs/vite-plugin`のstart modeへ移行する。
+
+互換性gateが不合格である間は、SolidStartとVinxiを維持する。
+
+Solid 1.9のままstart modeだけを導入する変更は行わない。
+
+その理由は、start modeがSolid 2への移行単位に含まれており、Solid 1.9上で別のapplication frameworkとして導入する検証結果がないためである。
 
 アプリケーションはSSRを維持する。
 
@@ -110,6 +122,12 @@ Cloudflareへの移行は、start modeへの移行とは別の決定として扱
 - DNS切替後にVercelへ戻せる手順を用意する。
 
 PNG adapterが条件を満たさない場合はCloudflare移行を保留し、Vercelでの配信を維持する。
+
+Cloudflare適合性の検証は、Solid 2とstart modeの採用を前提にしない。
+
+現行のSolidStartとVinxiからCloudflare公式Vite pluginを利用できない場合は、無理にproduction構成へ組み込まず、不適合の理由と代替経路を調査記録へ残す。
+
+この場合もVercelを維持し、Cloudflareへの本番移行は行わない。
 
 ## 性能改善
 
@@ -196,12 +214,11 @@ Cloudflare検証ではWorkersのローカルruntimeとpreview環境に対して�
 9. 原因に応じてMediaPipeの読み込み、配信、lifecycleを改善する。
 10. SVGOを初期bundleから分離する。
 11. Solid 2 RCとArk UIの互換性を検証する。
-12. 合格した場合はSolid 2 RCへ移行する。
-13. SolidStartとVinxiをstart modeへ置き換える。
-14. Vite+、Oxfmt、Oxlintへ移行する。
-15. Cloudflare Workers上のPNG adapterを検証する。
-16. 合格した場合はCloudflareへdeployする。
-17. CI、依存更新、セキュリティ検査、文書を更新する。
+12. 不合格の場合はSolid 1.9とSolidStartを維持し、Solid 2とstart modeを保留する。
+13. 現行構成でVite+の適合性を検証し、Oxfmt、Oxlint、CIを移行する。
+14. Cloudflare Workers上のSSRとPNG adapterを検証する。
+15. 合格した場合はCloudflareへdeployする。
+16. CI、依存更新、セキュリティ検査、文書を更新する。
 
 各段階は単独でtest、型検査、buildを通し、次の段階へ進める状態で完了させる。
 

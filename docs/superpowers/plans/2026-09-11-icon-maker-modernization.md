@@ -216,57 +216,42 @@
 - [ ] version matrix、結果、採用またはSolid 1.9維持の判断を文書化する。
 - [ ] `docs: record Solid 2 compatibility gate`としてcommitする。
 
-### Task 10: Solid 2 RCとstart modeへ移行
+### Task 10: Solid 2 RCとstart modeを保留
 
 **Files:**
-- Modify: `package.json`
-- Modify: `pnpm-lock.yaml`
-- Replace: `app.config.ts` with `vite.config.ts`
-- Modify: `src/app.tsx`
-- Modify: `src/entry-client.tsx`
-- Modify: `src/entry-server.tsx`
-- Modify: `src/routes/index.tsx`
-- Modify: `src/routes/image.tsx`
-- Modify: `src/routes/ogp.tsx`
-- Modify: `src/routes/[...404].tsx`
-- Modify: `src/components/MainView.tsx`
-- Modify: `src/components/IconWrapper.tsx`
-- Modify: `src/components/ShowOnMount.tsx`
-- Modify: `src/components/UI/Button.tsx`
-- Modify: `src/components/UI/ColorField.tsx`
-- Modify: `src/context/iconColors.tsx`
-- Modify: `src/context/iconTransforms.tsx`
-- Modify: `src/context/faceDetect.tsx`
+- Modify: `docs/superpowers/specs/2026-09-11-icon-maker-modernization-design.md`
+- Modify: `docs/superpowers/plans/2026-09-11-icon-maker-modernization.md`
 
 **Interfaces:**
-- Consumes: Task 9の合格version matrix、Task 5のFetch response image handler
-- Produces: `solid({ start: true })`を使うSSR applicationとfilesystem routing
+- Consumes: Task 9の不合格判定とSolid 1.9 fallback matrix
+- Produces: Solid 1.9とSolidStartを維持する判断、Solid 2再判定条件、残作業の更新済み依存関係
 
-- [ ] Task 9が合格していることを確認し、Solid packagesを確定versionへ更新する。
-- [ ] SolidStartとVinxiを削除し、start modeのSSR entryとroutingへ置き換える。
-- [ ] `batch`、effect、store setter、`classList`などSolid 2非互換箇所を移行する。
-- [ ] 全test、型検査、buildと既存画像URLのcontract testを実行する。
-- [ ] `feat: migrate application to Solid 2 start mode`としてcommitする。
+- [ ] Task 9の型検査とproduction buildの失敗を確認する。
+- [ ] productionを`solid-js@1.9.5`と`@ark-ui/solid@4.10.2`に維持する。
+- [ ] SolidStartとVinxiの削除をArk UIのSolid 2対応releaseまで保留する。
+- [ ] Solid 2再判定条件と残作業を止めない判断を文書化する。
+- [ ] `docs: retain Solid 1 after compatibility gate`としてcommitする。
 
 ### Task 11: Vite+、Oxfmt、OxlintとCIへ移行
 
 **Files:**
 - Modify: `package.json`
 - Modify: `pnpm-lock.yaml`
-- Modify: `vite.config.ts`
+- Modify: `app.config.ts`
+- Create: `vite.config.ts` only when Vite+ can own the production build
 - Replace: `biome.json` with Oxfmt and Oxlint configuration
 - Modify: `.github/workflows/*.yml`
 - Modify: `README.md`
 
 **Interfaces:**
-- Consumes: Task 10のVite 8以上の構成
-- Produces: 固定Node version、`vp check`、共有installを使うCI、previewとproductionを分けたdeploy gate
+- Consumes: Task 9のSolid 1.9維持判断と現行のSolidStart、Vinxi構成
+- Produces: Vite+の適合性判定、固定Node version、Oxfmt、Oxlint、共有installを使うCI、previewとproductionを分けたdeploy gate
 
-- [ ] NodeをVite+要件へ固定し、Vite+ migrationをdry runする。
-- [ ] formatとlintをOxfmtとOxlintへ移し、Biomeを削除する。
+- [ ] 現行のSolidStartとVinxiに対してVite+ migrationをdry runし、Vite versionとbuild ownershipの互換性を記録する。
+- [ ] Vite+が現行buildを実行できる場合だけ`vp check`、test、buildへ移行する。
+- [ ] Vite+が不適合でもformatとlintをOxfmtとOxlintへ移し、Biomeを削除する。
 - [ ] CIをinstall、check、test、buildの順に整理し、成果物をjob間で再利用する。
-- [ ] localとCI相当の`vp check`、test、buildを実行する。
-- [ ] `chore: migrate toolchain to Vite Plus`としてcommitする。
+- [ ] localとCI相当のcheck、test、buildを実行し、`chore: modernize toolchain on Solid 1`としてcommitする。
 
 ### Task 12: Cloudflare Workers適合性を検証
 
@@ -279,10 +264,11 @@
 - Modify: `pnpm-lock.yaml`
 
 **Interfaces:**
-- Consumes: Task 5の`PngEncoder`、Task 10のFetch handler
-- Produces: Workers用PNG adapter候補、CPU、memory、cold start測定、Cloudflare採用可否
+- Consumes: Task 5の`PngEncoder`とFetch response image handler、Task 10のSolid 1.9維持判断
+- Produces: 現行構成に対するCloudflare適合性、Workers用PNG adapter候補、CPU、memory、cold start測定、Cloudflare採用可否
 
-- [ ] Cloudflare Vite pluginとlocal Workers runtimeでSSRを起動する。
+- [ ] Cloudflare Vite pluginと現行のSolidStart、Vinxi構成の互換性を検証する。
+- [ ] 互換な場合だけlocal Workers runtimeでSSRを起動する。不適合の場合は理由と代替経路を記録する。
 - [ ] Sharp代替adapterで画像route contract testを実行する。
 - [ ] PNG寸法、Content-Type、cache、CPU、memory、cold startを測定する。
 - [ ] 採用条件ごとの結果とVercel継続を含む判断を文書化する。
@@ -315,7 +301,7 @@
 4. Task 6の後にTask 7を実施する。
 5. Task 8はTask 4とTask 5の後に実施する。
 6. Task 9はTask 3の後に実施する。
-7. Task 10はTask 5、Task 7、Task 9の合格後に実施する。
-8. Task 11はTask 10の後に実施する。
-9. Task 12はTask 5とTask 10の後に実施する。
+7. Task 10はTask 9が不合格の場合に、Solid 1.9 fallbackの確定作業として実施する。
+8. Task 11はTask 9の判定後に実施し、Task 10のSolid 1.9維持判断を引き継ぐ。
+9. Task 12はTask 5とTask 9の判定後に実施し、Solid 2またはstart modeを前提にしない。
 10. Task 13はTask 12が合格した場合だけ実施する。
