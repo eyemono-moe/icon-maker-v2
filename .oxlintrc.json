@@ -4,7 +4,6 @@
     "correctness": "error"
   },
   "rules": {
-    "eslint/no-unassigned-vars": "off",
     "eslint/no-unused-vars": [
       "error",
       {

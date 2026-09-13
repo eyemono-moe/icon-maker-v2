@@ -9,13 +9,14 @@
     "version": "vinxi version",
     "test": "vitest run",
     "test:browser": "playwright test",
-    "check": "pnpm format:check && pnpm lint",
+    "check": "pnpm format:check && pnpm lint && pnpm check:workflow",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint . --deny-warnings",
     "fix": "oxfmt . && oxlint . --fix --deny-warnings",
     "fix:force": "oxfmt . && oxlint . --fix-dangerously --deny-warnings",
     "type": "tsc --noEmit",
+    "check:workflow": "node scripts/check-ci-workflow.mjs",
     "check:bundle": "node scripts/check-bundle-size.mjs"
   },
   "dependencies": {

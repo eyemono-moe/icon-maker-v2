@@ -179,7 +179,7 @@ const Actions: Component = () => {
         onSelect={(details) => fileActions[details.value]?.()}
       >
         <Menu.Trigger
-          ref={fileTrigger}
+          ref={(element) => (fileTrigger = element)}
           role="menuitem"
           tabIndex={activeMenu() === "file" ? 0 : -1}
           onFocus={() => setActiveMenu("file")}
@@ -195,7 +195,10 @@ const Actions: Component = () => {
         </Menu.Trigger>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content ref={fileContent} class={contentClass}>
+            <Menu.Content
+              ref={(element) => (fileContent = element)}
+              class={contentClass}
+            >
               <Menu.Item class={itemClass} value="copy-svg">
                 Copy as SVG
                 <div class={itemRightSlot}>
@@ -298,7 +301,7 @@ const Actions: Component = () => {
         onSelect={(details) => editActions[details.value]?.()}
       >
         <Menu.Trigger
-          ref={editTrigger}
+          ref={(element) => (editTrigger = element)}
           role="menuitem"
           tabIndex={activeMenu() === "edit" ? 0 : -1}
           onFocus={() => setActiveMenu("edit")}
@@ -314,7 +317,10 @@ const Actions: Component = () => {
         </Menu.Trigger>
         <Portal>
           <Menu.Positioner>
-            <Menu.Content ref={editContent} class={contentClass}>
+            <Menu.Content
+              ref={(element) => (editContent = element)}
+              class={contentClass}
+            >
               <Menu.Item class={itemClass} value="undo">
                 Undo
                 <div class={itemRightSlot}>
