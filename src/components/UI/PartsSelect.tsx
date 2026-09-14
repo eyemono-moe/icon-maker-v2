@@ -1,5 +1,5 @@
 import { RadioGroup } from "@ark-ui/solid/radio-group";
-import { For, type JSX, Suspense, createUniqueId } from "solid-js";
+import { For, type JSX, Show, Suspense, createUniqueId } from "solid-js";
 import type { PartsComponent } from "../Icon";
 import Button from "./Button";
 import LoadingSpinner from "./Loading";
@@ -17,6 +17,7 @@ type Props<T extends string> = {
   onChange: (value: T) => void;
   previewViewBox?: string;
   onReset?: () => void;
+  onRandom?: () => void;
 };
 
 const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
@@ -33,6 +34,11 @@ const PartsSelect = <T extends string>(props: Props<T>): JSX.Element => {
         <Button variant="secondary" type="button" onClick={props.onReset}>
           Reset
         </Button>
+        <Show when={props.onRandom}>
+          <Button variant="secondary" type="button" onClick={props.onRandom}>
+            Random
+          </Button>
+        </Show>
       </div>
       <div class="grid grid-cols-minmax-100px gap-1">
         <For each={props.options}>

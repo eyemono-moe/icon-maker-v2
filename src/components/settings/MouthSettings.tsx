@@ -5,7 +5,8 @@ import PartsSelect from "../UI/PartsSelect";
 import { mouthOptions } from "../parts/mouth";
 
 const MouthSettings: Component = () => {
-  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
+  const [iconColors, { setColors, computeColors, reset, randomizeValue }] =
+    useIconColors();
 
   return (
     <>
@@ -20,6 +21,9 @@ const MouthSettings: Component = () => {
         onReset={() => {
           reset("mouth", "type");
         }}
+        onRandom={() => {
+          randomizeValue("mouth", "type");
+        }}
       />
       <ColorField
         label="line color"
@@ -29,6 +33,9 @@ const MouthSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("mouth", "strokeColor");
+        }}
+        onRandom={() => {
+          randomizeValue("mouth", "strokeColor");
         }}
       />
       <ColorField
@@ -40,6 +47,9 @@ const MouthSettings: Component = () => {
         onReset={() => {
           reset("mouth", "insideColor");
         }}
+        onRandom={() => {
+          randomizeValue("mouth", "insideColor");
+        }}
       />
       <ColorField
         label="teeth color"
@@ -49,6 +59,9 @@ const MouthSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("mouth", "teethColor");
+        }}
+        onRandom={() => {
+          randomizeValue("mouth", "teethColor");
         }}
       />
     </>

@@ -3,7 +3,8 @@ import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
 
 const SkinSettings: Component = () => {
-  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
+  const [iconColors, { setColors, computeColors, reset, randomizeValue }] =
+    useIconColors();
 
   return (
     <>
@@ -13,6 +14,9 @@ const SkinSettings: Component = () => {
         setColor={(color) => setColors("head", "baseColor", color)}
         onReset={() => {
           reset("head", "baseColor");
+        }}
+        onRandom={() => {
+          randomizeValue("head", "baseColor");
         }}
       />
       <ColorField
@@ -24,6 +28,9 @@ const SkinSettings: Component = () => {
         onReset={() => {
           reset("head", "shadowColor");
         }}
+        onRandom={() => {
+          randomizeValue("head", "shadowColor");
+        }}
       />
       <ColorField
         label="line color"
@@ -33,6 +40,9 @@ const SkinSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("head", "strokeColor");
+        }}
+        onRandom={() => {
+          randomizeValue("head", "strokeColor");
         }}
       />
     </>

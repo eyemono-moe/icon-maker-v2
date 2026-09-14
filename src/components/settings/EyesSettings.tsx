@@ -6,7 +6,8 @@ import { eyebrowsOptions } from "../parts/eyebrows";
 import { eyesOptions } from "../parts/eyes";
 
 const EyesSettings: Component = () => {
-  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
+  const [iconColors, { setColors, computeColors, reset, randomizeValue }] =
+    useIconColors();
 
   return (
     <>
@@ -21,6 +22,9 @@ const EyesSettings: Component = () => {
         onReset={() => {
           reset("eyebrows", "type");
         }}
+        onRandom={() => {
+          randomizeValue("eyebrows", "type");
+        }}
       />
       <ColorField
         label="eyebrow color"
@@ -30,6 +34,9 @@ const EyesSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("eyebrows", "baseColor");
+        }}
+        onRandom={() => {
+          randomizeValue("eyebrows", "baseColor");
         }}
       />
       <PartsSelect
@@ -43,6 +50,9 @@ const EyesSettings: Component = () => {
         onReset={() => {
           reset("eyes", "type");
         }}
+        onRandom={() => {
+          randomizeValue("eyes", "type");
+        }}
       />
       <ColorField
         label="pupil color 1"
@@ -50,6 +60,9 @@ const EyesSettings: Component = () => {
         setColor={(color) => setColors("eyes", "pupilBaseColor", color)}
         onReset={() => {
           reset("eyes", "pupilBaseColor");
+        }}
+        onRandom={() => {
+          randomizeValue("eyes", "pupilBaseColor");
         }}
       />
       <ColorField
@@ -61,6 +74,9 @@ const EyesSettings: Component = () => {
         onReset={() => {
           reset("eyes", "pupilSecondaryColor");
         }}
+        onRandom={() => {
+          randomizeValue("eyes", "pupilSecondaryColor");
+        }}
       />
       <ColorField
         label="eyelashes color"
@@ -70,6 +86,9 @@ const EyesSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("eyes", "eyelashesColor");
+        }}
+        onRandom={() => {
+          randomizeValue("eyes", "eyelashesColor");
         }}
       />
       <ColorField
@@ -81,6 +100,9 @@ const EyesSettings: Component = () => {
         onReset={() => {
           reset("eyes", "eyeWhiteColor");
         }}
+        onRandom={() => {
+          randomizeValue("eyes", "eyeWhiteColor");
+        }}
       />
       <ColorField
         label="eye white shadow color"
@@ -90,6 +112,9 @@ const EyesSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("eyes", "shadowColor");
+        }}
+        onRandom={() => {
+          randomizeValue("eyes", "shadowColor");
         }}
       />
     </>

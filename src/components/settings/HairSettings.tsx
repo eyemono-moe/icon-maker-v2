@@ -5,7 +5,8 @@ import PartsSelect from "../UI/PartsSelect";
 import { hairOptions } from "../parts/hair";
 
 const HairSettings: Component = () => {
-  const [iconColors, { setColors, computeColors, reset }] = useIconColors();
+  const [iconColors, { setColors, computeColors, reset, randomizeValue }] =
+    useIconColors();
 
   return (
     <>
@@ -20,6 +21,9 @@ const HairSettings: Component = () => {
         onReset={() => {
           reset("hair", "type");
         }}
+        onRandom={() => {
+          randomizeValue("hair", "type");
+        }}
       />
       <ColorField
         label="base color"
@@ -27,6 +31,9 @@ const HairSettings: Component = () => {
         setColor={(color) => setColors("hair", "baseColor", color)}
         onReset={() => {
           reset("hair", "baseColor");
+        }}
+        onRandom={() => {
+          randomizeValue("hair", "baseColor");
         }}
       />
       <ColorField
@@ -38,6 +45,9 @@ const HairSettings: Component = () => {
         onReset={() => {
           reset("hair", "highlightColor");
         }}
+        onRandom={() => {
+          randomizeValue("hair", "highlightColor");
+        }}
       />
       <ColorField
         label="stroke color"
@@ -47,6 +57,9 @@ const HairSettings: Component = () => {
         canEmpty
         onReset={() => {
           reset("hair", "strokeColor");
+        }}
+        onRandom={() => {
+          randomizeValue("hair", "strokeColor");
         }}
       />
     </>

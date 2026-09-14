@@ -26,6 +26,7 @@ type Props = (
 ) & {
   label: string;
   onReset?: () => void;
+  onRandom?: () => void;
 };
 
 const ColorField: Component<Props> = (props) => {
@@ -46,6 +47,13 @@ const ColorField: Component<Props> = (props) => {
 
   const handleReset = () => {
     props.onReset?.();
+    setSelectedColor(
+      !props.canEmpty ? props.color : (props.color ?? props.fallbackColor),
+    );
+  };
+
+  const handleRandom = () => {
+    props.onRandom?.();
     setSelectedColor(
       !props.canEmpty ? props.color : (props.color ?? props.fallbackColor),
     );
@@ -116,6 +124,16 @@ const ColorField: Component<Props> = (props) => {
               disabled={isAuto()}
             >
               Reset
+            </Button>
+          </Show>
+          <Show when={props.onRandom}>
+            <Button
+              variant="secondary"
+              onClick={handleRandom}
+              type="button"
+              disabled={isAuto()}
+            >
+              Random
             </Button>
           </Show>
         </div>
