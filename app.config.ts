@@ -3,20 +3,9 @@ import { visualizer } from "rollup-plugin-visualizer";
 import unoCss from "unocss/vite";
 
 export default defineConfig({
+  middleware: "./src/middleware.ts",
   server: {
     preset: "vercel",
   },
-  vite: {
-    plugins: [unoCss(), visualizer()],
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes("css-tree")) return "css-tree";
-            if (id.includes("svgo")) return "svgo";
-          },
-        },
-      },
-    },
-  },
+  vite: { plugins: [unoCss(), visualizer()] },
 });

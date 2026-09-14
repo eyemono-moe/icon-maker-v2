@@ -8,8 +8,13 @@ import {
   toHex,
 } from "color2k";
 import { replaceState } from "history-throttled";
-import pkg from "lz-string";
-import { type Setter, batch, createSignal, useContext } from "solid-js";
+import {
+  type Setter,
+  batch,
+  createSignal,
+  onCleanup,
+  useContext,
+} from "solid-js";
 import {
   type ParentComponent,
   createContext,
@@ -22,7 +27,13 @@ import { eyesOptions } from "~/components/parts/eyes";
 import { hairOptions } from "~/components/parts/hair";
 import { headOptions } from "~/components/parts/head";
 import { mouthOptions } from "~/components/parts/mouth";
+import { type IconState, createDefaultIconState } from "~/domain/icon-state";
+import { decodeIconState, encodeIconState } from "~/domain/icon-state-codec";
 import type { Color } from "~/lib/color";
+import {
+  createDebouncedUrlPersistence,
+  trackStore,
+} from "~/lib/debounced-url-state";
 import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
@@ -32,31 +43,16 @@ import type {
   Prettify,
   ResetStore,
 } from "~/lib/utilityTypes";
-const { compressToEncodedURIComponent, decompressFromEncodedURIComponent } =
-  pkg;
-
-type Accessory =
-  | {
-      type: "glasses";
-      colors: [Color];
-    }
-  | {
-      type: "blush";
-      colors: [Color];
-    }
-  | {
-      type: "catEars";
-      colors: [Color, Color];
-    };
-
 type ComputedColor<T extends Record<string, unknown>> = Prettify<
   OmitEmptyObject<
     OmitUndefined<
       OmitNever<
         {
-          readonly [O in keyof OptionalProps<T> as `computed${Capitalize<
-            Extract<O, string>
-          >}`]-?: Color;
+          readonly [
+            O in keyof OptionalProps<T> as `computed${Capitalize<
+              Extract<O, string>
+            >}`
+          ]-?: Color;
         } & {
           [P in keyof T]: T[P] extends Record<string, unknown>
             ? ComputedColor<T[P]>
@@ -67,43 +63,8 @@ type ComputedColor<T extends Record<string, unknown>> = Prettify<
   >
 >;
 
-type IconColorsWithoutComputed = {
-  hair: {
-    type: (typeof hairOptions)[number]["value"];
-    baseColor: Color;
-    strokeColor?: Color;
-    highlightColor?: Color;
-  };
-  eyes: {
-    type: (typeof eyesOptions)[number]["value"];
-    pupilBaseColor: Color;
-    pupilSecondaryColor?: Color;
-    eyeWhiteColor?: Color;
-    shadowColor?: Color;
-    eyelashesColor?: Color;
-  };
-  eyebrows: {
-    type: (typeof eyebrowsOptions)[number]["value"];
-    baseColor?: Color;
-  };
-  mouth: {
-    type: (typeof mouthOptions)[number]["value"];
-    strokeColor?: Color;
-    teethColor?: Color;
-    insideColor?: Color;
-  };
-  accessories: Accessory[];
-  head: {
-    type: (typeof headOptions)[number]["value"];
-    baseColor: Color;
-    strokeColor?: Color;
-    shadowColor?: Color;
-  };
-  background: Color;
-};
-
-export type IconColors = IconColorsWithoutComputed;
-export type ComputedColors = ComputedColor<IconColorsWithoutComputed>;
+export type IconColors = IconState;
+export type ComputedColors = ComputedColor<IconState>;
 
 export type IconColorsContextState = IconColors;
 
@@ -133,40 +94,7 @@ export type IconColorsContextValue = [
 
 export const IconColorsContext = createContext<IconColorsContextValue>();
 
-const defaultIconColors: IconColors = {
-  hair: {
-    baseColor: "#9940BB",
-    type: "short",
-  },
-  eyes: {
-    pupilBaseColor: "#EE2266",
-    type: "default",
-  },
-  accessories: [],
-  background: "#BBEE66",
-  eyebrows: {
-    type: "default",
-  },
-  head: {
-    type: "default",
-    baseColor: "#FFCCCC",
-  },
-  mouth: {
-    type: "default",
-  },
-};
-
-// need to deep clone
-const defaultPlainColors = () =>
-  JSON.parse(JSON.stringify(defaultIconColors)) as IconColors;
-
-export const parseColors = (params: string): IconColors => {
-  try {
-    return JSON.parse(decompressFromEncodedURIComponent(params)) as IconColors;
-  } catch (e) {
-    return defaultPlainColors();
-  }
-};
+const defaultPlainColors = createDefaultIconState;
 
 export const IconColorsProvider: ParentComponent<{
   params?: IconColors;
@@ -272,17 +200,26 @@ export const IconColorsProvider: ParentComponent<{
     }
   };
 
-  const saveToUrl = () => {
+  const replaceUrl = (serialized: string) => {
     const searchParams = new URLSearchParams();
-    searchParams.set("p", compressToEncodedURIComponent(JSON.stringify(state)));
+    searchParams.set("p", serialized);
     replaceState("", "", `?${searchParams.toString()}`);
   };
+  const urlPersistence = createDebouncedUrlPersistence(
+    () => encodeIconState(state),
+    replaceUrl,
+    150,
+  );
+  const saveToUrl = () => urlPersistence.saveNow();
   const loadFromUrl = () => {
+    if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
     const p = url.searchParams.get("p");
     if (p) {
-      const data = parseColors(p);
-      setState(data);
+      const result = decodeIconState(p);
+      if (result.ok) {
+        setState(result.value);
+      }
     }
   };
 
@@ -306,8 +243,14 @@ export const IconColorsProvider: ParentComponent<{
   };
 
   onMount(loadFromUrl);
+  onCleanup(urlPersistence.cancel);
   createEffect(() => {
-    if (configs.autosave) saveToUrl();
+    if (typeof window === "undefined" || !configs.autosave) {
+      urlPersistence.cancel();
+      return;
+    }
+    trackStore(state);
+    urlPersistence.schedule();
   });
 
   return (

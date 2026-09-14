@@ -1,16 +1,13 @@
 import { type ParentComponent, createRenderEffect } from "solid-js";
-import { renderToString } from "solid-js/web";
-import Icon from "~/components/Icon";
-import {
-  type IconColors,
-  IconColorsProvider,
-  useIconColors,
-} from "~/context/iconColors";
+import { renderToStringAsync } from "solid-js/web";
+import { IconColorsProvider, useIconColors } from "~/context/iconColors";
 import { IconTransformsProvider } from "~/context/iconTransforms";
 import { SsrPortalProvider } from "~/context/ssrPortal";
-import { optimizeSvg } from "./svg";
+import type { IconState } from "~/domain/icon-state";
+import { optimizeSvg } from "../lib/svg-optimize";
+import ServerIcon from "./server-icon";
 
-const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
+const IconWithParam: ParentComponent<{ params?: IconState }> = (props) => {
   const [_, { setColors, reset }] = useIconColors();
 
   createRenderEffect(() => {
@@ -21,13 +18,22 @@ const IconWithParam: ParentComponent<{ params?: IconColors }> = (props) => {
     }
   });
 
-  return <Icon />;
+  return <ServerIcon />;
 };
 
 const hydrationKeyRegex = /data-hk=[^<>\s]+/g;
 
-export const ssrSvgStr = (params?: IconColors) => {
-  const svgText = renderToString(() => {
+export type SvgRenderOptions = {
+  variant?: "normal" | "ogp";
+};
+
+export const renderIconSvg = (
+  params?: IconState,
+  options?: SvgRenderOptions,
+) => {
+  if (options?.variant === "ogp") return renderOgpSvg(params);
+
+  return renderToStringAsync(() => {
     return (
       <SsrPortalProvider>
         <IconTransformsProvider>
@@ -37,17 +43,16 @@ export const ssrSvgStr = (params?: IconColors) => {
         </IconTransformsProvider>
       </SsrPortalProvider>
     );
+  }).then((svgText) => {
+    // to avoid 'Unquoted attribute value' error
+    const trimmed = svgText.replace(hydrationKeyRegex, "");
+
+    return optimizeSvg(trimmed);
   });
-
-  // to avoid 'Unquoted attribute value' error
-  const trimmed = svgText.replace(hydrationKeyRegex, "");
-
-  const optimized = optimizeSvg(trimmed);
-  return optimized;
 };
 
-export const ssrOgpSvgStr = (params?: IconColors) => {
-  const svgText = renderToString(() => (
+const renderOgpSvg = (params?: IconState) => {
+  return renderToStringAsync(() => (
     // biome-ignore lint/a11y/noSvgWithoutTitle: pngに変換するので必要ない
     <svg
       width="1000"
@@ -80,11 +85,10 @@ export const ssrOgpSvgStr = (params?: IconColors) => {
         fill="#313131"
       />
     </svg>
-  ));
+  )).then((svgText) => {
+    // to avoid 'Unquoted attribute value' error
+    const trimmed = svgText.replace(hydrationKeyRegex, "");
 
-  // to avoid 'Unquoted attribute value' error
-  const trimmed = svgText.replace(hydrationKeyRegex, "");
-
-  const optimized = optimizeSvg(trimmed);
-  return optimized;
+    return optimizeSvg(trimmed);
+  });
 };

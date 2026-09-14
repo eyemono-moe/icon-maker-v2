@@ -15,11 +15,12 @@ export type OmitEmptyObject<T> = {
   [K in keyof T as T[K] extends Record<string, never> ? never : K]: T[K];
 };
 
-export type OptionalProps<T> = T extends Record<string, unknown>
-  ? {
-      [P in keyof T as undefined | Color extends T[P] ? P : never]: T[P];
-    }
-  : never;
+export type OptionalProps<T> =
+  T extends Record<string, unknown>
+    ? {
+        [P in keyof T as undefined | Color extends T[P] ? P : never]: T[P];
+      }
+    : never;
 
 export interface ResetStore<T> {
   // 引数無しの時全ての値をリセットする
