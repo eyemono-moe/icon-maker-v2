@@ -68,7 +68,7 @@ jobs:
           vercel-args: --prebuilt
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-version: latest
+          vercel-version: 50.44.0
 
   deploy-production:
     name: Deploy production to Vercel
@@ -88,4 +88,4 @@ jobs:
           vercel-args: --prod --prebuilt
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-version: latest
+          vercel-version: 50.44.0

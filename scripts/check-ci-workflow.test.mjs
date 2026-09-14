@@ -12,6 +12,7 @@ const checkerPath = fileURLToPath(
 );
 const workflowPath = new URL("../.github/workflows/ci.yaml", import.meta.url);
 const temporaryDirectories = [];
+const reviewedVercelVersion = "50.44.0";
 let validWorkflow;
 
 const replaceOnce = (source, before, after) => {
@@ -137,6 +138,76 @@ describe("CI workflow contract checker", () => {
     });
   });
 
+  test.each(["deploy-preview", "deploy-production"])(
+    "rejects %s without the quality dependency",
+    async (jobName) => {
+      const workflow = replacePattern(
+        validWorkflow,
+        new RegExp(`(${jobName}:[\\s\\S]*?)    needs: quality\\n`),
+        "$1",
+      );
+
+      await expect(runChecker(workflow)).rejects.toMatchObject({
+        stderr: expect.stringContaining(
+          `${jobName} must depend on the quality job`,
+        ),
+      });
+    },
+  );
+
+  test.each([
+    ["removes", ""],
+    ["weakens", "    if: github.event_name == 'push'\n"],
+  ])("%s the production main-branch push guard", async (_, replacement) => {
+    const workflow = replaceOnce(
+      validWorkflow,
+      "    if: github.event_name == 'push' && github.ref == 'refs/heads/main'\n",
+      replacement,
+    );
+
+    await expect(runChecker(workflow)).rejects.toMatchObject({
+      stderr: expect.stringContaining(
+        "deploy-production must run only for pushes to refs/heads/main",
+      ),
+    });
+  });
+
+  test("rejects a quality job that does not create the deployment archive", async () => {
+    const workflow = replaceOnce(
+      validWorkflow,
+      `      - name: Archive Vercel output
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        run: tar -czf vercel-output.tgz .vercel/output
+`,
+      "",
+    );
+
+    await expect(runChecker(workflow)).rejects.toMatchObject({
+      stderr: expect.stringContaining(
+        "quality must create vercel-output.tgz from .vercel/output before artifact upload",
+      ),
+    });
+  });
+
+  test("rejects deployment archive creation after artifact upload", async () => {
+    const archiveStep = `      - name: Archive Vercel output
+        if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+        run: tar -czf vercel-output.tgz .vercel/output
+`;
+    const withoutArchive = replaceOnce(validWorkflow, archiveStep, "");
+    const nextJob = withoutArchive.indexOf("\n  deploy-preview:");
+    const workflow =
+      withoutArchive.slice(0, nextJob) +
+      archiveStep +
+      withoutArchive.slice(nextJob);
+
+    await expect(runChecker(workflow)).rejects.toMatchObject({
+      stderr: expect.stringContaining(
+        "quality must create vercel-output.tgz from .vercel/output before artifact upload",
+      ),
+    });
+  });
+
   test("rejects download before checkout", async () => {
     const workflow = replaceOnce(
       validWorkflow,
@@ -175,6 +246,25 @@ describe("CI workflow contract checker", () => {
     });
   });
 
+  test.each(["deploy-preview", "deploy-production"])(
+    "rejects %s downloading the archive outside the workspace root",
+    async (jobName) => {
+      const workflow = replacePattern(
+        validWorkflow,
+        new RegExp(
+          `(${jobName}:[\\s\\S]*?actions/download-artifact@v8\\n        with:\\n          name: vercel-output\\n)`,
+        ),
+        "$1          path: nested\n",
+      );
+
+      await expect(runChecker(workflow)).rejects.toMatchObject({
+        stderr: expect.stringContaining(
+          `${jobName} must download vercel-output to the workspace root`,
+        ),
+      });
+    },
+  );
+
   test("rejects a production deploy that omits a required Vercel argument", async () => {
     const workflow = replaceOnce(
       validWorkflow,
@@ -199,6 +289,32 @@ describe("CI workflow contract checker", () => {
     await expect(runChecker(workflow)).rejects.toMatchObject({
       stderr: expect.stringContaining(
         "deploy-production Vercel arguments must include --prod",
+      ),
+    });
+  });
+
+  test.each([
+    ["deploy-preview", "latest"],
+    ["deploy-preview", "59.16.0"],
+    ["deploy-production", "latest"],
+    ["deploy-production", "59.16.0"],
+  ])("rejects %s using Vercel CLI version %s", async (jobName, replacement) => {
+    const reviewedWorkflow = validWorkflow.replace(
+      /^          vercel-version: .*$/gm,
+      `          vercel-version: ${reviewedVercelVersion}`,
+    );
+    expect(reviewedWorkflow.match(/vercel-version:/g)).toHaveLength(2);
+    const workflow = replacePattern(
+      reviewedWorkflow,
+      new RegExp(
+        `(${jobName}:[\\s\\S]*?vercel-version:) ${reviewedVercelVersion}`,
+      ),
+      `$1 ${replacement}`,
+    );
+
+    await expect(runChecker(workflow)).rejects.toMatchObject({
+      stderr: expect.stringContaining(
+        `${jobName} must use Vercel CLI version ${reviewedVercelVersion}`,
       ),
     });
   });

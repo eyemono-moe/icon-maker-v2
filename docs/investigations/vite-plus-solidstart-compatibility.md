@@ -40,6 +40,13 @@ Vite+の公式troubleshootingはVite 8以上とVitest 4.1以上を前提にし�
 現行のVitestは要件を満たすが、VinxiのVite peer rangeは満たさない。
 ただし、peer rangeだけでは実装上の互換性を判定できないため、実際のproduction buildまで検証した。
 
+## Import sortingの保留
+
+Biomeで有効にしていた`organizeImports`に相当する機能として、Oxfmt 0.67.0は`sortImports`を提供している。
+しかし、`sortImports: true`を一時的に指定して`pnpm format:check`を実行すると、既存の60 filesが変更対象になった。
+CI workflowの修正へrepository全体のimport reorderを混在させると差分の検証範囲が広がるため、この変更では`sortImports`を有効にしない。
+Import sortingは、60 filesの変更を単独でreviewして全testを実行できる更新単位まで保留する。
+
 ## 再現手順
 
 integration commit `7bc3d3e`から一時directoryを作り、repositoryを変更せずにmigrationを試した。
