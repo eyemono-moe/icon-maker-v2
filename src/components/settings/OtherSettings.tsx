@@ -1,12 +1,14 @@
 import type { Component } from "solid-js";
 import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
+import IdenticonField from "../UI/IdenticonField";
 
 const OtherSettings: Component = () => {
   const [iconColors, { setColors, reset, randomizeValue }] = useIconColors();
 
   return (
     <>
+      <IdenticonField />
       <ColorField
         label="background color"
         color={iconColors.background}

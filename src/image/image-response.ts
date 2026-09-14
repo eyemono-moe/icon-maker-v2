@@ -7,7 +7,7 @@ import { retry } from "../lib/retry";
 import type { PngDimensions, PngEncoder } from "./png-encoder";
 import { type SvgRenderOptions, renderIconSvg } from "./render-svg";
 
-type ImageFormat = "png" | "svg";
+export type ImageFormat = "png" | "svg";
 
 export type ImageResponseOptions = {
   format?: ImageFormat;
@@ -56,6 +56,27 @@ export async function createImageResponse(
   const renderer = isOgp
     ? { ...options.renderer, variant: "ogp" as const }
     : options.renderer;
+  const dimensions: PngDimensions = isOgp
+    ? { w: 1000, h: 525 }
+    : {
+        w: parsed.output.s?.w ?? 400,
+        h: parsed.output.s?.h ?? parsed.output.s?.w ?? 400,
+        square: true,
+      };
+  return renderImageResponse(state, { format, dimensions, encoder, renderer });
+}
+
+export type RenderImageOptions = {
+  format: ImageFormat;
+  dimensions: PngDimensions;
+  encoder: PngEncoder;
+  renderer?: SvgRenderOptions;
+};
+
+export async function renderImageResponse(
+  state: IconState | undefined,
+  { format, dimensions, encoder, renderer }: RenderImageOptions,
+): Promise<Response> {
   const svg = await retry(() => renderIconSvg(state, renderer), {
     retries: 2,
     delay: 100,
@@ -70,13 +91,6 @@ export async function createImageResponse(
     });
   }
 
-  const dimensions: PngDimensions = isOgp
-    ? { w: 1000, h: 525 }
-    : {
-        w: parsed.output.s?.w ?? 400,
-        h: parsed.output.s?.h ?? parsed.output.s?.w ?? 400,
-        square: true,
-      };
   const png = await encoder.encode(svg, dimensions);
   return new Response(png, {
     headers: {
