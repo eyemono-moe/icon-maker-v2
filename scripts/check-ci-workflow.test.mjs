@@ -26,12 +26,25 @@ const replacePattern = (source, pattern, replacement) => {
   return mutated;
 };
 
-const runChecker = async (workflow) => {
+const validVercelConfig = JSON.stringify({
+  framework: "solidstart-1",
+  github: { enabled: false },
+  outputDirectory: ".vercel",
+  version: 2,
+});
+
+const runChecker = async (workflow, vercelConfig = validVercelConfig) => {
   const directory = await mkdtemp(join(tmpdir(), "ci-workflow-test-"));
   temporaryDirectories.push(directory);
   const fixturePath = join(directory, "ci.yaml");
+  const vercelConfigPath = join(directory, "vercel.json");
   await writeFile(fixturePath, workflow);
-  return execFileAsync(process.execPath, [checkerPath, fixturePath]);
+  await writeFile(vercelConfigPath, vercelConfig);
+  return execFileAsync(process.execPath, [
+    checkerPath,
+    fixturePath,
+    vercelConfigPath,
+  ]);
 };
 
 beforeAll(async () => {
@@ -51,6 +64,19 @@ describe("CI workflow contract checker", () => {
     await expect(runChecker(validWorkflow)).resolves.toMatchObject({
       stderr: "",
       stdout: expect.stringContaining("CI workflow contract is valid"),
+    });
+  });
+
+  test("rejects deployment config properties unsupported by the reviewed Vercel CLI", async () => {
+    const config = JSON.stringify({
+      ...JSON.parse(validVercelConfig),
+      public: false,
+    });
+
+    await expect(runChecker(validWorkflow, config)).rejects.toMatchObject({
+      stderr: expect.stringContaining(
+        'Vercel deployment config must not contain unsupported property "public"',
+      ),
     });
   });
 

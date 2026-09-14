@@ -189,3 +189,11 @@ export const validateCiWorkflow = (workflow) => {
   validateDeploy(workflow, "deploy-preview", ["--prebuilt"]);
   validateDeploy(workflow, "deploy-production", ["--prod", "--prebuilt"]);
 };
+
+export const validateVercelConfig = (source) => {
+  const config = JSON.parse(source);
+  requireContract(
+    !("public" in config),
+    'Vercel deployment config must not contain unsupported property "public"',
+  );
+};
