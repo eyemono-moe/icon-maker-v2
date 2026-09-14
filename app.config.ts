@@ -32,11 +32,15 @@ export default defineConfig({
   middleware: "./src/middleware.ts",
   server: {
     preset: "vercel",
-    hooks: {
-      compiled(nitro) {
-        copySharpRuntimePackages(nitro.options.output.serverDir);
+    // Register via a module: `hooks.compiled` in config would replace the
+    // vercel preset's own `compiled` hook, which writes `.vercel/output/config.json`.
+    modules: [
+      (nitro) => {
+        nitro.hooks.hook("compiled", () => {
+          copySharpRuntimePackages(nitro.options.output.serverDir);
+        });
       },
-    },
+    ],
   },
   vite: { plugins: [unoCss(), visualizer()] },
 });
