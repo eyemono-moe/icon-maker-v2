@@ -6,6 +6,7 @@ import {
 import { type Component, Match, Switch } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { Portal } from "solid-js/web";
+import "../assets/toast.css";
 
 const toaster = createToaster({
   placement: "bottom-end",
@@ -15,12 +16,9 @@ const toaster = createToaster({
 
 export const Toaster: Component = () => (
   <Portal>
-    <ArkToaster
-      toaster={toaster}
-      class="fixed max-w-full bottom-0 right-0 flex flex-col gap-2 z-9999 [--toast-padding:1rem] p-[--toast-padding] items-end"
-    >
+    <ArkToaster toaster={toaster}>
       {(toast) => (
-        <Toast.Root class="relative w-200px max-w-full b-1 rounded bg-white p-2 shadow data-[state=open]:(animate-slide-in-right! animate-duration-100!) data-[state=closed]:(animate-fade-out-right animate-duration-100)">
+        <Toast.Root class="right-0 w-200px max-w-[calc(100vw-2rem)] b-1 rounded bg-white p-2 shadow data-[state=open]:(animate-slide-in-right! animate-duration-100!) data-[state=closed]:(animate-fade-out-right animate-duration-100)">
           <Toast.CloseTrigger
             class="absolute bg-transparent c-zinc-600 right-2"
             aria-label="Dismiss notification"
