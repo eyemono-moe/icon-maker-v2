@@ -8,13 +8,7 @@ import {
   toHex,
 } from "color2k";
 import { replaceState } from "history-throttled";
-import {
-  type Setter,
-  batch,
-  createSignal,
-  onCleanup,
-  useContext,
-} from "solid-js";
+import { type Setter, createSignal, onCleanup, useContext } from "solid-js";
 import {
   type ParentComponent,
   createContext,
@@ -22,11 +16,10 @@ import {
   onMount,
 } from "solid-js";
 import { type SetStoreFunction, createStore, reconcile } from "solid-js/store";
-import { eyebrowsOptions } from "~/components/parts/eyebrows";
-import { eyesOptions } from "~/components/parts/eyes";
-import { hairOptions } from "~/components/parts/hair";
-import { headOptions } from "~/components/parts/head";
-import { mouthOptions } from "~/components/parts/mouth";
+import {
+  createRandomIconState,
+  randomFieldValue,
+} from "~/domain/icon-randomizer";
 import { type IconState, createDefaultIconState } from "~/domain/icon-state";
 import { decodeIconState, encodeIconState } from "~/domain/icon-state-codec";
 import type { Color } from "~/lib/color";
@@ -34,7 +27,6 @@ import {
   createDebouncedUrlPersistence,
   trackStore,
 } from "~/lib/debounced-url-state";
-import { choice, randomHSL } from "~/lib/random";
 import type {
   OmitEmptyObject,
   OmitNever,
@@ -80,6 +72,7 @@ export type IconColorsContextActions = {
   loadFromUrl: () => void;
   toggleAutosave: () => void;
   randomize: () => void;
+  randomizeValue: ResetStore<Omit<IconColorsContextState, "accessories">>;
   // history
   setTrackHistory: Setter<boolean>;
   undo: () => void;
@@ -228,18 +221,33 @@ export const IconColorsProvider: ParentComponent<{
   };
 
   const randomize = () => {
-    batch(() => {
-      reset();
-      setState("hair", "type", choice(hairOptions).value);
-      setState("hair", "baseColor", randomHSL([0, 360], [0, 1], [0.05, 1]));
-      setState("eyes", "type", choice(eyesOptions).value);
-      setState("eyes", "pupilBaseColor", randomHSL([0, 360], [0, 1], [0, 1]));
-      setState("eyebrows", "type", choice(eyebrowsOptions).value);
-      setState("mouth", "type", choice(mouthOptions).value);
-      setState("head", "type", choice(headOptions).value);
-      setState("head", "baseColor", randomHSL([0, 25], [0.5, 1], [0.6, 0.9]));
-      setState("background", randomHSL([0, 360], [0.2, 1], [0.2, 0.9]));
-    });
+    setState(reconcile(createRandomIconState()));
+  };
+
+  const randomizeValue = <
+    K1 extends Exclude<keyof IconColorsContextState, "accessories">,
+    K2 extends keyof IconColorsContextState[K1],
+  >(
+    k1?: K1,
+    k2?: K2,
+  ) => {
+    if (!k1) {
+      randomize();
+      return;
+    }
+    if (k2 === undefined) {
+      const current = state[k1];
+      if (typeof current === "string") {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        setState(k1, randomFieldValue(k1, undefined, current) as any);
+      } else {
+        setState(k1, createRandomIconState()[k1]);
+      }
+      return;
+    }
+    const current = (state[k1] as Record<K2, unknown>)[k2];
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    setState(k1, k2 as any, randomFieldValue(k1, k2, current) as any);
   };
 
   onMount(loadFromUrl);
@@ -265,6 +273,7 @@ export const IconColorsProvider: ParentComponent<{
           reset,
           toggleAutosave,
           randomize,
+          randomizeValue,
           setTrackHistory,
           undo: history.undo,
           redo: history.redo,

@@ -3,7 +3,7 @@ import { useIconColors } from "~/context/iconColors";
 import ColorField from "../UI/ColorField";
 
 const OtherSettings: Component = () => {
-  const [iconColors, { setColors, reset }] = useIconColors();
+  const [iconColors, { setColors, reset, randomizeValue }] = useIconColors();
 
   return (
     <>
@@ -13,6 +13,9 @@ const OtherSettings: Component = () => {
         setColor={(color) => setColors("background", color)}
         onReset={() => {
           reset("background");
+        }}
+        onRandom={() => {
+          randomizeValue("background");
         }}
       />
     </>
