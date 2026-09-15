@@ -21,6 +21,7 @@ import {
   randomFieldValue,
 } from "~/domain/icon-randomizer";
 import { type IconState, createDefaultIconState } from "~/domain/icon-state";
+import { createIdenticonState, isValidIdenticonSeed } from "~/domain/identicon";
 import { decodeIconState, encodeIconState } from "~/domain/icon-state-codec";
 import type { Color } from "~/lib/color";
 import {
@@ -72,6 +73,7 @@ export type IconColorsContextActions = {
   loadFromUrl: () => void;
   toggleAutosave: () => void;
   randomize: () => void;
+  generateFromSeed: (seed: string) => Promise<void>;
   randomizeValue: ResetStore<Omit<IconColorsContextState, "accessories">>;
   // history
   setTrackHistory: Setter<boolean>;
@@ -213,7 +215,10 @@ export const IconColorsProvider: ParentComponent<{
       if (result.ok) {
         setState(result.value);
       }
+      return;
     }
+    const seed = url.searchParams.get("seed");
+    if (seed) void generateFromSeed(seed);
   };
 
   const toggleAutosave = () => {
@@ -222,6 +227,11 @@ export const IconColorsProvider: ParentComponent<{
 
   const randomize = () => {
     setState(reconcile(createRandomIconState()));
+  };
+
+  const generateFromSeed = async (seed: string) => {
+    if (!isValidIdenticonSeed(seed)) return;
+    setState(reconcile(await createIdenticonState(seed)));
   };
 
   const randomizeValue = <
@@ -273,6 +283,7 @@ export const IconColorsProvider: ParentComponent<{
           reset,
           toggleAutosave,
           randomize,
+          generateFromSeed,
           randomizeValue,
           setTrackHistory,
           undo: history.undo,
