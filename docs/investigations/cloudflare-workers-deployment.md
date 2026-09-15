@@ -2,19 +2,19 @@
 
 ## 判定
 
-2026年9月15日時点では、Cloudflare Workersへの本番移行（BLA-42）はまだ着手しない。
+2026年9月15日、Cloudflare Workersへは移行せず、Vercelでの運用を継続すると決定した。
+Cloudflare Workersへの本番移行（BLA-42）は実施しない。
 
 Cloudflare Vite pluginは現行のSolidStart 1とVinxiで動かない。
-一方、Nitroの`cloudflare-module` presetを使う経路では、local Workers runtimeでSSR、SVG、PNG、OGPがすべて動き、既存の画像route contractを満たした。
-previewでもcontractを満たし、CPU時間を実測した。
-しかし、採用条件のうち次の点が未確認であり、合格とは判定しない。
+一方、Nitroの`cloudflare-module` presetを使う経路では、local Workers runtimeとpreviewの両方でSSR、SVG、PNG、OGPが動き、既存の画像route contractを満たした。
+したがって、技術的には移行できる。
 
-- memory使用量。
-- responseのcache設計と、それを含めた費用見積もり。
-- Vercelへのrollback手順の検証。
-
-previewで測ったPNG生成のCPU時間は、400×400で85ms、OGPで116msだった（いずれもp50）。
-Free planの上限10msを大きく超えるため、Cloudflareへ移行する場合はWorkers Paid planが前提になる。
+移行しない理由は、PNG生成のCPU時間にある。
+previewで測ったCPU時間は、400×400で85ms、OGPで116msだった（いずれもp50）。
+Workers Free planの上限は1 requestあたり10msであり、Workersはisolateごとに上限の超過をたまにしか起きない場合だけ許容し、超過が続くとError 1102で打ち切る。
+このapplicationの画像URLはicon stateをqueryに含むため組み合わせが事実上無限であり、cacheに当たらない初回の生成を減らしにくい。
+そのため、Free planではcacheを設定しても、実運用で1102が起きる可能性が高い。
+Paid plan（月額5 USDから）を払えば運用できるが、Vercelでは追加費用なしで運用できているため、移行する利点がない。
 
 ## 検証したversion
 
@@ -145,14 +145,31 @@ cacheを避けるためにqueryへ乱数を付け、各pathへ12回requestした
 localの値からFree planの10msを超えると見込んでいたが、実測では400×400のPNGでも85msかかり、見込みより大きく超えた。
 maxは最初のrequestで大きくなる傾向があり、isolateの起動とwasmの初期化を含むと考えられる。
 
-## 残作業と再評価の条件
+previewを実行したaccountはFree planである。
+Free planでも短時間の試験では超過が許容され、すべてのrequestが`ok`で終わった。
+この結果は、継続的な運用でも1102が起きないことを意味しない。
 
-BLA-42へ進むには、次の項目を確認する必要がある。
+memory使用量は`wrangler tail`の出力に含まれないため、測定していない。
 
-- accountのplanを確認する。previewではCPU時間が300msを超えるrequestも`ok`で終わったが、planはwranglerの出力から確認できていない。
-- Workersが返したresponseは、Cache APIを使うかcustom domainでCache Ruleを設定しない限りCDNにcacheされないはずである。PNGのCPU時間が大きいため、cacheの設計を費用見積もりに含める。
-- memory使用量が128MBの上限に対して十分な余裕を持つことを確認する。`wrangler tail`の出力には含まれない。
-- DNSをVercelへ戻すrollback手順を記録し、切替前後を検証する。
+## 他のproductの対応
 
-Vinxiを使わないstart modeへ移行できた場合は、Cloudflare Vite pluginによる経路を再評価する。
+Cloudflare Workersで画像を生成する公開事例を調べた（2026年9月15日）。
+Free planの事例は、CDN cacheやR2への保存で生成回数を減らしているが、cacheに当たらない生成でError 1102が起きる可能性は残ると著者自身が書いている。
+安定した運用を求める事例は、Paid planを前提にしている。
+
+- [Cloudflare Workers で OGP 画像生成したら CPU 時間オーバーした話](https://lami.zip/blog/8pn3gritkbc)：Free planで1102が頻発し、`s-maxage`と`stale-while-revalidate`によるcacheで生成回数を減らしている。
+- [Satoriを使ってOGP画像生成&キャッシュ on Cloudflare Workers/R2](https://zenn.dev/beenos_tech/articles/20230413_generate-and-cache-ogp-image-on-cf)：生成したPNGをR2へ保存して再利用する。
+- [meleksomai/os#99](https://github.com/meleksomai/os/issues/99)：Paid planであることを実装の前提条件にしている。
+
+これらはblog記事の本数に比例する有限個の画像を生成する事例であり、queryの組み合わせが事実上無限なこのapplicationよりcacheが効きやすい。
+
+## 再評価の条件
+
+次のいずれかが成り立つ場合に、Cloudflare Workersへの移行を再評価する。
+
+- Workers Paid planの費用を負担する理由ができた場合。
+- Vercelの無料枠や料金体系が変わり、現行の運用に費用がかかるようになった場合。
+
+再評価では、memory使用量、Workers Cacheを含むcache設計、Vercelへのrollback手順を確認する。
+Vinxiを使わないstart modeへ移行できた場合は、Cloudflare Vite pluginによる経路も再評価する。
 このrepositoryではstart modeへの移行をSolid 2と一体でBLA-39として見送っているため、再評価の時期はBLA-39の再開条件（Ark UIのSolid 2対応）に連動する。
