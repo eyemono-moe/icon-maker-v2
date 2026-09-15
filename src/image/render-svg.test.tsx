@@ -22,4 +22,18 @@ describe("renderIconSvg", () => {
     expect(svg).toContain('height="525"');
     expect(svg).toContain('fill="white"');
   });
+
+  test("positions the OGP icon without transform on a nested svg", async () => {
+    const svg = await renderIconSvg(createDefaultIconState(), {
+      variant: "ogp",
+    });
+    const nestedSvgTags = svg.match(/<svg\s[^>]*>/g)?.slice(1) ?? [];
+
+    // SVG 1.1 does not allow transform on nested <svg>, and resvg ignores it,
+    // which would draw the icon outside the circular mask.
+    expect(nestedSvgTags.length).toBeGreaterThan(0);
+    expect(nestedSvgTags.filter((tag) => tag.includes("transform="))).toEqual(
+      [],
+    );
+  });
 });
