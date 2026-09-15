@@ -6,13 +6,15 @@
 
 Cloudflare Vite pluginは現行のSolidStart 1とVinxiで動かない。
 一方、Nitroの`cloudflare-module` presetを使う経路では、local Workers runtimeでSSR、SVG、PNG、OGPがすべて動き、既存の画像route contractを満たした。
-したがって技術的な適合性は確認できたが、採用条件のうち次の2点が未確認であり、合格とは判定しない。
+previewでもcontractを満たし、CPU時間を実測した。
+しかし、採用条件のうち次の点が未確認であり、合格とは判定しない。
 
-- 本番のCloudflare上でのCPU時間とmemory使用量。localのworkerdではどちらも正確に測れない。
-- previewの確認と、Vercelへのrollback手順の検証。どちらもCloudflare accountを必要とする。
+- memory使用量。
+- responseのcache設計と、それを含めた費用見積もり。
+- Vercelへのrollback手順の検証。
 
-PNG生成のCPU時間はFree planの上限10msを超える見込みである。
-そのため、Cloudflareへ移行する場合はWorkers Paid planが前提になる。
+previewで測ったPNG生成のCPU時間は、400×400で85ms、OGPで116msだった（いずれもp50）。
+Free planの上限10msを大きく超えるため、Cloudflareへ移行する場合はWorkers Paid planが前提になる。
 
 ## 検証したversion
 
@@ -122,13 +124,34 @@ memoryはlocalのworkerdではisolate単位で測れないため、未測定で�
 
 Cloudflareの上限値は、2026年9月15日に[Workers limits](https://developers.cloudflare.com/workers/platform/limits/)で確認した。
 
+## previewでの測定結果
+
+2026年9月15日に、同じbuildを`icon-maker-preview.eyemono-moe.workers.dev`へdeployした。
+Worker Startup Timeは26msで、上限の1秒に収まった。
+previewに対して`pnpm test:contract`を実行し、13件すべて成功した。
+
+CPU時間は`wrangler tail --format json`の`cpuTime`から集計した。
+cacheを避けるためにqueryへ乱数を付け、各pathへ12回requestした。
+
+| path                  | CPU p50 | CPU max | 結果       |
+| --------------------- | ------- | ------- | ---------- |
+| `/`                   | 8ms     | 54ms    | すべて`ok` |
+| `/image?f=svg`        | 17ms    | 115ms   | すべて`ok` |
+| `/image?f=png`        | 85ms    | 274ms   | すべて`ok` |
+| `/image?f=png&s=1024` | 309ms   | 434ms   | すべて`ok` |
+| `/ogp`                | 116ms   | 206ms   | すべて`ok` |
+
+本番のCPU時間はlocalの実時間より3倍程度大きい。
+localの値からFree planの10msを超えると見込んでいたが、実測では400×400のPNGでも85msかかり、見込みより大きく超えた。
+maxは最初のrequestで大きくなる傾向があり、isolateの起動とwasmの初期化を含むと考えられる。
+
 ## 残作業と再評価の条件
 
-BLA-42へ進むには、Cloudflare accountで次の項目を確認する必要がある。
+BLA-42へ進むには、次の項目を確認する必要がある。
 
-- preview deploymentで`pnpm test:contract`を実行する。
-- Workers Logsで、`/image?f=png&s=1024`と`/ogp`のCPU時間を確認する。
-- memory使用量が128MBの上限に対して十分な余裕を持つことを確認する。
+- accountのplanを確認する。previewではCPU時間が300msを超えるrequestも`ok`で終わったが、planはwranglerの出力から確認できていない。
+- Workersが返したresponseは、Cache APIを使うかcustom domainでCache Ruleを設定しない限りCDNにcacheされないはずである。PNGのCPU時間が大きいため、cacheの設計を費用見積もりに含める。
+- memory使用量が128MBの上限に対して十分な余裕を持つことを確認する。`wrangler tail`の出力には含まれない。
 - DNSをVercelへ戻すrollback手順を記録し、切替前後を検証する。
 
 Vinxiを使わないstart modeへ移行できた場合は、Cloudflare Vite pluginによる経路を再評価する。
