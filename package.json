@@ -9,6 +9,9 @@
     "version": "vinxi version",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "test:contract": "vitest run tests/worker",
+    "build:cloudflare": "SERVER_PRESET=cloudflare-module vinxi build",
+    "preview:cloudflare": "pnpm dlx wrangler@4.131.2 dev .output/server/index.mjs --assets .output/public --name icon-maker-probe --compatibility-date 2026-09-01 --compatibility-flags nodejs_compat --ip 127.0.0.1 --port 8787",
     "check": "pnpm format:check && pnpm lint && pnpm check:workflow",
     "format": "oxfmt .",
     "format:check": "oxfmt --check .",
@@ -22,6 +25,7 @@
   "dependencies": {
     "@ark-ui/solid": "4.10.2",
     "@mediapipe/tasks-vision": "0.10.21",
+    "@resvg/resvg-wasm": "2.6.2",
     "@solid-primitives/history": "0.2.0",
     "@solid-primitives/media": "2.3.0",
     "@solid-primitives/presence": "0.1.0",

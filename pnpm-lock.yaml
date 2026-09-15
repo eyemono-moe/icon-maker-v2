@@ -14,6 +14,9 @@ importers:
       '@mediapipe/tasks-vision':
         specifier: 0.10.21
         version: 0.10.21
+      '@resvg/resvg-wasm':
+        specifier: 2.6.2
+        version: 2.6.2
       '@solid-primitives/history':
         specifier: 0.2.0
         version: 0.2.0(solid-js@1.9.5)
@@ -1255,6 +1258,10 @@ packages:
   '@redocly/openapi-core@1.30.0':
     resolution: {integrity: sha512-ZZc+FXKoQXJ9cOR7qRKHxOfKOsGCj2wSodklKdtM2FofzyjzvIwn1rksD5+9iJxvHuORPOPv3ppAHcM+iMr/Ag==}
     engines: {node: '>=18.17.0', npm: '>=9.5.0'}
+
+  '@resvg/resvg-wasm@2.6.2':
+    resolution: {integrity: sha512-FqALmHI8D4o6lk/LRWDnhw95z5eO+eAa6ORjVg09YRR7BkcM6oPHU9uyC0gtQG5vpFLvgpeU4+zEAz2H8APHNw==}
+    engines: {node: '>= 10'}
 
   '@rollup/plugin-alias@5.1.1':
     resolution: {integrity: sha512-PR9zDb+rOzkRb2VD+EuKB7UC41vU5DIwZ5qqCpk0KJudcWAyi8rvYOhS7+L5aZCspw1stTViLgN5v6FF1p5cgQ==}
@@ -4880,6 +4887,8 @@ snapshots:
       yaml-ast-parser: 0.0.43
     transitivePeerDependencies:
       - supports-color
+
+  '@resvg/resvg-wasm@2.6.2': {}
 
   '@rollup/plugin-alias@5.1.1(rollup@4.34.8)':
     optionalDependencies:

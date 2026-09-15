@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 import { HttpStatusCode } from "@solidjs/start";
 import type { APIEvent } from "@solidjs/start/server";
 import { createImageResponse } from "~/image/image-response";
-import { sharpPngEncoder } from "~/image/sharp-png-encoder";
+import { runtimePngEncoder } from "~/image/runtime-png-encoder";
 
 const imageRegex = /^image\.(png|svg)$/;
 
@@ -12,7 +12,7 @@ export async function GET(event: APIEvent) {
   if (!match) {
     return;
   }
-  return createImageResponse(event.request, sharpPngEncoder, {
+  return createImageResponse(event.request, runtimePngEncoder, {
     format: match[1] as "png" | "svg",
   });
 }
