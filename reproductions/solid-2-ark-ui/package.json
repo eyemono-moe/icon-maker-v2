@@ -18,7 +18,7 @@
     "@solidjs/vite-plugin": "3.0.0-next.43",
     "@types/node": "24.10.1",
     "typescript": "6.0.3",
-    "vite": "8.2.1"
+    "vite": "8.2.4"
   },
   "engines": {
     "node": ">=24.11.0"
